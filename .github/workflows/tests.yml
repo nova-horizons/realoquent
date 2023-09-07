@@ -1,0 +1,49 @@
+name: tests
+
+on: [ push, pull_request ]
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      #max-parallel: 1
+      matrix:
+        os: [ ubuntu-latest ]
+        php: [ 8.2, 8.1 ]
+        laravel: [ 10.* ]
+        stability: [ prefer-stable ]
+        include:
+          - laravel: 10.*
+            testbench: 8.*
+
+    name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - ${{ matrix.os }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, pdo_pgsql, bcmath, soap, intl, exif, iconv
+          coverage: none
+
+      - name: Install dependencies
+        run: |
+          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update
+          composer update --${{ matrix.stability }} --prefer-dist --no-interaction
+
+      - name: Start Docker Databases
+        run: |
+          cp .env.example .env
+          ./vendor/bin/sail up -d
+          sleep 12
+
+      - name: Execute tests
+        run: vendor/bin/pest
+
+      - name: Shutdown Docker Databases
+        if: always()
+        run: |
+          ./vendor/bin/sail down --volumes

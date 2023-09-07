@@ -1,0 +1,42 @@
+name: static analysis
+
+on: [ push, pull_request ]
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: true
+      matrix:
+        os: [ ubuntu-latest ]
+        php: [ 8.2, 8.1 ]
+        laravel: [ 10.* ]
+        stability: [ prefer-stable ]
+        include:
+          - laravel: 10.*
+            testbench: 8.*
+
+    name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - ${{ matrix.os }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, pdo_pgsql, bcmath, soap, intl, exif, iconv
+          coverage: none
+
+      - name: Install dependencies
+        run: |
+          composer remove --dev laravel/sail
+          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update
+          composer update --${{ matrix.stability }} --prefer-dist --no-interaction
+
+      - name: Run static analysis
+        uses: php-actions/phpstan@v3
+        with:
+          php_version: ${{ matrix.php }}
+          memory_limit: 1G

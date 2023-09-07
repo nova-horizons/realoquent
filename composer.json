@@ -1,0 +1,71 @@
+{
+    "name": "nova-horizons/realoquent",
+    "type": "library",
+    "license": "MIT",
+    "require": {
+        "php": "~8.1|~8.2",
+        "illuminate/support": "^10",
+        "nette/php-generator": "^4.0.9",
+        "doctrine/dbal": "^3",
+        "illuminate/database": "^10",
+        "nikic/php-parser": "^4.17.1"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^8.10",
+        "laravel/pint": "^1.13",
+        "pestphp/pest": "^2.18",
+        "phpstan/phpstan": "^1.10",
+        "nunomaduro/larastan": "^2.6",
+        "laravel/sail": "^1.24"
+    },
+    "autoload": {
+        "psr-4": {
+            "NovaHorizons\\Realoquent\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/",
+            "Workbench\\App\\": "workbench/app/",
+            "Workbench\\Database\\Factories\\": "workbench/database/factories/",
+            "Workbench\\Database\\Seeders\\": "workbench/database/seeders/"
+        }
+    },
+    "scripts": {
+        "cs-fix": "./vendor/bin/pint",
+        "phpstan": "./vendor/bin/phpstan --memory-limit=1G analyze",
+        "test": "./vendor/bin/pest",
+        "quality": [
+            "@cs-fix",
+            "@test",
+            "@phpstan"
+        ],
+        "post-autoload-dump": [
+            "@clear",
+            "@prepare"
+        ],
+        "clear": "@php vendor/bin/testbench package:purge-skeleton --ansi",
+        "prepare": "@php vendor/bin/testbench package:discover --ansi",
+        "build": "@php vendor/bin/testbench workbench:build --ansi",
+        "serve": [
+            "@build",
+            "@php vendor/bin/testbench serve"
+        ],
+        "lint": [
+            "@php vendor/bin/pint",
+            "@php vendor/bin/phpstan analyse"
+        ]
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "NovaHorizons\\Realoquent\\RealoquentServiceProvider"
+            ]
+        }
+    }
+}
