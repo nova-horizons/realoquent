@@ -1,0 +1,49 @@
+includes:
+    - phpstan-baseline.neon
+    - ./vendor/nunomaduro/larastan/extension.neon
+    - phar://phpstan.phar/conf/bleedingEdge.neon
+
+parameters:
+    level: 6
+
+    paths:
+        - config
+        - src
+        - tests
+
+    # Report when previously ignored errors are no longer present and can be removed from ignores
+    #   Will require more discipline from team to maintain clean baseline
+    reportUnmatchedIgnoredErrors: true
+
+    # For Level 6+: Require `int[]`-style typehints vs `array` https://phpstan.org/config-reference#vague-typehints
+    checkMissingIterableValueType: true
+
+    # Larastan Config https://github.com/nunomaduro/larastan/blob/master/docs/rules.md
+    checkModelProperties: true
+    checkOctaneCompatibility: true
+
+    # Enforce stricter usages of @throws and related Exception-handling https://phpstan.org/blog/bring-your-exceptions-under-control
+    exceptions:
+        implicitThrows: false
+        check:
+            missingCheckedExceptionInThrows: true
+            tooWideThrowType: true
+        uncheckedExceptionClasses: # You'll also want to set these in PHPStorm
+            - 'LogicException'
+            - 'RuntimeException'
+            - 'Error'
+
+    # Objects used as universal holders of data, prevents undefined property errors
+    # https://phpstan.org/config-reference#universal-object-crates
+    universalObjectCratesClasses:
+        - Illuminate\Database\Eloquent\Model
+
+    ignoreErrors:
+        - '#Class NovaHorizons\\Realoquent\\DataObjects\\(.*?) has an uninitialized \@readonly property (.*?). Assign it in the constructor.#'
+        - '#\@readonly property NovaHorizons\\Realoquent\\DataObjects\\(.*?) is assigned outside of the constructor.#'
+        -
+            message: '#Match arm comparison between (.*?) is always true#'
+            path: src/Enums
+
+rules:
+    - Spatie\Ray\PHPStan\RemainingRayCallRule
