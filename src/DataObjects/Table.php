@@ -160,7 +160,8 @@ class Table
         $validation = [];
         foreach ($this->columns as $column) {
             if (empty($column->validation)) {
-                $validation[$column->name] = $column->generateDefaultValidation();
+                $hasUniqueIndex = $this->doesColumnHaveUniqueIndex($column->name);
+                $validation[$column->name] = $column->generateDefaultValidation(isUnique: $hasUniqueIndex);
             } else {
                 $validation[$column->name] = $column->validation;
             }
@@ -244,7 +245,11 @@ class Table
                     if (! $column->fillable) {
                         continue;
                     }
-                    $column->setValidation($column->generateDefaultValidation());
+                    $column->setValidation(
+                        $column->generateDefaultValidation(
+                            isUnique: $this->doesColumnHaveUniqueIndex($column->name)
+                        )
+                    );
                 }
             }
         }
@@ -322,6 +327,9 @@ class Table
             };
             if (! is_null($indexType)) {
                 $table->addIndex(Index::newInferredIndex($indexType, $columnObj));
+                if ($indexType === IndexType::unique || $indexType === IndexType::primary) {
+                    $columnObj->setValidation(['unique:'.$table->name]);
+                }
             }
         }
 
@@ -363,5 +371,13 @@ class Table
         }
 
         return $schema;
+    }
+
+    protected function doesColumnHaveUniqueIndex(string $name): bool
+    {
+        return collect($this->getIndexes())
+            ->filter(fn (Index $index) => $index->type === IndexType::unique || $index->type === IndexType::primary)
+            ->filter(fn (Index $index) => count($index->indexColumns) === 1 && in_array($name, $index->indexColumns, true))
+            ->isNotEmpty();
     }
 }

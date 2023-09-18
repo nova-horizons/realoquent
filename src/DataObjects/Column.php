@@ -228,7 +228,7 @@ class Column
      *
      * @return string[]
      */
-    public function generateDefaultValidation(): array
+    public function generateDefaultValidation(bool $isUnique = false): array
     {
         $rules = [];
 
@@ -263,6 +263,10 @@ class Column
             ColumnType::uuid => $rules[] = 'uuid',
             default => null,
         };
+
+        if ($isUnique) {
+            $rules[] = 'unique:'.$this->tableName;
+        }
 
         return array_unique($rules);
 

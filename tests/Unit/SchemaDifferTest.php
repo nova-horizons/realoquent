@@ -19,12 +19,15 @@ it('can detect renamed table', function () {
 
     $changes = (new SchemaDiffer(currentSchema: $snapshot, newSchema: $new))->getSchemaChanges()->changes;
 
-    expect($changes)->toHaveCount(1);
+    expect($changes)->toHaveCount(2);
     expect($changes['table_renamed'])->toHaveCount(1);
     expect($changes['table_renamed']['admins']['changes'])->toHaveCount(1);
     expect($changes['table_renamed']['admins']['changes']['name']['new'])->toBe('admins');
     expect($changes['table_renamed']['admins']['changes']['name']['old'])->toBe('users');
     expect($changes['table_renamed']['admins']['state'])->toBeInstanceOf(Table::class);
+    expect($changes['column_updated'])->toHaveCount(2);
+    expect($changes['column_updated']['admins.id']['changes'])->toHaveCount(1);
+    expect($changes['column_updated']['admins.username']['changes'])->toHaveCount(1);
 });
 
 it('can detect new table', function () {
@@ -228,9 +231,11 @@ it('can detect new inferred index', function () {
 
     $changes = (new SchemaDiffer(currentSchema: $snapshot, newSchema: $new))->getSchemaChanges()->changes;
 
-    expect($changes)->toHaveCount(1);
+    expect($changes)->toHaveCount(2);
     expect($changes['index_new'])->toHaveCount(1);
     expect($changes['index_new']['users.users_email_unique'])->toBeInstanceOf(Index::class);
+    expect($changes['column_updated']['users.email']['changes'])->toHaveCount(1);
+    expect($changes['column_updated']['users.email']['changes'])->toHaveKey('validation');
 });
 
 it('can detect renamed index', function () {
@@ -277,9 +282,11 @@ it('can detect updated inferred index', function () {
 
     $changes = (new SchemaDiffer(currentSchema: $snapshot, newSchema: $new))->getSchemaChanges()->changes;
 
-    expect($changes)->toHaveCount(2);
+    expect($changes)->toHaveCount(3);
     expect($changes['index_new'])->toHaveKey('users.users_username_index');
     expect($changes['index_removed'])->toHaveKey('users.users_username_unique');
+    expect($changes['column_updated']['users.username']['changes'])->toHaveCount(1);
+    expect($changes['column_updated']['users.username']['changes'])->toHaveKey('validation');
 });
 
 it('can detect updated index columns', function () {
