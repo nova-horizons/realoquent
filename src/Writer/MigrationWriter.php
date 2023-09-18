@@ -194,11 +194,11 @@ class MigrationWriter
         }
 
         if (isset($column->precision)) {
-            $str .= ", precision: {$column->precision}";
+            $str .= ", total: {$column->precision}";
         }
 
         if (isset($column->scale)) {
-            $str .= ", scale: {$column->precision}";
+            $str .= ", places: {$column->scale}";
         }
 
         $str .= ')';
