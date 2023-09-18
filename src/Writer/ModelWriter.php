@@ -110,8 +110,10 @@ class ModelWriter
             ->removeProperty('guarded')
             ->removeProperty('casts');
 
-        foreach ($this->modelInfo->relations as $relation) {
-            $class->removeMethod($relation->relationName);
+        if ($this->modelInfo) {
+            foreach ($this->modelInfo->relations as $relation) {
+                $class->removeMethod($relation->relationName);
+            }
         }
 
         $namespace->add($class);
