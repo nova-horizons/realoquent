@@ -66,7 +66,7 @@ it('can migrate updated table that needs no migration', function (string $connec
     $migration = (new SchemaDiffer(currentSchema: $snapshot, newSchema: $new))->getSchemaChanges()->getMigrationFunction();
 
     expect($migration)->toBeEmpty();
-})->with('databases')->todo(); // TODO Need to handle case for no migration on tables
+})->with('databases');
 
 it('can migrate removed table', function (string $connection) {
     setupDb($connection);
@@ -220,13 +220,13 @@ it('can migrate updated column that needs no migration', function (string $conne
     $snapshot = Schema::fromSchemaArray(mockSchema());
 
     $newArray = mockSchema();
-    $newArray['users']['model'] = 'Tests\\Models\\Admins';
+    $newArray['users']['columns']['email']['fillable'] = false;
     $new = Schema::fromSchemaArray($newArray);
 
     $migration = (new SchemaDiffer(currentSchema: $snapshot, newSchema: $new))->getSchemaChanges()->getMigrationFunction();
 
-    expect($migration)->toBeEmpty();
-})->with('databases')->todo(); // TODO Need to handle case for no migration on columns
+    expect($migration)->toBe('');
+})->with('databases');
 
 it('can migrate removed column', function (string $connection) {
     setupDb($connection);

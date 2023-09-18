@@ -12,6 +12,15 @@ class Column
 {
     use Comparable;
 
+    /** @var string[] */
+    public static array $ignoreMigrationFields = [
+        'fillable',
+        'guarded',
+        'cast',
+        'validation',
+        'validationGroups',
+    ];
+
     public function __construct(
         /** @readonly */
         public string $name,

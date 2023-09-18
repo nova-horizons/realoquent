@@ -68,6 +68,8 @@ class MigrationWriter
             }
         }
 
+        $output = trim($output, ' '.PHP_EOL);
+
         return $output;
     }
 
@@ -110,6 +112,11 @@ class MigrationWriter
      */
     private function getUpdatedColumnMigration(string $name, array $changes): string
     {
+        $migrationFields = array_diff_key($changes['changes'], array_flip(Column::$ignoreMigrationFields));
+        if (empty($migrationFields)) {
+            return '';
+        }
+
         [$tableName, $columnName] = explode('.', $name);
         /** @var Column $column */
         $column = $changes['state'];
