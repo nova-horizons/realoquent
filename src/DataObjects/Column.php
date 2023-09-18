@@ -121,12 +121,10 @@ class Column
             $schema['guarded'] = $this->guarded;
         }
 
-        if (config('realoquent.features.generate_validation')) {
-            ! empty($this->validation) && $this->fillable && $schema['validation'] = $this->validation;
-            ! empty($this->validationGroups) && $this->fillable && $schema['validationGroups'] = $this->validationGroups;
-        }
+        ! empty($this->validation) && $this->fillable && $schema['validation'] = $this->validation;
+        ! empty($this->validationGroups) && $this->fillable && $schema['validationGroups'] = $this->validationGroups;
 
-        $schema['realoquentId'] = $this->realoquentId; // Add last to keep at end
+        $schema['realoquentId'] = $this->realoquentId ?: RealoquentHelpers::newId(); // Add last to keep at end
 
         return $schema;
     }

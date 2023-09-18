@@ -81,6 +81,16 @@ it('can detect primary key type from uuid', function () {
     expect($schema->getTables()['users']->incrementing)->toBe(false);
 });
 
+it('generates ID when converting to array', function () {
+    $schemaArray = mockSchema();
+    unset($schemaArray['users']['realoquentId']);
+    $schema = Schema::fromSchemaArray($schemaArray);
+    $newArray = $schema->toSchemaArray();
+
+    expect($newArray['users'])->toHaveKey('realoquentId');
+    expect($newArray['users']['realoquentId'])->toBeUuid();
+});
+
 it('can detect primary key type from non-autoincrement int', function () {
     $schema = Schema::fromSchemaArray([
         'users' => [

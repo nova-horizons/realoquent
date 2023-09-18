@@ -68,7 +68,7 @@ class Index
             'indexColumns' => $this->getIndexColumns(),
         ];
 
-        $schema['realoquentId'] = $this->realoquentId; // Add last to keep at end
+        $schema['realoquentId'] = $this->realoquentId ?: RealoquentHelpers::newId(); // Add last to keep at end
 
         return $schema;
     }

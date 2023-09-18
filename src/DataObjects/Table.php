@@ -338,7 +338,7 @@ class Table
     public function toSchemaArray(): array
     {
         $schema = [
-            'realoquentId' => $this->realoquentId,
+            'realoquentId' => $this->realoquentId ?: RealoquentHelpers::newId(),
         ];
 
         $schema['model'] = $this->model ?? false;
