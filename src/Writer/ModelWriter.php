@@ -170,6 +170,10 @@ class ModelWriter
         $class->addProperty('guarded', $this->table->getGuardedColumns())->setProtected()->addComment('@var string[]');
         $class->addProperty('casts', $this->table->getCastColumns())->setProtected()->addComment('@var array<string, string>');
 
+        if (! isset($this->table->getColumns()[Model::CREATED_AT]) && ! isset($this->table->getColumns()[Model::UPDATED_AT])) {
+            $class->addProperty('timestamps', false)->setPublic()->addComment('@var bool');
+        }
+
         $class->addProperty('validation', $this->table->getValidation())
             ->setProtected()
             ->setStatic()
