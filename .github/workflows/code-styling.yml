@@ -20,7 +20,6 @@ jobs:
         uses: aglipanci/laravel-pint-action@2.3.0
         with:
           preset: laravel
-          onlyDirty: true
 
       - name: Commit changes
         uses: stefanzweifel/git-auto-commit-action@v4
