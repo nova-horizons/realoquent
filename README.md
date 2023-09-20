@@ -26,7 +26,7 @@ Realoquent defines your database and model structure in a single PHP file. Make 
 * Generate validation rules for your models
 * Generate groups of validation rules for different scenarios (create, edit, etc.)
 
-Realoquent is inspired by many of the functions of [Propel ORM](https://propelorm.org), like a single schema file, and generated base model classes with user-editable model classes. Generated code is as strongly typed as possible, and uses type hints as a fallback.
+Realoquent is inspired by many of the functions of [Propel ORM](https://propelorm.org), like a single schema file as source of truth, and generated base model classes with user-editable model classes. Generated code is as strongly typed as possible, and uses type hints as a fallback.
 This provides a better experience in your IDE and static analysis tools without requiring additional plugins or packages.
 
 ## Table of Contents
@@ -83,6 +83,8 @@ return [
 
 ## Setup
 
+After installing and configuring Realoquent, it will generate your `schema.php` file based off your existing database schema and Eloquent models.
+
 See [Setup](docs/setup.md) documentation for details on how to get started.
 
 ## Usage
@@ -110,6 +112,12 @@ For more details, see the documentation:
     * [generate-schema](docs/commands/generate-schema.md)
 
 ## FAQ
+
+### How does Realoquent compare to other Laravel schema/model generators?
+Realoquent is designed to have a schema file as the source of truth. It lives with your project, and is not only for initial project 
+setup. It allows for changes and code generation at any point without compromising your custom logic. The key focus is on databases 
+and models only. Today's Laravel ecosystem has a variety of patterns used in controllers and other parts. Realoquent specializes 
+in handling routine, repetitive tasks such as migrations and model configurations, leaving the details of logic to you.
 
 ### Why use a PHP file to define the schema, instead of Model properties or annotations?
 Using a PHP file to define the schema, as opposed to Model properties or annotations, allows for a separation 
