@@ -68,6 +68,10 @@ class Diff extends Command
             return 0;
         }
 
+        if (! $this->confirm('Review the changes above. Proceed?', true)) {
+            return 0;
+        }
+
         if ($manager->shouldGenerateMigrations()) {
             $this->generateMigrations($manager, $changes);
         }
@@ -89,7 +93,7 @@ class Diff extends Command
      */
     protected function generateMigrations(RealoquentManager $manager, SchemaChanges $changes): void
     {
-        if (! $this->confirm('Do the above changes look accurate? Ready to generate migrations?', true)) {
+        if (! $this->confirm('Generate migrations?', true)) {
             return;
         }
         $name = $this->ask('Enter migration name (it will be slugified)', 'realoquent_migration');
