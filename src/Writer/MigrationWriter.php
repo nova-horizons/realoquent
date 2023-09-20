@@ -18,18 +18,16 @@ class MigrationWriter
      *
      * @see vendor/laravel/framework/src/Illuminate/Database/Migrations/stubs/migration.stub
      */
-    public function createMigrationFile(string $migrationDir, SchemaChanges $changes, string $migrationName): ?string
+    public function createMigrationFile(string $migrationDir, string $migrationBody, string $migrationName): ?string
     {
         $class = new ClassType(null);
         $class->setExtends(Migration::class);
 
-        $body = trim($this->buildFunctionBody($changes), "\n");
-
-        if (empty($body)) {
+        if (empty($migrationBody)) {
             return null;
         }
 
-        $class->addMethod('up')->setBody($body)->setReturnType('void');
+        $class->addMethod('up')->setBody($migrationBody)->setReturnType('void');
         $class->addMethod('down')->setBody('//')->setReturnType('void');
 
         $classString = (new PsrPrinter())->printClass($class);

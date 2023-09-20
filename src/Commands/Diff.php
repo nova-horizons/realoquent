@@ -93,16 +93,21 @@ class Diff extends Command
      */
     protected function generateMigrations(RealoquentManager $manager, SchemaChanges $changes): void
     {
+        $migrationWriter = new MigrationWriter();
+        $migration = $migrationWriter->buildFunctionBody($changes);
+        if (empty($migration)) {
+            return;
+        }
+
         if (! $this->confirm('Generate migrations?', true)) {
             return;
         }
         $name = $this->ask('Enter migration name (it will be slugified)', 'realoquent_migration');
         $name = Str::slug($name, '_');
 
-        $migrationWriter = new MigrationWriter();
         $migration = $migrationWriter->createMigrationFile(
             migrationDir: $manager->getMigrationDir(),
-            changes: $changes,
+            migrationBody: $migration,
             migrationName: $name
         );
 
