@@ -95,6 +95,7 @@ For more details, see the documentation:
 
 * [Setup](docs/setup.md)
 * [Usage](docs/usage.md)
+* [Compatibility](docs/compatibility.md)
 * Schema Management
     * [Tables](docs/schema-management/tables.md)
     * [Columns](docs/schema-management/columns.md)
