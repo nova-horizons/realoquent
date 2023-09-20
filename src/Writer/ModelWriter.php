@@ -3,6 +3,8 @@
 namespace NovaHorizons\Realoquent\Writer;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Nette\PhpGenerator\ClassType;
@@ -10,6 +12,7 @@ use Nette\PhpGenerator\PhpNamespace;
 use Nette\PhpGenerator\PsrPrinter;
 use NovaHorizons\Realoquent\DataObjects\ModelInfo;
 use NovaHorizons\Realoquent\DataObjects\Table;
+use NovaHorizons\Realoquent\Enums\ColumnType;
 use NovaHorizons\Realoquent\RealoquentHelpers;
 
 class ModelWriter
@@ -164,6 +167,12 @@ class ModelWriter
         if (isset($this->table->primaryKey)) {
             $class->addProperty('primaryKey', $this->table->primaryKey)->setProtected()->addComment('@var string');
             $class->addProperty('keyType', $this->table->keyType)->setProtected()->addComment('@var string');
+            $primaryCol = $this->table->getColumns()[$this->table->primaryKey];
+            if ($primaryCol->type === ColumnType::uuid) {
+                $class->addTrait(HasUuids::class);
+            } elseif ($primaryCol->type === ColumnType::ulid) {
+                $class->addTrait(HasUlids::class);
+            }
         }
         $class->addProperty('incrementing', $this->table->incrementing ?? false)->setPublic()->addComment('@var bool');
         $class->addProperty('fillable', $this->table->getFillableColumns())->setProtected()->addComment('@var string[]');

@@ -44,6 +44,9 @@ parameters:
         -
             message: '#Match arm comparison between (.*?) is always true#'
             path: src/Enums
+        -
+            message: '#Undefined variable: \$this#'
+            path: tests/Feature/
 
 rules:
     - Spatie\Ray\PHPStan\RemainingRayCallRule
