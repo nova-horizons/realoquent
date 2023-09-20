@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use NovaHorizons\Realoquent\Enums\ColumnType;
 use Tests\TestCase\RealoquentTestClass;
@@ -18,15 +17,35 @@ test('mappings are symmetrical', function (string $connection, ColumnType $type)
     Schema::drop('temp_col');
     expect(ColumnType::fromDBAL($col)->value)->toBe($type->value);
 
-    //    $select = DB::getPdo()->query('SELECT * FROM temp_col limit 1;');
-    //    $meta = $select->getColumnMeta(0);
-    //    ray($meta)->label($connection);
-    ////    ray(Schema::getColumnType('temp_col', 'temp'),Schema::getColumnType('temp_col', 'temp2'));
-
-    //    expect(true)->toBeTrue();
-
-})->with('databases')->with(fn () => ColumnType::cases())
-    ->todo(); // TODO Some cols don't come in with true type from DBAL. TIMESTAMP > DateTime, MEDIUMINT > int
+})->with(['mysql'])->with(fn () => [
+    // Popular types listed below
+    // TODO Commented out types that do not map symmertrically due to DBAL abstracting type (Timestamp > DateTime, tinyText > TEXT)
+    ColumnType::bigInteger,
+    ColumnType::binary,
+    ColumnType::boolean,
+    //ColumnType::char,
+    //ColumnType::dateTimeTz,
+    ColumnType::dateTime,
+    ColumnType::date,
+    ColumnType::decimal,
+    //ColumnType::double,
+    ColumnType::float,
+    ColumnType::integer,
+    ColumnType::json,
+    //ColumnType::jsonb,
+    //ColumnType::longText,
+    //ColumnType::mediumInteger,
+    //ColumnType::mediumText,
+    ColumnType::smallInteger,
+    ColumnType::string,
+    //ColumnType::timeTz,
+    ColumnType::time,
+    //ColumnType::timestampTz,
+    //ColumnType::timestamp,
+    //ColumnType::tinyInteger,
+    //ColumnType::tinyText,
+    //ColumnType::year,
+]);
 
 it('has accurate default precisions', function (string $connection, ColumnType $type) {
     setupDb($connection);

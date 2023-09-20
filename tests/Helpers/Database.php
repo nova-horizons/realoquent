@@ -66,8 +66,12 @@ function setupDb(string $connection): void
     Config::set('database.connections', require __DIR__.'/../config/database.php');
     Config::set('database.default', 'rl_'.$connection);
     DB::purge();
-    Schema::dropIfExists('users');
-    Schema::dropIfExists('admins');
+    if (DB::connection()->getDriverName() !== 'sqlite') {
+        Schema::dropAllTables();
+    } else {
+        Schema::dropIfExists('users');
+        Schema::dropIfExists('admins');
+    }
     Schema::create('users', function (Blueprint $table) {
         $table->id();
         $table->string('username', 150)->unique();
