@@ -142,7 +142,6 @@ Realoquent is still in progress. Here's some of the things that need to be done:
 - Create Snapshot on project setup
 - Add support for relationships/foreign keys
 - Preserve ordering of new columns and generate correct `after()` in migration
-- Define array shapes for validation methods
 - Generate other validation helper methods, like `validateAndCreate` or `validateAndFill`
 - Support for custom casts when generating @property PHPDocs
 - Support for Expressions in column defaults `default(new Expression('(JSON_ARRAY())'))`

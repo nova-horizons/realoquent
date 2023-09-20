@@ -174,31 +174,40 @@ class ModelWriter
             $class->addProperty('timestamps', false)->setPublic()->addComment('@var bool');
         }
 
-        $class->addProperty('validation', $this->table->getValidation())
-            ->setProtected()
-            ->setStatic()
-            ->setType('array')
-            ->addComment('@var array<string, string[]>');
-        $class->addProperty('validationGroups', $this->table->getvalidationGroups())
-            ->setProtected()
-            ->setStatic()
-            ->setType('array')
-            ->addComment('@var array<string, string[]>');
-
         if (! empty($this->table->getValidation())) {
+
+            $arrayShape = collect($this->table->getValidation())->map(fn (array $rules, string $column) => "'{$column}': string[]")->implode(', ');
+
             $class->addMethod('getValidation')
                 ->setReturnType('array')
                 ->setStatic()
                 ->setBody('return self::$validation;')
-                ->addComment('@return array<string, string[]>');
-        }
+                ->addComment('@return array{'.$arrayShape.'}');
 
-        foreach ($this->table->getvalidationGroups() as $group => $columns) {
-            $class->addMethod('getValidationFor'.Str::studly($group))
-                ->setReturnType('array')
+            $class->addProperty('validation', $this->table->getValidation())
+                ->setProtected()
                 ->setStatic()
-                ->setBody("return array_intersect_key(self::\$validation, array_flip(self::\$validationGroups['{$group}']));")
-                ->addComment('@return array<string, string[]>');
+                ->setType('array')
+                ->addComment('@var array{'.$arrayShape.'}');
+
+            if (! empty($this->table->getvalidationGroups())) {
+                $groupArrayShape = collect($this->table->getvalidationGroups())->dump()->map(fn (array $columns, string $group) => "'{$group}': string[]")->implode(', ');
+
+                $class->addProperty('validationGroups', $this->table->getvalidationGroups())
+                    ->setProtected()
+                    ->setStatic()
+                    ->setType('array')
+                    ->addComment('@var array{'.$groupArrayShape.'}');
+
+                foreach ($this->table->getvalidationGroups() as $group => $columns) {
+                    $columns = collect($columns)->map(fn (string $column) => "'{$column}': string[]")->implode(', ');
+                    $class->addMethod('getValidationFor'.Str::studly($group))
+                        ->setReturnType('array')
+                        ->setStatic()
+                        ->setBody("return array_intersect_key(self::\$validation, array_flip(self::\$validationGroups['{$group}']));")
+                        ->addComment('@return array{'.$columns.'}');
+                }
+            }
         }
 
         foreach ($this->table->getRelations() as $relation) {
