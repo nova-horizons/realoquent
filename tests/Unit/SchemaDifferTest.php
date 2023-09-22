@@ -360,3 +360,15 @@ it('can validate missing ids', function () {
         expect($e->getMessage())->toContain('Index users.users_id_username_index has no realoquentId');
     }
 });
+
+it('can find duplicate ids', function () {
+    $schema = mockSchema();
+    $schema['users']['columns']['id']['realoquentId'] = $schema['users']['realoquentId'];
+    $schemaObj = Schema::fromSchemaArray($schema);
+    try {
+        (new SchemaDiffer(currentSchema: $schemaObj, newSchema: $schemaObj))->getSchemaChanges();
+        expect(false)->toBeTrue();
+    } catch (RuntimeException $e) {
+        expect($e->getMessage())->toContain('Duplicate realoquentId found on column: id ('.$schema['users']['realoquentId'].')');
+    }
+});
