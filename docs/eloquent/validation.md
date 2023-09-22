@@ -22,6 +22,10 @@ For example, the column definition below will generate: `required|integer|min:0`
 ],
 ```
 
+⚠️ Currently Realoquent only supports `string` validation rules. If you need to use class/function-based
+validation rules (like `Rules\Password::defaults()`, you will need to override the validation methods in 
+your model. See [Overriding Validation](#overriding-validation) section for more.
+
 ### Defining Validation Rules
 You can define and override validation rules in your `schema.php` file by adding a `validation` property to the column definition.
 
@@ -108,6 +112,7 @@ public static function getValidationForCreate(): array {
     if (auth()->user()->plan === 'Free') {
         $v['num_tickets'][] = 'max:20';
     }
+    $v['password'][] = Rules\Password::defaults();
     return $v;
 }
 ```
