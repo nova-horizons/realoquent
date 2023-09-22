@@ -7,6 +7,9 @@ use NovaHorizons\Realoquent\DataObjects\Table;
 use NovaHorizons\Realoquent\Enums\ColumnType;
 use NovaHorizons\Realoquent\Enums\IndexType;
 use NovaHorizons\Realoquent\SchemaDiffer;
+use Tests\TestCase\RealoquentTestClass;
+
+uses(RealoquentTestClass::class);
 
 it('can detect renamed table', function () {
 
@@ -39,7 +42,7 @@ it('can detect new table', function () {
         'model' => 'Tests\\Models\\Admins',
         'columns' => [
             'id' => [
-                'type' => \NovaHorizons\Realoquent\Enums\ColumnType::bigIncrements,
+                'type' => ColumnType::bigIncrements,
                 'cast' => 'integer',
                 'guarded' => true,
             ],

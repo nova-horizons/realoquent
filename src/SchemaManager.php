@@ -19,8 +19,8 @@ class SchemaManager
      */
     public function __construct(array $config)
     {
-        $configDir = $config['schema_dir'] ?: database_path('realoquent');
-        $storageDir = $config['storage_dir'] ?: storage_path('app/realoquent');
+        $configDir = $config['schema_dir'] ?? database_path('realoquent');
+        $storageDir = $config['storage_dir'] ?? storage_path('app/realoquent');
         RealoquentHelpers::validateDirectory($configDir);
         RealoquentHelpers::validateDirectory($storageDir);
         $this->configDir = $configDir;

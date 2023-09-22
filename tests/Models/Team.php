@@ -14,5 +14,4 @@ class Team extends Model
     protected $keyType = 'string';
 
     public $incrementing = false;
-
 }
