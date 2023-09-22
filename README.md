@@ -27,8 +27,8 @@ Realoquent defines your database and model structure in a single PHP file. Make 
 * Generate validation rules for your models
 * Generate groups of validation rules for different scenarios (create, edit, etc.)
 
-Realoquent is inspired by many of the functions of [Propel ORM](https://propelorm.org), like a single schema file as source of truth, and generated base model classes with user-editable model classes. Generated code is as strongly typed as possible, and uses type hints as a fallback.
-This provides a better experience in your IDE and static analysis tools without requiring additional plugins or packages.
+Realoquent is inspired by many of the functions of [Propel ORM](https://propelorm.org), like a single schema file as source of truth, and generated base model classes with user-editable model classes. Generated code is as strongly typed as possible, and uses
+type hints as a fallback (generated code passes PHPStan Level 9). This provides a better experience in your IDE and static analysis tools without requiring additional plugins or packages.
 
 ## Table of Contents
 - [Example `schema.php`](#example-schemaphp)
