@@ -344,3 +344,19 @@ it('can detected removed explicit index', function () {
     expect($changes['index_removed'])->toHaveCount(1);
     expect($changes['index_removed']['users.users_id_username_index'])->toBeInstanceOf(Index::class);
 });
+
+it('can validate missing ids', function () {
+    $schema = mockSchema();
+    unset($schema['users']['realoquentId']);
+    unset($schema['users']['columns']['id']['realoquentId']);
+    unset($schema['users']['indexes']['users_id_username_index']['realoquentId']);
+    $schema = Schema::fromSchemaArray($schema);
+    try {
+        (new SchemaDiffer(currentSchema: $schema, newSchema: $schema))->getSchemaChanges();
+        expect(false)->toBeTrue();
+    } catch (RuntimeException $e) {
+        expect($e->getMessage())->toContain('Table users has no realoquentId');
+        expect($e->getMessage())->toContain('Column users.id has no realoquentId');
+        expect($e->getMessage())->toContain('Index users.users_id_username_index has no realoquentId');
+    }
+});
