@@ -71,6 +71,7 @@ function setupDb(string $connection): void
     } else {
         Schema::dropIfExists('users');
         Schema::dropIfExists('admins');
+        Schema::dropIfExists('team_list');
     }
     Schema::create('users', function (Blueprint $table) {
         $table->id();

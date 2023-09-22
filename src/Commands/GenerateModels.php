@@ -34,7 +34,7 @@ class GenerateModels extends Command
             return 1;
         }
 
-        $this->comment('If you made changes to schema.php, you should run realoquent:schema-diff instead');
+        $this->comment('If you made changes to schema.php, you should run realoquent:diff instead');
 
         if (! $this->option('force') && ! $this->confirm('Are you sure you want to generate new Eloquent models and base models?', true)) {
             return 0;
