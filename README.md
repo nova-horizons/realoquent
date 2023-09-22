@@ -74,7 +74,7 @@ return [
             'role' => [
                 'type' => ColumnType::string,
                 'fillable' => false,
-                'default' => 'user',
+                'default' => User::DEFAULT_ROLE,
                 'index' => true,
             ],
         ],
@@ -116,7 +116,7 @@ For more details, see the documentation:
 
 ### How does Realoquent compare to other Laravel schema/model generators?
 Realoquent is designed to have a schema file as the source of truth. It lives with your project, and is not only for initial project 
-setup. It allows for changes and code generation at any point without compromising your custom logic. The key focus is on databases 
+scaffolding or setup. It allows for changes and code generation at any point without compromising your custom logic. The key focus is on databases 
 and models only. Today's Laravel ecosystem has a variety of patterns used in controllers and other parts. Realoquent specializes 
 in handling routine, repetitive tasks such as migrations and model configurations, leaving the details of logic to you.
 
@@ -124,7 +124,8 @@ in handling routine, repetitive tasks such as migrations and model configuration
 Using a PHP file to define the schema, as opposed to Model properties or annotations, allows for a separation 
 between the database schema and the models. This means that you can have tables in your database that do not 
 necessarily have corresponding models in your code. Also, having the schema in one PHP file provides a cohesive,
-scannable overview of your entire schema, making it easier to comprehend and manage. Furthermore, this approach
+scannable overview of your entire schema, making it easier to comprehend and manage. Using PHP instead of YAML/etc also allows you 
+to reference constants, classes or even call functions to define your schema. Furthermore, this approach
 emphasizes the principle of separation of concerns in your project. By moving the schema to a configuration file,
 it ensures that your code files are reserved exclusively for your actual application logic. This improves the overall
 organization and readability of your codebase.
