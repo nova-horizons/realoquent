@@ -22,6 +22,8 @@ it('can detect models', function (string $class, bool $expected) {
     [User::class, true],
     [\Illuminate\Foundation\Auth\User::class, true],
     [RealoquentServiceProvider::class, false],
+    ['not-a-class', false],
+    ['', false],
 ]);
 
 it('handles basic info that is explicit in model', function () {
