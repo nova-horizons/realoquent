@@ -1,6 +1,13 @@
 name: tests
 
-on: [ push, pull_request ]
+on:
+  push:
+    branches:
+      - main
+      - '*.x'
+  pull_request:
+  schedule:
+    - cron: '0 0 1 * *'
 
 jobs:
   test:
