@@ -7,6 +7,11 @@ use NovaHorizons\Realoquent\DataObjects\Table;
 use NovaHorizons\Realoquent\Enums\ColumnType;
 use NovaHorizons\Realoquent\Enums\IndexType;
 use NovaHorizons\Realoquent\SchemaDiffer;
+use Tests\Models\Team;
+use Tests\Models\User;
+use Tests\TestCase\RealoquentTestClass;
+
+uses(RealoquentTestClass::class);
 
 it('can detect renamed table', function () {
 
@@ -39,7 +44,7 @@ it('can detect new table', function () {
         'model' => 'Tests\\Models\\Admins',
         'columns' => [
             'id' => [
-                'type' => \NovaHorizons\Realoquent\Enums\ColumnType::bigIncrements,
+                'type' => ColumnType::bigIncrements,
                 'cast' => 'integer',
                 'guarded' => true,
             ],
@@ -340,4 +345,107 @@ it('can detected removed explicit index', function () {
     expect($changes)->toHaveCount(1);
     expect($changes['index_removed'])->toHaveCount(1);
     expect($changes['index_removed']['users.users_id_username_index'])->toBeInstanceOf(Index::class);
+});
+
+it('can validate missing ids', function () {
+    $schema = mockSchema();
+    unset($schema['users']['realoquentId']);
+    unset($schema['users']['columns']['id']['realoquentId']);
+    unset($schema['users']['indexes']['users_id_username_index']['realoquentId']);
+    $schema = Schema::fromSchemaArray($schema);
+    try {
+        (new SchemaDiffer(currentSchema: $schema, newSchema: $schema))->getSchemaChanges();
+        expect(false)->toBeTrue();
+    } catch (RuntimeException $e) {
+        expect($e->getMessage())->toContain('Table users has no realoquentId');
+        expect($e->getMessage())->toContain('Column users.id has no realoquentId');
+        expect($e->getMessage())->toContain('Index users.users_id_username_index has no realoquentId');
+    }
+});
+
+it('can find duplicate ids', function () {
+    $schema = mockSchema();
+    $schema['users']['columns']['id']['realoquentId'] = $schema['users']['realoquentId'];
+    $schemaObj = Schema::fromSchemaArray($schema);
+    try {
+        (new SchemaDiffer(currentSchema: $schemaObj, newSchema: $schemaObj))->getSchemaChanges();
+        expect(false)->toBeTrue();
+    } catch (RuntimeException $e) {
+        expect($e->getMessage())->toContain('Duplicate realoquentId found on column: id ('.$schema['users']['realoquentId'].')');
+    }
+});
+
+it('can detect when there are no changes', function () {
+    $schema = mockSchema();
+    $schemaObj = Schema::fromSchemaArray($schema);
+    $changes = (new SchemaDiffer(currentSchema: $schemaObj, newSchema: $schemaObj))->getSchemaChanges();
+    expect($changes->hasChanges())->toBe(false);
+    expect($changes->prettyPrint())->toBe('No changes detected');
+});
+
+it('can detect affected tables', function () {
+    $snapshot = Schema::fromSchemaArray(mockSchema());
+
+    $newArray = mockSchema();
+    unset($newArray['users']['columns']['email']);
+    $newArray['team_list']['columns']['team_slogan'] = [
+        'type' => ColumnType::string,
+    ];
+    $new = Schema::fromSchemaArray($newArray);
+
+    $changes = (new SchemaDiffer(currentSchema: $snapshot, newSchema: $new))->getSchemaChanges();
+
+    expect($changes->getAffectedTables())->toBe(['team_list', 'users']);
+});
+
+it('can detect affected tables with table rename', function () {
+    $snapshot = Schema::fromSchemaArray(mockSchema());
+
+    $newArray = mockSchema();
+    $table = $newArray['users'];
+    unset($newArray['users']);
+    $newArray['admins'] = $table;
+    $new = Schema::fromSchemaArray($newArray);
+
+    $changes = (new SchemaDiffer(currentSchema: $snapshot, newSchema: $new))->getSchemaChanges();
+
+    expect($changes->getAffectedTables())->toBe(['admins']);
+});
+
+it('can detect affected models', function () {
+    $snapshot = Schema::fromSchemaArray(mockSchema());
+
+    $newArray = mockSchema();
+    unset($newArray['users']['columns']['email']);
+    $newArray['team_list']['columns']['team_slogan'] = [
+        'type' => ColumnType::string,
+    ];
+    $new = Schema::fromSchemaArray($newArray);
+
+    $changes = (new SchemaDiffer(currentSchema: $snapshot, newSchema: $new))->getSchemaChanges();
+
+    expect($changes->getAffectedModels($snapshot))->toBe([Team::class, User::class]);
+});
+
+it('can detect pretty print changes', function () {
+    $snapshot = Schema::fromSchemaArray(mockSchema());
+
+    $newArray = mockSchema();
+    unset($newArray['users']['columns']['email']);
+
+    $col = $newArray['team_list']['columns']['name'];
+    unset($newArray['team_list']['columns']['name']);
+    $col['validation'] = ['required', 'string', 'max:255'];
+    $newArray['team_list']['columns']['team_name'] = $col;
+
+    $newArray['team_list']['columns']['team_slogan'] = [
+        'type' => ColumnType::string,
+    ];
+    $new = Schema::fromSchemaArray($newArray);
+
+    $changes = (new SchemaDiffer(currentSchema: $snapshot, newSchema: $new))->getSchemaChanges();
+
+    expect($changes->prettyPrint())->toContain('Renamed Column');
+    expect($changes->prettyPrint())->toContain('New Column');
+    expect($changes->prettyPrint())->toContain('Removed Column');
 });

@@ -25,7 +25,6 @@ enum RelationshipType: string
 
     public static function fromEloquentMethod(string $method): self
     {
-        // TODO Architecture tests to keep these up to date would be nice (maybe from ShowModelCommand::$relationMethods)
         return match ($method) {
             'HasOne' => self::hasOne,
             'BelongsTo' => self::belongsTo,
@@ -37,6 +36,7 @@ enum RelationshipType: string
             'MorphTo' => self::morphTo,
             'MorphOne' => self::morphOne,
             'MorphToMany' => self::morphToMany,
+            'MorphedByMany' => self::morphedByMany,
             default => throw new \InvalidArgumentException('Unknown relationship method: '.$method),
         };
     }
@@ -46,47 +46,28 @@ enum RelationshipType: string
         return $this->value;
     }
 
-    public function getInverse(): self
-    {
-        // TODO Finish this
-        return match ($this) {
-            self::hasOne => self::belongsTo,
-            self::belongsTo => self::hasOne,
-            default => throw new \InvalidArgumentException('Missing inverse configuration for relation: '.$this->value),
-        };
-    }
-
     public function isSupported(): bool
     {
-        // TODO Support these
-        return match ($this) {
-            self::hasOne => false,
-            self::hasMany => false,
-            self::hasOneThrough => false,
-            self::hasManyThrough => false,
-            self::belongsToMany => false,
-            self::morphMany => false,
-            self::morphTo => false,
-            self::morphOne => false,
-            self::morphToMany => false,
-            default => true,
-        };
+        try {
+            $this->getReturnType();
+
+            return true;
+        } catch (\InvalidArgumentException $e) {
+            return false;
+        }
     }
 
     /**
      * @return class-string
+     *
+     * @throws \InvalidArgumentException
      */
     public function getReturnType(): string
     {
-        // TODO Finish this
+        // TODO Add support for other relationship types
         return match ($this) {
             self::belongsTo => BelongsTo::class,
             default => throw new \InvalidArgumentException('Missing return type configuration for relation: '.$this->value),
         };
-    }
-
-    public function getRelationMethod(): string
-    {
-        return $this->value;
     }
 }

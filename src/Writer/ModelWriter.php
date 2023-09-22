@@ -231,7 +231,7 @@ class ModelWriter
             $class->addMethod($relation->relationName)
                 ->setPublic()
                 ->setReturnType($fullReturnType)
-                ->setBody("return \$this->{$relation->type->getRelationMethod()}({$relatedModel}::class);")
+                ->setBody("return \$this->{$relation->type->getRelationshipFunction()}({$relatedModel}::class);")
                 ->setComment("@return {$returnType}<{$relatedModel}, self>");
         }
 

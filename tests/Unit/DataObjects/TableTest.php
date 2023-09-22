@@ -4,6 +4,12 @@ use NovaHorizons\Realoquent\DataObjects\Relation;
 use NovaHorizons\Realoquent\DataObjects\Schema;
 use NovaHorizons\Realoquent\Enums\ColumnType;
 use NovaHorizons\Realoquent\Enums\IndexType;
+use NovaHorizons\Realoquent\Enums\RelationshipType;
+use Tests\Models\Team;
+use Tests\Models\User;
+use Tests\TestCase\RealoquentTestClass;
+
+uses(RealoquentTestClass::class);
 
 it('can detect primary key type from id types', function (string $idName, ColumnType $type) {
     $schema = Schema::fromSchemaArray([
@@ -118,20 +124,20 @@ it('can detect primary key type from non-autoincrement int', function () {
 it('can handle relation', function () {
     $schema = Schema::fromSchemaArray([
         'users' => [
-            'model' => \Tests\Models\User::class,
+            'model' => User::class,
             'columns' => [
                 'id' => [
                     'type' => ColumnType::bigIncrements,
                 ],
                 'team_id' => [
-                    'type' => \NovaHorizons\Realoquent\Enums\RelationshipType::belongsTo,
-                    'relatedModel' => \Tests\Models\Team::class,
+                    'type' => RelationshipType::belongsTo,
+                    'relatedModel' => Team::class,
                 ],
 
             ],
         ],
         'teams' => [
-            'model' => \Tests\Models\Team::class,
+            'model' => Team::class,
             'columns' => [
                 'id' => [
                     'type' => ColumnType::mediumIncrements,

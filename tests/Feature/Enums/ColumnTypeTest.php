@@ -19,7 +19,7 @@ test('mappings are symmetrical', function (string $connection, ColumnType $type)
 
 })->with(['mysql'])->with(fn () => [
     // Popular types listed below
-    // TODO Commented out types that do not map symmertrically due to DBAL abstracting type (Timestamp > DateTime, tinyText > TEXT)
+    // TODO Commented out types that do not map symmetrically due to DBAL abstracting type (Timestamp > DateTime, tinyText > TEXT)
     ColumnType::bigInteger,
     ColumnType::binary,
     ColumnType::boolean,
@@ -73,4 +73,16 @@ it('has accurate default scale', function (string $connection, ColumnType $type)
 
 })->with('databases')->with(function () {
     return collect(ColumnType::cases())->filter(fn (ColumnType $type) => $type->supportsScale())->toArray();
+});
+
+it('handles default length on unsupported types', function () {
+    expect(ColumnType::date->getDefaultLength())->toBeNull();
+});
+
+it('handles default precision on unsupported types', function () {
+    expect(ColumnType::string->getDefaultPrecision())->toBeNull();
+});
+
+it('handles default scale on unsupported types', function () {
+    expect(ColumnType::string->getDefaultScale())->toBeNull();
 });

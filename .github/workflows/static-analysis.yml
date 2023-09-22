@@ -1,6 +1,11 @@
 name: static analysis
 
-on: [ push, pull_request ]
+on:
+  push:
+    branches:
+      - main
+      - '*.x'
+  pull_request:
 
 jobs:
   test:
