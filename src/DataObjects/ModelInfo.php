@@ -110,7 +110,7 @@ class ModelInfo
             $this->extends = $extends;
         }
 
-        $this->relations = $this->getRelations();
+        $this->relations = []; // TODO-Relationships $this->getRelations();
     }
 
     /**

@@ -231,7 +231,7 @@ class Table
 
         // Relations
         foreach ($modelInfo->relations as $relation) {
-            $this->relations[$relation->relationName] = $relation;
+            // TODO-Relationships $this->relations[$relation->relationName] = $relation;
         }
 
         // Validation

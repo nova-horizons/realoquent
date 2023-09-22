@@ -115,6 +115,7 @@ class Column
     public function toSchemaArray(): array
     {
         $schema = [];
+        /* TODO-Relationships
         if (isset($this->relation)) {
             $schema['type'] = 'RelationshipType::'.$this->relation->type->value;
             $schema['relatedModel'] = $this->relation->relatedModel;
@@ -122,8 +123,9 @@ class Column
             $schema['localKey'] = $this->relation->localKey;
             $schema['foreignKey'] = $this->relation->foreignKey;
         } else {
-            $schema['type'] = 'ColumnType::'.$this->type->value;
-        }
+        */
+        $schema['type'] = 'ColumnType::'.$this->type->value;
+        // }
 
         $this->autoIncrement && $schema['autoIncrement'] = $this->autoIncrement;
         $this->nullable && $schema['nullable'] = $this->nullable;
