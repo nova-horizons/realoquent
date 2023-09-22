@@ -10,11 +10,15 @@ class Team extends Model
 {
     use HasUuids;
 
-    protected $primaryKey = 'uuid';
+    protected $table = 'team_list';
+
+    protected $primaryKey = 'team_id';
 
     protected $keyType = 'string';
 
     public $incrementing = false;
+
+    public $fillable = ['name', 'images'];
 
     public $casts = [
         'images' => 'array',

@@ -81,8 +81,8 @@ function setupDb(string $connection): void
         $table->index(['id', 'username'], 'users_id_username_index');
         $table->timestamps();
     });
-    Schema::create('teams', function (Blueprint $table) {
-        $table->uuid('uuid')->primary();
+    Schema::create('team_list', function (Blueprint $table) {
+        $table->uuid('team_id')->primary();
         $table->string('name');
         $table->json('images');
         $table->json('metadata');

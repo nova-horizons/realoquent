@@ -35,7 +35,7 @@ it('can load schema snapshot', function () {
     $schemaManager = $manager->getSchemaManager();
     $schemaManager->makeSchemaSnapshot();
     $schema = $schemaManager->loadSchemaSnapshot();
-    expect($schema->getTables())->toHaveKeys(['users', 'teams']);
+    expect($schema->getTables())->toHaveKeys(['users', 'team_list']);
     unlink($schemaManager->getSchemaSnapshotPath());
 });
 
@@ -44,5 +44,5 @@ it('can load schema', function () {
     $manager = new RealoquentManager(realoquentConfig());
     $schemaManager = $manager->getSchemaManager();
     $schema = $schemaManager->loadSchema();
-    expect($schema->getTables())->toHaveKeys(['users', 'teams']);
+    expect($schema->getTables())->toHaveKeys(['users', 'team_list']);
 });
