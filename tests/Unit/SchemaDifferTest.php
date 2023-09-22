@@ -383,7 +383,7 @@ it('can detect when there are no changes', function () {
     expect($changes->prettyPrint())->toBe('No changes detected');
 });
 
-it('can detect modified tables', function () {
+it('can detect affected tables', function () {
     $snapshot = Schema::fromSchemaArray(mockSchema());
 
     $newArray = mockSchema();
@@ -398,7 +398,21 @@ it('can detect modified tables', function () {
     expect($changes->getAffectedTables())->toBe(['team_list', 'users']);
 });
 
-it('can detect modified models', function () {
+it('can detect affected tables with table rename', function () {
+    $snapshot = Schema::fromSchemaArray(mockSchema());
+
+    $newArray = mockSchema();
+    $table = $newArray['users'];
+    unset($newArray['users']);
+    $newArray['admins'] = $table;
+    $new = Schema::fromSchemaArray($newArray);
+
+    $changes = (new SchemaDiffer(currentSchema: $snapshot, newSchema: $new))->getSchemaChanges();
+
+    expect($changes->getAffectedTables())->toBe(['admins']);
+});
+
+it('can detect affected models', function () {
     $snapshot = Schema::fromSchemaArray(mockSchema());
 
     $newArray = mockSchema();
