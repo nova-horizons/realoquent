@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Database\Eloquent\Casts\ArrayObject;
-use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Support\Carbon;
 use NovaHorizons\Realoquent\DataObjects\Column;
 use NovaHorizons\Realoquent\Enums\ColumnType;
@@ -42,16 +40,14 @@ it('returns correct nullable phpdoc type', function (ColumnType $type, string $p
     [ColumnType::json, '?mixed'],
 ]);
 
-it('returns user-specified casts', function (ColumnType $type, string $cast, string $phpType) {
+it('returns user-specified casts', function (ColumnType $type, ?string $cast, string $phpType) {
     expect((new Column(
         name: 'id',
         tableName: 'users',
         type: $type,
+        cast: $cast,
     ))->getPhpType())->toBe($phpType);
-})->with([
-    [ColumnType::json, 'array', 'array'],
-    [ColumnType::json, AsArrayObject::class, ArrayObject::class],
-])->todo(); // TODO Fix this test
+})->with('column-and-casts');
 
 it('can generate validation', function (string $expectedValidation, Column $column) {
     expect(implode('|', $column->generateDefaultValidation()))->toBe($expectedValidation);

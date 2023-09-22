@@ -154,7 +154,6 @@ Realoquent is still in progress. Here's some of the things that need to be done:
 - Preserve ordering of new columns and generate correct `after()` in migration
 - Support for validation functions like `Rules\Password::defaults()`
 - Generate other validation helper methods, like `validateAndCreate` or `validateAndFill`
-- Support for custom casts when generating @property PHPDocs
 - Support for Expressions in column defaults `default(new Expression('(JSON_ARRAY())'))`
 - Support for `spatialIndex`
 - Support for route binding configuration

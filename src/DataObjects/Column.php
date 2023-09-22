@@ -2,7 +2,17 @@
 
 namespace NovaHorizons\Realoquent\DataObjects;
 
+use Illuminate\Database\Eloquent\Casts\ArrayObject;
+use Illuminate\Database\Eloquent\Casts\AsArrayObject;
+use Illuminate\Database\Eloquent\Casts\AsCollection;
+use Illuminate\Database\Eloquent\Casts\AsEncryptedArrayObject;
+use Illuminate\Database\Eloquent\Casts\AsEncryptedCollection;
+use Illuminate\Database\Eloquent\Casts\AsEnumArrayObject;
+use Illuminate\Database\Eloquent\Casts\AsEnumCollection;
+use Illuminate\Database\Eloquent\Casts\AsStringable;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Stringable;
 use NovaHorizons\Realoquent\Enums\ColumnType;
 use NovaHorizons\Realoquent\Enums\RelationshipType;
 use NovaHorizons\Realoquent\RealoquentHelpers;
@@ -210,13 +220,25 @@ class Column
      */
     public function getPhpType(): string
     {
-        $cast = $this->type->getCast();
+        $cast = $this->cast ?? $this->type->getCast();
 
         $type = match ($cast) {
+            'array' => 'array',
+            AsArrayObject::class => ArrayObject::class,
+            AsStringable::class => Stringable::class,
             'boolean' => 'boolean',
+            'collection', AsCollection::class => Collection::class,
             'date' => Carbon::class,
             'datetime' => Carbon::class,
+            'encrypted:array', AsEncryptedArrayObject::class => ArrayObject::class,
+            'encrypted:collection', AsEncryptedCollection::class => Collection::class,
+            'encrypted:object', AsEnumArrayObject::class => ArrayObject::class,
+            AsEnumCollection::class => Collection::class,
+            'hashed' => 'string',
+            'immutable_date' => Carbon::class,
+            'immutable_datetime' => Carbon::class,
             'decimal' => 'float',
+            'double' => 'float',
             'float' => 'float',
             'integer' => 'integer',
             'string' => 'string',

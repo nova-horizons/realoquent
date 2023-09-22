@@ -60,6 +60,30 @@ it('handles ulid primary keys', function () {
     expect($baseModel)->toContain('$incrementing = false;');
 });
 
+it('handles casts and types', function (ColumnType $type, ?string $cast, string $phpType) {
+    $table = Table::fromSchemaArray('users', [
+        'columns' => [
+            'my_id' => [
+                'type' => $type,
+                'cast' => $cast,
+            ],
+        ],
+    ]);
+
+    $baseModel = getBaseModelString($table);
+
+    if (class_exists($phpType)) {
+        $phpType = class_basename($phpType);
+    }
+
+    if ($cast === null) {
+        $cast = $type->getCast();
+    }
+
+    expect($baseModel)->toContain("protected \$casts = ['my_id' => '{$cast}'];");
+    expect($baseModel)->toContain("@property {$phpType} \$my_id");
+})->with('column-and-casts');
+
 it('preserves an existing base class', function () {
     $table = Table::fromSchemaArray('users', [
         'model' => User::class,
@@ -77,4 +101,4 @@ it('preserves an existing base class', function () {
 
 it('preserves an existing base class on a base class', function () {
 
-})->todo();
+})->todo(); // TODO
