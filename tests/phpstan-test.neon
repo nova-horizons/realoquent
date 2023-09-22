@@ -1,0 +1,37 @@
+includes:
+    - ../vendor/nunomaduro/larastan/extension.neon
+    - phar://phpstan.phar/conf/bleedingEdge.neon
+
+#### This is for Pest tests
+
+parameters:
+    level: 9
+
+    paths:
+        - Models
+
+    # Report when previously ignored errors are no longer present and can be removed from ignores
+    #   Will require more discipline from team to maintain clean baseline
+    reportUnmatchedIgnoredErrors: true
+
+    # For Level 6+: Require `int[]`-style typehints vs `array` https://phpstan.org/config-reference#vague-typehints
+    checkMissingIterableValueType: true
+
+    # Larastan Config https://github.com/nunomaduro/larastan/blob/master/docs/rules.md
+    checkModelProperties: true
+    checkOctaneCompatibility: true
+
+    # Enforce stricter usages of @throws and related Exception-handling https://phpstan.org/blog/bring-your-exceptions-under-control
+    exceptions:
+        implicitThrows: false
+        check:
+            missingCheckedExceptionInThrows: true
+            tooWideThrowType: true
+
+    # Objects used as universal holders of data, prevents undefined property errors
+    # https://phpstan.org/config-reference#universal-object-crates
+    universalObjectCratesClasses:
+        - Illuminate\Database\Eloquent\Model
+
+rules:
+    - Spatie\Ray\PHPStan\RemainingRayCallRule

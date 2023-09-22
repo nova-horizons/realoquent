@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\Process;
+use NovaHorizons\Realoquent\DataObjects\Schema;
 use NovaHorizons\Realoquent\DataObjects\Table;
 use NovaHorizons\Realoquent\Enums\ColumnType;
 use NovaHorizons\Realoquent\Writer\ModelWriter;
@@ -10,7 +12,7 @@ uses(RealoquentTestClass::class);
 
 function newModelWriter(Table $table): ModelWriter
 {
-    return new ModelWriter($table, trim(realoquentConfig()['model_namespace'], '\\'), realoquentConfig()['model_dir']);
+    return new ModelWriter($table, trim(realoquentConfig()['model_namespace'], '\\'), realpath(realoquentConfig()['model_dir']));
 }
 
 /**
@@ -97,6 +99,42 @@ it('preserves an existing base class', function () {
 
     $baseModel = getBaseModelString($table);
     expect($baseModel)->toContain("extends \Illuminate\Foundation\Auth\User");
+});
+
+it('can generate code that passes phpstan', function () {
+    setupDbAndSchema('sqlite');
+    $rootDir = __DIR__.'/../../../';
+
+    $schema = Schema::fromSchemaArray(mockSchema());
+    $files = [];
+    foreach ($schema->getTables() as $table) {
+        $writer = newModelWriter($table);
+        $files = array_merge($files, $writer->writeModel());
+    }
+
+    $allPassed = true;
+    foreach ($files as $file) {
+        expect($file)->toBeReadableFile();
+
+        $result = Process::path($rootDir)
+            ->run('vendor/bin/phpstan analyse --configuration tests/phpstan-test.neon '.escapeshellarg(realpath($file)));
+
+        if (! $result->successful()) {
+            dump($result->output());
+            $allPassed = false;
+        }
+    }
+
+    // Cleanup
+    foreach ($files as $file) {
+        if (str_contains($file, 'BaseModels')) {
+            unlink($file);
+        } else {
+            exec('git checkout -- '.escapeshellarg($file));
+        }
+    }
+
+    expect($allPassed)->toBeTrue();
 });
 
 it('preserves an existing base class on a base class', function () {

@@ -61,7 +61,7 @@ function hasIndex(string $table, string $index): bool
     return getTable($table)->hasIndex($index);
 }
 
-function setupDb(string $connection): void
+function setupDbAndSchema(string $connection): void
 {
     Config::set('database.connections', require __DIR__.'/../config/database.php');
     Config::set('database.default', 'rl_'.$connection);
