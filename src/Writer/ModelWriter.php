@@ -111,7 +111,9 @@ class ModelWriter
             ->removeProperty('incrementing')
             ->removeProperty('fillable')
             ->removeProperty('guarded')
-            ->removeProperty('casts');
+            ->removeProperty('casts')
+            ->removeProperty('validation')
+            ->removeProperty('validationGroups');
 
         if ($this->modelInfo) {
             foreach ($this->modelInfo->relations as $relation) {
@@ -209,11 +211,13 @@ class ModelWriter
                     ->addComment('@var array{'.$groupArrayShape.'}');
 
                 foreach ($this->table->getvalidationGroups() as $group => $columns) {
+                    $groupRules = array_intersect_key($this->table->getValidation(), array_flip($columns));
+
                     $columns = collect($columns)->map(fn (string $column) => "'{$column}': string[]")->implode(', ');
                     $class->addMethod('getValidationFor'.Str::studly($group))
                         ->setReturnType('array')
                         ->setStatic()
-                        ->setBody("return array_intersect_key(self::\$validation, array_flip(self::\$validationGroups['{$group}']));")
+                        ->setBody('return '.var_export($groupRules, true).';')
                         ->addComment('@return array{'.$columns.'}');
                 }
             }
