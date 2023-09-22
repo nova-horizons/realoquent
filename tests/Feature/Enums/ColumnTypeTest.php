@@ -19,7 +19,7 @@ test('mappings are symmetrical', function (string $connection, ColumnType $type)
 
 })->with(['mysql'])->with(fn () => [
     // Popular types listed below
-    // TODO Commented out types that do not map symmertrically due to DBAL abstracting type (Timestamp > DateTime, tinyText > TEXT)
+    // TODO Commented out types that do not map symmetrically due to DBAL abstracting type (Timestamp > DateTime, tinyText > TEXT)
     ColumnType::bigInteger,
     ColumnType::binary,
     ColumnType::boolean,

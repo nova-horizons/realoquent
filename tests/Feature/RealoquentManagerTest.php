@@ -83,8 +83,15 @@ it('can run empty cs fixer', function () {
     expect(true)->toBeTrue();
 });
 
-it('can run cs fixer', function () {
+it('can run cs fixer with file placeholder', function () {
     $manager = new RealoquentManager(['cs_fixer_command' => './vendor/bin/pint {file}']);
+    $manager->runCodeStyleFixer([realoquentConfig()['schema_dir'].'/schema.php']);
+    // Expect no exceptions
+    expect(true)->toBeTrue();
+});
+
+it('can run cs fixer', function () {
+    $manager = new RealoquentManager(['cs_fixer_command' => './vendor/bin/pint '.escapeshellarg(__FILE__)]);
     $manager->runCodeStyleFixer([realoquentConfig()['schema_dir'].'/schema.php']);
     // Expect no exceptions
     expect(true)->toBeTrue();
