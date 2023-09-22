@@ -84,6 +84,8 @@ function setupDb(string $connection): void
     Schema::create('teams', function (Blueprint $table) {
         $table->uuid('uuid')->primary();
         $table->string('name');
+        $table->json('images');
+        $table->json('metadata');
     });
     $manager = new RealoquentManager(realoquentConfig());
     $schema = $manager->generateSchema();
