@@ -424,7 +424,38 @@ it('can detect affected models', function () {
 
     $changes = (new SchemaDiffer(currentSchema: $snapshot, newSchema: $new))->getSchemaChanges();
 
-    expect($changes->getAffectedModels($snapshot))->toBe([Team::class, User::class]);
+    expect($changes->getAffectedModels($new))->toBe([Team::class, User::class]);
+});
+
+it('can detect new affected models', function () {
+    $snapshot = Schema::fromSchemaArray(mockSchema());
+
+    $newArray = mockSchema();
+    $newArray['addresses'] = [
+        'model' => true,
+        'columns' => [
+            'id' => [
+                'type' => ColumnType::bigIncrements,
+            ],
+        ],
+    ];
+    $new = Schema::fromSchemaArray($newArray);
+
+    $changes = (new SchemaDiffer(currentSchema: $snapshot, newSchema: $new))->getSchemaChanges();
+
+    expect($changes->getAffectedModels($new))->toBe(['New model for: addresses']);
+});
+
+it('can does not report removed tables as affected models', function () {
+    $snapshot = Schema::fromSchemaArray(mockSchema());
+
+    $newArray = mockSchema();
+    unset($newArray['users']);
+    $new = Schema::fromSchemaArray($newArray);
+
+    $changes = (new SchemaDiffer(currentSchema: $snapshot, newSchema: $new))->getSchemaChanges();
+
+    expect($changes->getAffectedModels($new))->toBe([]);
 });
 
 it('can detect pretty print changes', function () {

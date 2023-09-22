@@ -39,6 +39,7 @@ it('can migrate new table', function (string $connection) {
         'columns' => [
             'id' => [
                 'type' => ColumnType::bigIncrements,
+                'primary' => true,
                 'cast' => 'integer',
                 'guarded' => true,
             ],
@@ -52,6 +53,32 @@ it('can migrate new table', function (string $connection) {
 
     expect(tableExists('admins'))->toBeTrue();
     expect(tableExists('users'))->toBeTrue();
+    expect(getColumn('admins', 'id')->getAutoincrement())->toBeTrue();
+})->with('databases');
+
+it('can migrate new table with longhand primary key', function (string $connection) {
+    setupDb($connection);
+    expect(tableExists('admins'))->toBeFalse();
+    $snapshot = Schema::fromSchemaArray(mockSchema());
+
+    $newArray = mockSchema();
+    $newArray['admins'] = [
+        'model' => 'Tests\\Models\\Admins',
+        'columns' => [
+            'id' => [
+                'type' => ColumnType::bigInteger,
+                'unique' => true,
+                'autoIncrement' => true,
+            ],
+        ],
+    ];
+
+    $new = Schema::fromSchemaArray($newArray);
+    $migration = (new SchemaDiffer(currentSchema: $snapshot, newSchema: $new))->getSchemaChanges()->getMigrationFunction();
+    eval($migration);
+
+    expect(tableExists('admins'))->toBeTrue();
+    expect(getColumn('admins', 'id')->getAutoincrement())->toBeTrue();
 })->with('databases');
 
 it('can migrate updated table that needs no migration', function (string $connection) {
@@ -227,6 +254,43 @@ it('can migrate updated column that needs no migration', function (string $conne
 
     expect($migration)->toBe('');
 })->with('databases');
+
+it('can migrate renamed column', function (string $connection) {
+    setupDb($connection);
+    expect(hasColumn('users', 'email'))->toBeTrue();
+    expect(hasColumn('users', 'email_address'))->toBeFalse();
+
+    $snapshot = Schema::fromSchemaArray(mockSchema());
+
+    $newArray = mockSchema();
+    $newArray['users']['columns']['email_address'] = $newArray['users']['columns']['email'];
+    unset($newArray['users']['columns']['email']);
+    $new = Schema::fromSchemaArray($newArray);
+
+    $migration = (new SchemaDiffer(currentSchema: $snapshot, newSchema: $new))->getSchemaChanges()->getMigrationFunction();
+    eval($migration);
+
+    expect(hasColumn('users', 'email'))->toBeFalse();
+    expect(hasColumn('users', 'email_address'))->toBeTrue();
+})->with('databases');
+
+it('can migrate column with unsigned', function (string $connection) {
+    setupDb($connection);
+    expect(hasColumn('users', 'user_index'))->toBeFalse();
+
+    $snapshot = Schema::fromSchemaArray(mockSchema());
+
+    $newArray = mockSchema();
+    $newArray['users']['columns']['user_index'] = ['type' => ColumnType::unsignedInteger];
+    $newArray['users']['columns']['user_index2'] = ['type' => ColumnType::integer, 'unsigned' => true];
+    $new = Schema::fromSchemaArray($newArray);
+
+    $migration = (new SchemaDiffer(currentSchema: $snapshot, newSchema: $new))->getSchemaChanges()->getMigrationFunction();
+    eval($migration);
+
+    expect(getColumn('users', 'user_index')->getUnsigned())->toBeTrue();
+    expect(getColumn('users', 'user_index2')->getUnsigned())->toBeTrue();
+})->with('databases-supporting-unsigned');
 
 it('can migrate removed column', function (string $connection) {
     setupDb($connection);

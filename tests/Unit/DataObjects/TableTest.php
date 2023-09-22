@@ -121,6 +121,46 @@ it('can detect primary key type from non-autoincrement int', function () {
     expect($schema->getTables()['users']->incrementing)->toBe(false);
 });
 
+it('can detect unique columns', function () {
+    $schema = Schema::fromSchemaArray([
+        'users' => [
+            'columns' => [
+                'id' => [
+                    'type' => ColumnType::bigIncrements,
+                    'primary' => true,
+                ],
+                'team_id' => [
+                    'type' => ColumnType::integer,
+                    'unique' => true,
+                ],
+                'other_id' => [
+                    'type' => ColumnType::integer,
+                ],
+                'non_unique_id' => [
+                    'type' => ColumnType::integer,
+                ],
+            ],
+            'indexes' => [
+                'other_id_unique' => [
+                    'type' => IndexType::unique,
+                    'indexColumns' => [
+                        'other_id',
+                    ],
+                ],
+            ],
+        ],
+    ]);
+
+    $table = $schema->getTables()['users'];
+
+    expect($table->doesColumnHaveUniqueIndex('id'))->toBe(true);
+    expect($table->doesColumnHaveUniqueIndex('team_id'))->toBe(true);
+    expect($table->doesColumnHaveUniqueIndex('other_id'))->toBe(true);
+
+    expect($table->doesColumnHaveUniqueIndex('non_unique_id'))->toBe(false);
+
+});
+
 it('can handle relation', function () {
     $schema = Schema::fromSchemaArray([
         'users' => [

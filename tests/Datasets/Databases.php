@@ -13,3 +13,10 @@ dataset('databases-supporting-length', [
     'pgsql',
     //'sqlite',
 ]);
+
+dataset('databases-supporting-unsigned', [
+    'mysql',
+    'mariadb',
+    //'pgsql',
+    //'sqlite',
+]);

@@ -373,7 +373,7 @@ class Table
         return $schema;
     }
 
-    protected function doesColumnHaveUniqueIndex(string $name): bool
+    public function doesColumnHaveUniqueIndex(string $name): bool
     {
         return collect($this->getIndexes())
             ->filter(fn (Index $index) => $index->type === IndexType::unique || $index->type === IndexType::primary)
