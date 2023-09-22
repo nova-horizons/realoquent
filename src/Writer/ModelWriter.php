@@ -200,7 +200,7 @@ class ModelWriter
                 ->addComment('@var array{'.$arrayShape.'}');
 
             if (! empty($this->table->getvalidationGroups())) {
-                $groupArrayShape = collect($this->table->getvalidationGroups())->dump()->map(fn (array $columns, string $group) => "'{$group}': string[]")->implode(', ');
+                $groupArrayShape = collect($this->table->getvalidationGroups())->map(fn (array $columns, string $group) => "'{$group}': string[]")->implode(', ');
 
                 $class->addProperty('validationGroups', $this->table->getvalidationGroups())
                     ->setProtected()

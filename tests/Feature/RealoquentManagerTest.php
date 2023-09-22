@@ -7,7 +7,7 @@ use Tests\TestCase\RealoquentTestClass;
 uses(RealoquentTestClass::class);
 
 it('can generate schema', function (string $connection) {
-    setupDb($connection);
+    setupDbAndSchema($connection);
     $manager = new RealoquentManager(realoquentConfig());
     $schema = $manager->generateSchema();
 
@@ -17,7 +17,7 @@ it('can generate schema', function (string $connection) {
 })->with('databases');
 
 it('can generate schema snapshot', function () {
-    setupDb('sqlite');
+    setupDbAndSchema('sqlite');
     $manager = new RealoquentManager(realoquentConfig());
     $manager->generateAndWriteSchema();
     $schemaManager = $manager->getSchemaManager();
@@ -26,7 +26,7 @@ it('can generate schema snapshot', function () {
 })->with('databases');
 
 it('that mockSchema() matches setupDb()', function (string $connection) {
-    setupDb($connection);
+    setupDbAndSchema($connection);
     $manager = new RealoquentManager(realoquentConfig());
     $freshString = (new SchemaWriter(
         schema: $manager->generateSchema(),
@@ -55,7 +55,7 @@ it('can find models', function (string $modelNamespace) {
 ]);
 
 it('can detect orphan models', function () {
-    setupDb('sqlite');
+    setupDbAndSchema('sqlite');
     $manager = new RealoquentManager(realoquentConfig());
     $schema = $manager->generateSchema();
     expect($schema->getOrphanModels()->toArray())->toBe(['orphans' => '\Tests\Models\Orphan']);

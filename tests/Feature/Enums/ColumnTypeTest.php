@@ -8,7 +8,7 @@ use Tests\TestCase\RealoquentTestClass;
 uses(RealoquentTestClass::class);
 
 test('mappings are symmetrical', function (string $connection, ColumnType $type) {
-    setupDb($connection);
+    setupDbAndSchema($connection);
     Schema::dropIfExists('temp_col');
     Schema::create('temp_col', function (Blueprint $table) use ($type) {
         $table->{$type->getMigrationFunction()}('temp');
@@ -48,7 +48,7 @@ test('mappings are symmetrical', function (string $connection, ColumnType $type)
 ]);
 
 it('has accurate default precisions', function (string $connection, ColumnType $type) {
-    setupDb($connection);
+    setupDbAndSchema($connection);
     Schema::dropIfExists('temp_precision');
     Schema::create('temp_precision', function (Blueprint $table) use ($type) {
         $table->{$type->getMigrationFunction()}('temp');
@@ -62,7 +62,7 @@ it('has accurate default precisions', function (string $connection, ColumnType $
 });
 
 it('has accurate default scale', function (string $connection, ColumnType $type) {
-    setupDb($connection);
+    setupDbAndSchema($connection);
     Schema::dropIfExists('temp_scale');
     Schema::create('temp_scale', function (Blueprint $table) use ($type) {
         $table->{$type->getMigrationFunction()}('temp');

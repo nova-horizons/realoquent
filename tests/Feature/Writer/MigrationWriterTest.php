@@ -11,7 +11,7 @@ use Tests\TestCase\RealoquentTestClass;
 uses(RealoquentTestClass::class);
 
 it('can migrate renamed table', function (string $connection) {
-    setupDb($connection);
+    setupDbAndSchema($connection);
     expect(tableExists('admins'))->toBeFalse();
     expect(tableExists('users'))->toBeTrue();
     $snapshot = Schema::fromSchemaArray(mockSchema());
@@ -29,7 +29,7 @@ it('can migrate renamed table', function (string $connection) {
 })->with('databases');
 
 it('can migrate new table', function (string $connection) {
-    setupDb($connection);
+    setupDbAndSchema($connection);
     expect(tableExists('admins'))->toBeFalse();
     $snapshot = Schema::fromSchemaArray(mockSchema());
 
@@ -57,7 +57,7 @@ it('can migrate new table', function (string $connection) {
 })->with('databases');
 
 it('can migrate new table with longhand primary key', function (string $connection) {
-    setupDb($connection);
+    setupDbAndSchema($connection);
     expect(tableExists('admins'))->toBeFalse();
     $snapshot = Schema::fromSchemaArray(mockSchema());
 
@@ -82,7 +82,7 @@ it('can migrate new table with longhand primary key', function (string $connecti
 })->with('databases');
 
 it('can migrate updated table that needs no migration', function (string $connection) {
-    setupDb($connection);
+    setupDbAndSchema($connection);
     $snapshot = Schema::fromSchemaArray(mockSchema());
 
     $newArray = mockSchema();
@@ -96,7 +96,7 @@ it('can migrate updated table that needs no migration', function (string $connec
 })->with('databases');
 
 it('can migrate removed table', function (string $connection) {
-    setupDb($connection);
+    setupDbAndSchema($connection);
     expect(tableExists('users'))->toBeTrue();
     $snapshot = Schema::fromSchemaArray(mockSchema());
 
@@ -111,7 +111,7 @@ it('can migrate removed table', function (string $connection) {
 })->with('databases');
 
 it('can migrate new column', function (string $connection) {
-    setupDb($connection);
+    setupDbAndSchema($connection);
     expect(fn () => getColumn('users', 'birthdate'))->toThrow(ColumnDoesNotExist::class);
 
     $snapshot = Schema::fromSchemaArray(mockSchema());
@@ -131,7 +131,7 @@ it('can migrate new column', function (string $connection) {
 })->with('databases');
 
 it('can migrate new column with length', function (string $connection) {
-    setupDb($connection);
+    setupDbAndSchema($connection);
     expect(fn () => getColumn('users', 'city'))->toThrow(ColumnDoesNotExist::class);
 
     $snapshot = Schema::fromSchemaArray(mockSchema());
@@ -150,7 +150,7 @@ it('can migrate new column with length', function (string $connection) {
 })->with('databases-supporting-length');
 
 it('can migrate new column with precision/scale', function (string $connection) {
-    setupDb($connection);
+    setupDbAndSchema($connection);
     expect(fn () => getColumn('users', 'bill_rate'))->toThrow(ColumnDoesNotExist::class);
 
     $snapshot = Schema::fromSchemaArray(mockSchema());
@@ -171,7 +171,7 @@ it('can migrate new column with precision/scale', function (string $connection) 
 })->with('databases-supporting-length');
 
 it('can migrate updated column', function (string $connection) {
-    setupDb($connection);
+    setupDbAndSchema($connection);
     expect(getColumn('users', 'email')->getNotnull())->toBeTrue();
 
     $snapshot = Schema::fromSchemaArray(mockSchema());
@@ -187,7 +187,7 @@ it('can migrate updated column', function (string $connection) {
 })->with('databases');
 
 it('can migrate updated column length', function (string $connection) {
-    setupDb($connection);
+    setupDbAndSchema($connection);
     expect(getColumn('users', 'email')->getLength())->toBe(255);
 
     $snapshot = Schema::fromSchemaArray(mockSchema());
@@ -203,7 +203,7 @@ it('can migrate updated column length', function (string $connection) {
 })->with('databases-supporting-length');
 
 it('can migrate multiple updates on single column', function (string $connection) {
-    setupDb($connection);
+    setupDbAndSchema($connection);
 
     expect(getColumn('users', 'email')->getNotnull())->toBeTrue();
     expect(getColumn('users', 'email')->getDefault())->toBeNull();
@@ -223,7 +223,7 @@ it('can migrate multiple updates on single column', function (string $connection
 })->with('databases');
 
 it('can migrate multiple updates on multiple columns', function (string $connection) {
-    setupDb($connection);
+    setupDbAndSchema($connection);
     expect(getColumn('users', 'username')->getDefault())->toBeNull();
     expect(getColumn('users', 'email')->getNotnull())->toBeTrue();
 
@@ -242,7 +242,7 @@ it('can migrate multiple updates on multiple columns', function (string $connect
 })->with('databases');
 
 it('can migrate updated column that needs no migration', function (string $connection) {
-    setupDb($connection);
+    setupDbAndSchema($connection);
 
     $snapshot = Schema::fromSchemaArray(mockSchema());
 
@@ -256,7 +256,7 @@ it('can migrate updated column that needs no migration', function (string $conne
 })->with('databases');
 
 it('can migrate renamed column', function (string $connection) {
-    setupDb($connection);
+    setupDbAndSchema($connection);
     expect(hasColumn('users', 'email'))->toBeTrue();
     expect(hasColumn('users', 'email_address'))->toBeFalse();
 
@@ -275,7 +275,7 @@ it('can migrate renamed column', function (string $connection) {
 })->with('databases');
 
 it('can migrate column with unsigned', function (string $connection) {
-    setupDb($connection);
+    setupDbAndSchema($connection);
     expect(hasColumn('users', 'user_index'))->toBeFalse();
 
     $snapshot = Schema::fromSchemaArray(mockSchema());
@@ -293,7 +293,7 @@ it('can migrate column with unsigned', function (string $connection) {
 })->with('databases-supporting-unsigned');
 
 it('can migrate removed column', function (string $connection) {
-    setupDb($connection);
+    setupDbAndSchema($connection);
     expect(hasColumn('users', 'email'))->toBeTrue();
     $snapshot = Schema::fromSchemaArray(mockSchema());
 
@@ -308,7 +308,7 @@ it('can migrate removed column', function (string $connection) {
 })->with('databases');
 
 it('can migrate new index', function (string $connection) {
-    setupDb($connection);
+    setupDbAndSchema($connection);
     expect(fn () => getIndex('users', 'user_email_index'))->toThrow(IndexDoesNotExist::class);
 
     $snapshot = Schema::fromSchemaArray(mockSchema());
@@ -327,7 +327,7 @@ it('can migrate new index', function (string $connection) {
 })->with('databases');
 
 it('can migrate renamed index', function (string $connection) {
-    setupDb($connection);
+    setupDbAndSchema($connection);
     expect(hasIndex('users', 'users_username_unique'))->toBeTrue();
     expect(hasIndex('users', 'unique_username'))->toBeFalse();
 
@@ -346,7 +346,7 @@ it('can migrate renamed index', function (string $connection) {
 })->with('databases');
 
 it('can migrate updated index', function (string $connection) {
-    setupDb($connection);
+    setupDbAndSchema($connection);
     expect(getIndex('users', 'users_username_unique')->isUnique())->toBeTrue();
 
     $snapshot = Schema::fromSchemaArray(mockSchema());
@@ -362,7 +362,7 @@ it('can migrate updated index', function (string $connection) {
 })->with('databases');
 
 it('can migrate updated index columns', function (string $connection) {
-    setupDb($connection);
+    setupDbAndSchema($connection);
     expect(getIndex('users', 'users_id_username_index')->getColumns())->toBe(['id', 'username']);
 
     $snapshot = Schema::fromSchemaArray(mockSchema());
@@ -378,7 +378,7 @@ it('can migrate updated index columns', function (string $connection) {
 })->with('databases');
 
 it('can migrate updated index columns and change', function (string $connection) {
-    setupDb($connection);
+    setupDbAndSchema($connection);
     expect(getIndex('users', 'users_id_username_index')->isUnique())->toBeFalse();
     expect(getIndex('users', 'users_id_username_index')->getColumns())->toBe(['id', 'username']);
 
@@ -397,7 +397,7 @@ it('can migrate updated index columns and change', function (string $connection)
 })->with('databases');
 
 it('can migrate removed index', function (string $connection) {
-    setupDb($connection);
+    setupDbAndSchema($connection);
     expect(hasIndex('users', 'users_id_username_index'))->toBeTrue();
     $snapshot = Schema::fromSchemaArray(mockSchema());
 
@@ -412,7 +412,7 @@ it('can migrate removed index', function (string $connection) {
 })->with('databases');
 
 it('can migrate removed inferred index', function (string $connection) {
-    setupDb($connection);
+    setupDbAndSchema($connection);
     expect(hasIndex('users', 'users_username_unique'))->toBeTrue();
     $snapshot = Schema::fromSchemaArray(mockSchema());
 
