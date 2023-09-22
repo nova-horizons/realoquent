@@ -7,6 +7,8 @@ use NovaHorizons\Realoquent\DataObjects\Table;
 use NovaHorizons\Realoquent\Enums\ColumnType;
 use NovaHorizons\Realoquent\Enums\IndexType;
 use NovaHorizons\Realoquent\SchemaDiffer;
+use Tests\Models\Team;
+use Tests\Models\User;
 use Tests\TestCase\RealoquentTestClass;
 
 uses(RealoquentTestClass::class);
@@ -371,4 +373,65 @@ it('can find duplicate ids', function () {
     } catch (RuntimeException $e) {
         expect($e->getMessage())->toContain('Duplicate realoquentId found on column: id ('.$schema['users']['realoquentId'].')');
     }
+});
+
+it('can detect when there are no changes', function () {
+    $schema = mockSchema();
+    $schemaObj = Schema::fromSchemaArray($schema);
+    $changes = (new SchemaDiffer(currentSchema: $schemaObj, newSchema: $schemaObj))->getSchemaChanges();
+    expect($changes->hasChanges())->toBe(false);
+    expect($changes->prettyPrint())->toBe('No changes detected');
+});
+
+it('can detect modified tables', function () {
+    $snapshot = Schema::fromSchemaArray(mockSchema());
+
+    $newArray = mockSchema();
+    unset($newArray['users']['columns']['email']);
+    $newArray['team_list']['columns']['team_slogan'] = [
+        'type' => ColumnType::string,
+    ];
+    $new = Schema::fromSchemaArray($newArray);
+
+    $changes = (new SchemaDiffer(currentSchema: $snapshot, newSchema: $new))->getSchemaChanges();
+
+    expect($changes->getAffectedTables())->toBe(['team_list', 'users']);
+});
+
+it('can detect modified models', function () {
+    $snapshot = Schema::fromSchemaArray(mockSchema());
+
+    $newArray = mockSchema();
+    unset($newArray['users']['columns']['email']);
+    $newArray['team_list']['columns']['team_slogan'] = [
+        'type' => ColumnType::string,
+    ];
+    $new = Schema::fromSchemaArray($newArray);
+
+    $changes = (new SchemaDiffer(currentSchema: $snapshot, newSchema: $new))->getSchemaChanges();
+
+    expect($changes->getAffectedModels($snapshot))->toBe([Team::class, User::class]);
+});
+
+it('can detect pretty print changes', function () {
+    $snapshot = Schema::fromSchemaArray(mockSchema());
+
+    $newArray = mockSchema();
+    unset($newArray['users']['columns']['email']);
+
+    $col = $newArray['team_list']['columns']['name'];
+    unset($newArray['team_list']['columns']['name']);
+    $col['validation'] = ['required', 'string', 'max:255'];
+    $newArray['team_list']['columns']['team_name'] = $col;
+
+    $newArray['team_list']['columns']['team_slogan'] = [
+        'type' => ColumnType::string,
+    ];
+    $new = Schema::fromSchemaArray($newArray);
+
+    $changes = (new SchemaDiffer(currentSchema: $snapshot, newSchema: $new))->getSchemaChanges();
+
+    expect($changes->prettyPrint())->toContain('Renamed Column');
+    expect($changes->prettyPrint())->toContain('New Column');
+    expect($changes->prettyPrint())->toContain('Removed Column');
 });
