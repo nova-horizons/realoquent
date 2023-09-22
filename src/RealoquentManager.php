@@ -26,8 +26,6 @@ class RealoquentManager
 
     protected bool $generateModels = true;
 
-    protected bool $generateQueryBuilders = true;
-
     protected SchemaManager $schemaManager;
 
     /**
@@ -50,7 +48,6 @@ class RealoquentManager
         $this->modelNamespace = trim($this->modelNamespace, '\\').'\\';
         $this->generateMigrations = $config['features']['generate_migrations'] ?? true;
         $this->generateModels = $config['features']['generate_models'] ?? true;
-        $this->generateQueryBuilders = $config['features']['generate_query_builders'] ?? true;
         $this->csFixerCommand = $config['cs_fixer_command'] ?? null;
     }
 
@@ -166,10 +163,5 @@ class RealoquentManager
     public function shouldGenerateModels(): bool
     {
         return $this->generateModels;
-    }
-
-    public function shouldGenerateQueryBuilders(): bool
-    {
-        return $this->generateQueryBuilders;
     }
 }
