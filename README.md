@@ -7,6 +7,7 @@
     <a href="https://packagist.org/packages/nova-horizons/realoquent"><img src="https://img.shields.io/packagist/v/nova-horizons/realoquent.svg" alt="Latest Version on Packagist"></a>
     <a href="https://github.com/nova-horizons/realoquent/actions/workflows/tests.yml"><img src="https://github.com/nova-horizons/realoquent/actions/workflows/tests.yml/badge.svg" alt="tests"></a>
     <a href="https://github.com/nova-horizons/realoquent/actions/workflows/static-analysis.yml"><img src="https://github.com/nova-horizons/realoquent/actions/workflows/static-analysis.yml/badge.svg" alt="static analysis"></a>
+    <a href="https://codecov.io/gh/nova-horizons/realoquent"><img src="https://codecov.io/gh/nova-horizons/realoquent/graph/badge.svg?token=FFITZKM6M2" alt="code coverage"/></a>
     <a href="LICENSE.md"><img src="https://img.shields.io/badge/license-MIT-brightgreen.svg" alt="MIT Licensed"></a>
 </p>
 
