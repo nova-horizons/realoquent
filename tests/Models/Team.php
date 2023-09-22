@@ -23,6 +23,7 @@ class Team extends Model
     public $casts = [
         'images' => 'array',
         'metadata' => AsArrayObject::class,
+        'missing-col' => 'string',
     ];
 
     /** @var array<string, string[]> */

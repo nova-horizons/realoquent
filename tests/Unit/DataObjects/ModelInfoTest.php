@@ -37,6 +37,7 @@ it('handles basic info that is explicit in model', function () {
     expect($info->casts)->toBe([
         'images' => 'array',
         'metadata' => AsArrayObject::class,
+        'missing-col' => 'string',
     ]);
 
     expect($info->validation)->toBe([]);

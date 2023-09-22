@@ -3,6 +3,7 @@
 use NovaHorizons\Realoquent\DataObjects\Table;
 use NovaHorizons\Realoquent\Enums\ColumnType;
 use NovaHorizons\Realoquent\Writer\ModelWriter;
+use Tests\Models\User;
 use Tests\TestCase\RealoquentTestClass;
 
 uses(RealoquentTestClass::class);
@@ -58,3 +59,22 @@ it('handles ulid primary keys', function () {
     $this->assertStringNotContainsString("use \Illuminate\Database\Eloquent\Concerns\HasUuids;", $baseModel);
     expect($baseModel)->toContain('$incrementing = false;');
 });
+
+it('preserves an existing base class', function () {
+    $table = Table::fromSchemaArray('users', [
+        'model' => User::class,
+        'columns' => [
+            'my_id' => [
+                'type' => ColumnType::ulid,
+                'primary' => true,
+            ],
+        ],
+    ]);
+
+    $baseModel = getBaseModelString($table);
+    expect($baseModel)->toContain("extends \Illuminate\Foundation\Auth\User");
+});
+
+it('preserves an existing base class on a base class', function () {
+
+})->todo();
