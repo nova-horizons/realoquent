@@ -74,10 +74,16 @@ function setupDb(string $connection): void
     }
     Schema::create('users', function (Blueprint $table) {
         $table->id();
+        $table->foreignIdFor(\Tests\Models\Team::class);
         $table->string('username', 150)->unique();
         $table->string('email');
         $table->unsignedInteger('num_visits')->default(1)->index();
         $table->index(['id', 'username'], 'users_id_username_index');
+        $table->timestamps();
+    });
+    Schema::create('teams', function (Blueprint $table) {
+        $table->uuid('uuid')->primary();
+        $table->string('name');
     });
     $manager = new RealoquentManager(realoquentConfig());
     $schema = $manager->generateSchema();

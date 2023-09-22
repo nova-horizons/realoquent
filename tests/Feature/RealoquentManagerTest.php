@@ -11,7 +11,8 @@ it('can generate schema', function (string $connection) {
     $manager = new RealoquentManager(realoquentConfig());
     $schema = $manager->generateSchema();
 
-    expect($schema->getTables())->toHaveCount(1);
+    expect($schema->getTables())->toHaveCount(2);
+    expect($schema->getTables())->toHaveKeys(['users', 'teams']);
     expect($schema->getTables()['users'])->toHaveKey('model');
 })->with('databases');
 
@@ -36,7 +37,7 @@ it('can find models', function (string $modelNamespace) {
     $config = realoquentConfig();
     $config['model_namespace'] = $modelNamespace;
     $manager = new RealoquentManager($config);
-    expect($manager->getModels()->toArray())->toBe(['teams' => '\Tests\Models\Team', 'users' => '\Tests\Models\User']);
+    expect($manager->getModels()->toArray())->toBe(['orphans' => '\Tests\Models\Orphan', 'teams' => '\Tests\Models\Team', 'users' => '\Tests\Models\User']);
 })->with([
     '\Tests\Models',
     '\Tests\Models\\',
