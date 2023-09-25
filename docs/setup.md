@@ -28,4 +28,7 @@
    All of your existing model logic will remain in the main model to keep your files clean and tidy.  
    See [Model docs](eloquent/models.md) and [generate-models](commands/generate-models.md) documentation for more details.
 
+
+6. Commit your `schema.php` and updated models 
+
 Head to [Usage](usage.md) to learn how to use Realoquent.
