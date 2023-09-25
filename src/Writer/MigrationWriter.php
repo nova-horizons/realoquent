@@ -10,6 +10,7 @@ use NovaHorizons\Realoquent\DataObjects\Column;
 use NovaHorizons\Realoquent\DataObjects\Index;
 use NovaHorizons\Realoquent\DataObjects\SchemaChanges;
 use NovaHorizons\Realoquent\DataObjects\Table;
+use NovaHorizons\Realoquent\RealoquentHelpers;
 
 class MigrationWriter
 {
@@ -217,7 +218,7 @@ class MigrationWriter
         }
 
         if (! is_null($column->default)) {
-            $str .= '->default('.var_export($column->default, true).')';
+            $str .= '->default('.RealoquentHelpers::printVar($column->default).')';
         }
 
         if ($column->autoIncrement) {
@@ -230,8 +231,8 @@ class MigrationWriter
     public function indexMigrationLine(Index $index): string
     {
         $str = '$table->'.$index->type->getMigrationFunction();
-        $str .= '(columns: '.var_export($index->indexColumns, true);
-        $str .= ', name: '.var_export($index->name, true).')';
+        $str .= '(columns: '.RealoquentHelpers::printVar($index->indexColumns);
+        $str .= ', name: '.RealoquentHelpers::printVar($index->name).')';
 
         return $str;
     }

@@ -217,7 +217,7 @@ class ModelWriter
                     $class->addMethod('getValidationFor'.Str::studly($group))
                         ->setReturnType('array')
                         ->setStatic()
-                        ->setBody('return '.var_export($groupRules, true).';')
+                        ->setBody('return '.RealoquentHelpers::printArray($groupRules).';')
                         ->addComment('@return array{'.$columns.'}');
                 }
             }

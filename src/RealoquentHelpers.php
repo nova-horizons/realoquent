@@ -34,4 +34,30 @@ class RealoquentHelpers
     {
         return Str::uuid()->toString();
     }
+
+    public static function printVar(mixed $var): string
+    {
+        return var_export($var, true);
+    }
+
+    public static function printArray(array $var): string
+    {
+        $string = self::printVar($var);
+
+        // Hacky way to get the schema to be formatted nicely
+        $patterns = [
+            // Switch to short arrays
+            "/array \(/" => '[',
+            "/^([ ]*)\)(,?)$/m" => '$1]$2',
+            "/=>[ ]?\n[ ]+\[/" => '=> [',
+            "/([ ]*)(\'[^\']+\') => ([\[\'])/" => '$1$2 => $3',
+            // Remove unnecessary numeric indexes
+            "/[0-9]+ => \[/" => '[',
+            "/[0-9]+ => \'/" => '\'',
+            // Code styling
+            '/NULL/' => 'null',
+        ];
+
+        return preg_replace(array_keys($patterns), array_values($patterns), $string);
+    }
 }

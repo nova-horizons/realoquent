@@ -6,6 +6,7 @@ use NovaHorizons\Realoquent\DataObjects\Schema;
 use NovaHorizons\Realoquent\Enums\ColumnType;
 use NovaHorizons\Realoquent\Enums\IndexType;
 use NovaHorizons\Realoquent\Enums\RelationshipType;
+use NovaHorizons\Realoquent\RealoquentHelpers;
 
 class SchemaWriter
 {
@@ -29,7 +30,7 @@ class SchemaWriter
     {
         $schemaArray = $this->schema->toSchemaArray();
 
-        $schemaString = var_export($schemaArray, true);
+        $schemaString = RealoquentHelpers::printArray($schemaArray);
 
         $modelNamespace = preg_quote($this->modelNamespace);
         // var_export already escapes the backslashes, so we need to double-quote our slashes in the pattern
@@ -40,16 +41,7 @@ class SchemaWriter
 
         // Hacky way to get the schema to be formatted nicely
         $patterns = [
-            // Switch to short arrays
-            "/array \(/" => '[',
-            "/^([ ]*)\)(,?)$/m" => '$1]$2',
-            "/=>[ ]?\n[ ]+\[/" => '=> [',
-            "/([ ]*)(\'[^\']+\') => ([\[\'])/" => '$1$2 => $3',
-            // Remove unnecessary numeric indexes
-            "/[0-9]+ => \[/" => '[',
-            "/[0-9]+ => \'/" => '\'',
             // Code styling
-            '/NULL/' => 'null',
             '/  /' => '    ',
             // Convert string classnames to ::class
             "/'ColumnType::(.*?)',/" => 'ColumnType::$1,',

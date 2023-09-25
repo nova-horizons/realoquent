@@ -3,6 +3,7 @@
 namespace NovaHorizons\Realoquent\DataObjects;
 
 use Illuminate\Support\Str;
+use NovaHorizons\Realoquent\RealoquentHelpers;
 use NovaHorizons\Realoquent\Writer\MigrationWriter;
 
 class SchemaChanges
@@ -28,8 +29,8 @@ class SchemaChanges
                 if (is_array($change) && is_array($change['changes'])) {
                     $output .= ': '.PHP_EOL;
                     foreach ($change['changes'] as $key => $value) {
-                        $old = is_array($value['old']) ? implode('/', $value['old']) : var_export($value['old'], true);
-                        $new = is_array($value['new']) ? implode('/', $value['new']) : var_export($value['new'], true);
+                        $old = is_array($value['old']) ? implode('/', $value['old']) : RealoquentHelpers::printVar($value['old']);
+                        $new = is_array($value['new']) ? implode('/', $value['new']) : RealoquentHelpers::printVar($value['new']);
                         $output .= "    {$key}: {$old} => {$new}".PHP_EOL;
                     }
                 }
