@@ -71,6 +71,10 @@ class RealoquentManager
     public function generateSchema(): Schema
     {
         $doctrineManager = DB::connection()->getDoctrineSchemaManager();
+
+        // https://www.doctrine-project.org/projects/doctrine-orm/en/2.7/cookbook/mysql-enums.html#solution-1-mapping-to-varchars
+        DB::connection()->getDoctrineConnection()->getDatabasePlatform()->registerDoctrineTypeMapping('enum', 'string');
+
         $tables = $doctrineManager->listTables();
 
         return $this->schemaManager->rebuildSchema(
