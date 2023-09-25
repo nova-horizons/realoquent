@@ -29,8 +29,8 @@ your model. See [Overriding Validation](#overriding-validation) section for more
 ### Defining Validation Rules
 You can define and override validation rules in your `schema.php` file by adding a `validation` property to the column definition.
 
-Validation should be an array of [Laravel validation rules](https://laravel.com/docs/10.x/validation#available-validation-rules). 
-The pipe-delimited syntax is not supported at this time.
+Validation should be an array of [Laravel validation rules](https://laravel.com/docs/10.x/validation#available-validation-rules).  
+⚠️ The pipe-delimited syntax is not supported at this time.
 
 ```php
 'account_number' => [
