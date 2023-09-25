@@ -7,8 +7,11 @@ use Tests\TestCase\RealoquentTestClass;
 
 uses(RealoquentTestClass::class);
 
+/**
+ * @see TypeDetectorTest for similar test with wider range of types
+ */
 test('mappings are symmetrical', function (string $connection, ColumnType $type) {
-    setupDbAndSchema($connection);
+    setupDb($connection);
     Schema::dropIfExists('temp_col');
     Schema::create('temp_col', function (Blueprint $table) use ($type) {
         $table->{$type->getMigrationFunction()}('temp');
@@ -17,38 +20,24 @@ test('mappings are symmetrical', function (string $connection, ColumnType $type)
     Schema::drop('temp_col');
     expect(ColumnType::fromDBAL($col)->value)->toBe($type->value);
 
-})->with(['mysql'])->with(fn () => [
+})->with(['mysql', 'pgsql'])->with(fn () => [
     // Popular types listed below
-    // TODO Commented out types that do not map symmetrically due to DBAL abstracting type (Timestamp > DateTime, tinyText > TEXT)
     ColumnType::bigInteger,
     ColumnType::binary,
     ColumnType::boolean,
-    //ColumnType::char,
-    //ColumnType::dateTimeTz,
     ColumnType::dateTime,
     ColumnType::date,
     ColumnType::decimal,
-    //ColumnType::double,
     ColumnType::float,
     ColumnType::integer,
     ColumnType::json,
-    //ColumnType::jsonb,
-    //ColumnType::longText,
-    //ColumnType::mediumInteger,
-    //ColumnType::mediumText,
     ColumnType::smallInteger,
     ColumnType::string,
-    //ColumnType::timeTz,
     ColumnType::time,
-    //ColumnType::timestampTz,
-    //ColumnType::timestamp,
-    //ColumnType::tinyInteger,
-    //ColumnType::tinyText,
-    //ColumnType::year,
 ]);
 
 it('has accurate default precisions', function (string $connection, ColumnType $type) {
-    setupDbAndSchema($connection);
+    setupDb($connection);
     Schema::dropIfExists('temp_precision');
     Schema::create('temp_precision', function (Blueprint $table) use ($type) {
         $table->{$type->getMigrationFunction()}('temp');
@@ -62,7 +51,7 @@ it('has accurate default precisions', function (string $connection, ColumnType $
 });
 
 it('has accurate default scale', function (string $connection, ColumnType $type) {
-    setupDbAndSchema($connection);
+    setupDb($connection);
     Schema::dropIfExists('temp_scale');
     Schema::create('temp_scale', function (Blueprint $table) use ($type) {
         $table->{$type->getMigrationFunction()}('temp');

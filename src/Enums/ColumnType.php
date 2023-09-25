@@ -136,7 +136,7 @@ enum ColumnType: string
             DateTimeTzImmutableType::class => self::dateTimeTz,
             DecimalType::class => self::decimal,
             FloatType::class => self::float,
-            GuidType::class => self::string,
+            GuidType::class => self::uuid,
             IntegerType::class => self::integer,
             JsonType::class => self::json,
             ObjectType::class => self::longText,

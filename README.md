@@ -148,7 +148,6 @@ allows for the precise generation of migration files reflecting exactly what has
 
 Realoquent is still in progress. Here's some of the things that need to be done:
 
-- DBAL does not return explicit correct types
 - Create Snapshot on project setup
 - Add support for relationships/foreign keys
 - Preserve ordering of new columns and generate correct `after()` in migration

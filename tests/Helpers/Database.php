@@ -61,11 +61,16 @@ function hasIndex(string $table, string $index): bool
     return getTable($table)->hasIndex($index);
 }
 
-function setupDbAndSchema(string $connection): void
+function setupDb(string $connection): void
 {
     Config::set('database.connections', require __DIR__.'/../config/database.php');
     Config::set('database.default', 'rl_'.$connection);
     DB::purge();
+}
+
+function setupDbAndSchema(string $connection): void
+{
+    setupDb($connection);
     if (DB::connection()->getDriverName() !== 'sqlite') {
         Schema::dropAllTables();
     } else {

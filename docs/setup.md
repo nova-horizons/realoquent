@@ -16,6 +16,7 @@
    You may need to revise the detected column types to have more accurate casts/PHPDocs. Some common things you may want to adjust:
 
     * Change any UUID columns from  `ColumnType::string` to `ColumnType::uuid` (same for ULIDs)
+    * For JSON columns, they may be detected as `ColumnType::longText` or `ColumnType::text`
     * Review any `ColumnType::tinyInt` or `ColumnType::boolean` columns to make sure the detected type is correct
 
    See [column types](schema-management/columns.md#column-types) and  [generate-schema](commands/generate-schema.md) documentation for more details.

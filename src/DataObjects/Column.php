@@ -17,6 +17,7 @@ use NovaHorizons\Realoquent\Enums\ColumnType;
 use NovaHorizons\Realoquent\Enums\RelationshipType;
 use NovaHorizons\Realoquent\RealoquentHelpers;
 use NovaHorizons\Realoquent\Traits\Comparable;
+use NovaHorizons\Realoquent\TypeDetector;
 
 class Column
 {
@@ -80,7 +81,7 @@ class Column
 
     public static function fromDBAL(\Doctrine\DBAL\Schema\Column $dbalColumn, string $tableName): self
     {
-        $type = ColumnType::fromDBAL($dbalColumn->getType());
+        $type = TypeDetector::fromDBAL($dbalColumn, $tableName);
 
         return new self(
             name: $dbalColumn->getName(),
