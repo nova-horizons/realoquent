@@ -11,7 +11,7 @@
         "nikic/php-parser": "^4.17.1"
     },
     "require-dev": {
-        "orchestra/testbench": "^8.10",
+        "orchestra/testbench": "^8.11",
         "laravel/pint": "^1.13",
         "pestphp/pest": "^2.18",
         "phpstan/phpstan": "^1.10",
