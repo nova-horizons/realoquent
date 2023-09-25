@@ -37,6 +37,7 @@ class Schema
     public function toSchemaArray(): array
     {
         $schemaArray = [];
+        asort($this->tables);
         foreach ($this->tables as $table) {
             $schemaArray[$table->name] = $table->toSchemaArray();
         }
