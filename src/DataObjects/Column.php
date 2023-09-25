@@ -249,8 +249,20 @@ class Column
             default => throw new \RuntimeException('Unknown PHP Type for Cast: '.$cast),
         };
 
+        // For objects, expand types to include primitives
+        // This allows for setting the property with primitive without causing static analysis errors
+        $type = match ($type) {
+            ArrayObject::class => '\\'.ArrayObject::class.'|array',
+            Stringable::class => '\\'.Stringable::class.'|string',
+            default => $type,
+        };
+
         if ($this->nullable) {
-            $type = '?'.$type;
+            if (str_contains($type, '|')) {
+                $type = $type.'|null';
+            } else {
+                $type = '?'.$type;
+            }
         }
 
         return $type;
