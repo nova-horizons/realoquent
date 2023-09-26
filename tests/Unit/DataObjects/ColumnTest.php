@@ -14,8 +14,8 @@ it('returns correct phpdoc type', function (ColumnType $type, string $phpType) {
         type: $type,
     ))->getPhpType())->toBe($phpType);
 })->with([
-    [ColumnType::bigInteger, 'integer'],
-    [ColumnType::integer, 'integer'],
+    [ColumnType::bigInteger, 'int'],
+    [ColumnType::integer, 'int'],
     [ColumnType::dateTime, Carbon::class],
     [ColumnType::timestamp, Carbon::class],
     [ColumnType::float, 'float'],
@@ -31,8 +31,8 @@ it('returns correct nullable phpdoc type', function (ColumnType $type, string $p
         nullable: true,
     ))->getPhpType())->toBe($phpType);
 })->with([
-    [ColumnType::bigInteger, '?integer'],
-    [ColumnType::integer, '?integer'],
+    [ColumnType::bigInteger, '?int'],
+    [ColumnType::integer, '?int'],
     [ColumnType::dateTime, '?'.Carbon::class],
     [ColumnType::timestamp, '?'.Carbon::class],
     [ColumnType::float, '?float'],

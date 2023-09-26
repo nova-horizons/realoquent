@@ -243,7 +243,7 @@ class Column
             'decimal' => 'float',
             'double' => 'float',
             'float' => 'float',
-            'integer' => 'integer',
+            'integer' => 'int',
             'string' => 'string',
             'timestamp' => Carbon::class,
             null => 'mixed',

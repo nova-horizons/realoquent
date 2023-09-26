@@ -8,7 +8,7 @@ use NovaHorizons\Realoquent\Enums\ColumnType;
 
 dataset('column-and-casts', [
     // ColumnType $type, ?string $cast, string $phpType
-    [ColumnType::integer, null, 'integer'],
+    [ColumnType::integer, null, 'int'],
     [ColumnType::dateTime, null, Carbon::class],
     [ColumnType::dateTime, 'immutable_datetime', Carbon::class],
     [ColumnType::json, 'array', 'array'],
