@@ -5,4 +5,5 @@
 /.vscode
 /vendor
 /tests/config/schema.php
+/tests/Models/BaseModels
 /TODO.md
