@@ -15,3 +15,12 @@ it('errors when no schema', function () {
         ->expectsOutputToContain('Schema file does not exist')
         ->assertExitCode(1);
 });
+
+it('reports no changes', function () {
+    setupDbAndSchema('sqlite');
+    $manager = new RealoquentManager(realoquentConfig());
+    $manager->getSchemaManager()->makeSchemaSnapshot();
+    $this->artisan(Diff::class)
+        ->expectsOutputToContain('No changes')
+        ->assertExitCode(0);
+});

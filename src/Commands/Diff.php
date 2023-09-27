@@ -65,6 +65,8 @@ class Diff extends Command
         $this->line($changes->prettyPrint());
 
         if (! $changes->hasChanges()) {
+            $this->newLine();
+
             return 0;
         }
 
