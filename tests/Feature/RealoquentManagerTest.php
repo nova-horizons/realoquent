@@ -61,8 +61,12 @@ it('can detect orphan models', function () {
     expect($schema->getOrphanModels()->toArray())->toBe(['orphans' => '\Tests\Models\Orphan']);
 });
 
-it('can handle empty config', function () {
-    $manager = new RealoquentManager([]);
+it('errors on missing config', function () {
+    new RealoquentManager();
+})->throws(\RuntimeException::class);
+
+it('can handle missing config options', function () {
+    $manager = new RealoquentManager(['not-an-option' => false]);
     expect($manager->getModelNamespace())->toBe('App\\Models\\');
     expect($manager->getModelDir())->toEndWith('app/Models');
     expect($manager->getMigrationDir())->toEndWith('database/migrations');
