@@ -95,5 +95,5 @@ function setupDbAndSchema(string $connection): void
     });
     $manager = new RealoquentManager(realoquentConfig());
     $schema = $manager->generateSchema();
-    $manager->getSchemaManager()->writeSchema($schema, $manager->getModelNamespace());
+    $manager->getSchemaManager()->writeSchema($schema);
 }

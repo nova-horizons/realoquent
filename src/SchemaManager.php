@@ -10,21 +10,11 @@ use NovaHorizons\Realoquent\Writer\SchemaWriter;
 
 class SchemaManager
 {
-    protected string $configDir;
-
-    protected string $storageDir;
-
-    /**
-     * @param  array<string, mixed>  $config
-     */
-    public function __construct(array $config)
-    {
-        $configDir = $config['schema_dir'] ?? database_path('realoquent');
-        $storageDir = $config['storage_dir'] ?? storage_path('app/realoquent');
-        RealoquentHelpers::validateDirectory($configDir);
-        RealoquentHelpers::validateDirectory($storageDir);
-        $this->configDir = $configDir;
-        $this->storageDir = $storageDir;
+    public function __construct(
+        protected readonly string $configDir,
+        protected readonly string $storageDir,
+        protected readonly string $modelNamespace,
+    ) {
     }
 
     /**
@@ -67,12 +57,13 @@ class SchemaManager
     /**
      * @throws \Throwable
      */
-    public function writeSchema(Schema $schema, string $modelNamespace): void
+    public function writeSchema(Schema $schema, bool $splitTables = false): void
     {
         $writer = new SchemaWriter(
             schema: $schema,
             schemaPath: $this->getSchemaPath(),
-            modelNamespace: $modelNamespace
+            modelNamespace: $this->modelNamespace,
+            splitTables: $splitTables,
         );
         $writer->writeSchema();
     }
@@ -82,11 +73,18 @@ class SchemaManager
      */
     public function makeSchemaSnapshot(): void
     {
-        $schema = $this->getSchemaPath();
-        $snapshot = $this->getschemaSnapshotPath();
+        $snapshotPath = $this->getschemaSnapshotPath();
 
-        $result = copy($schema, $snapshot);
-        throw_unless($result, new \RuntimeException('The Realoquent schema snapshot ['.$snapshot.'] could not be written.'));
+        $writer = new SchemaWriter(
+            schema: $this->loadSchema(),
+            schemaPath: $this->getSchemaPath(),
+            modelNamespace: $this->modelNamespace,
+            splitTables: false,
+        );
+        $schemaString = $writer->schemaToPhpString();
+
+        $result = file_put_contents($snapshotPath, $schemaString);
+        throw_unless($result, new \RuntimeException('The Realoquent schema snapshot ['.$snapshotPath.'] could not be written.'));
     }
 
     public function getSchemaPath(): string
