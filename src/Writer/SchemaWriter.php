@@ -13,6 +13,7 @@ class SchemaWriter
     public function __construct(
         protected readonly Schema $schema,
         protected readonly string $schemaPath,
+        protected readonly string $splitSchemaPath,
         protected readonly string $modelNamespace,
         protected readonly bool $splitTables = false,
     ) {
@@ -46,15 +47,14 @@ class SchemaWriter
      */
     protected function writeSplitSchema(): void
     {
-        $tableDir = dirname($this->schemaPath).DIRECTORY_SEPARATOR.'tables';
-        RealoquentHelpers::validateDirectory($tableDir);
+        RealoquentHelpers::validateDirectory($this->splitSchemaPath);
 
         $schemaArray = $this->schema->toSchemaArray();
 
         $tables = [];
 
         foreach ($schemaArray as $tableName => $table) {
-            $tablePath = $tableDir.DIRECTORY_SEPARATOR.$tableName.'.php';
+            $tablePath = $this->splitSchemaPath.DIRECTORY_SEPARATOR.$tableName.'.php';
             $tables[$tableName] = 'require .'.str_replace(base_path(), '', $tablePath);
             $this->writeFile($tablePath, $this->arrayStringToPhpFile($this->arrayToString($table)));
         }

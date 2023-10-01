@@ -61,12 +61,7 @@ class SchemaManager
      */
     public function writeSchema(Schema $schema, bool $splitTables = false): void
     {
-        $writer = new SchemaWriter(
-            schema: $schema,
-            schemaPath: $this->getSchemaPath(),
-            modelNamespace: $this->modelNamespace,
-            splitTables: $splitTables,
-        );
+        $writer = $this->getWriter(schema: $schema, splitTables: $splitTables);
         $writer->writeSchema();
     }
 
@@ -77,12 +72,7 @@ class SchemaManager
     {
         $snapshotPath = $this->getschemaSnapshotPath();
 
-        $writer = new SchemaWriter(
-            schema: $this->loadSchema(),
-            schemaPath: $this->getSchemaPath(),
-            modelNamespace: $this->modelNamespace,
-            splitTables: false,
-        );
+        $writer = $this->getWriter(schema: $this->loadSchema(), splitTables: false);
         $schemaString = $writer->schemaToPhpString();
 
         $result = file_put_contents($snapshotPath, $schemaString);
@@ -92,6 +82,11 @@ class SchemaManager
     public function getSchemaPath(): string
     {
         return $this->configDir.'/schema.php';
+    }
+
+    public function getSplitSchemaPath(): string
+    {
+        return $this->configDir.'/tables';
     }
 
     public function getSchemaSnapshotPath(): string
@@ -121,5 +116,16 @@ class SchemaManager
         $schemaArray = require $this->getSchemaPath();
 
         return Schema::fromSchemaArray($schemaArray);
+    }
+
+    protected function getWriter(Schema $schema, bool $splitTables): SchemaWriter
+    {
+        return new SchemaWriter(
+            schema: $schema,
+            schemaPath: $this->getSchemaPath(),
+            splitSchemaPath: $this->getSplitSchemaPath(),
+            modelNamespace: $this->modelNamespace,
+            splitTables: $splitTables,
+        );
     }
 }
