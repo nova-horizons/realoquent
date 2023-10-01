@@ -18,6 +18,10 @@ class RealoquentManager
 
     protected string $migrationDir;
 
+    protected string $configDir;
+
+    protected string $storageDir;
+
     protected string $modelNamespace;
 
     protected ?string $csFixerCommand;
@@ -38,7 +42,11 @@ class RealoquentManager
         }
 
         $this->loadConfig($config);
-        $this->schemaManager = new SchemaManager($config);
+        $this->schemaManager = new SchemaManager(
+            configDir: $this->configDir,
+            storageDir: $this->storageDir,
+            modelNamespace: $this->modelNamespace,
+        );
     }
 
     /**
@@ -53,16 +61,22 @@ class RealoquentManager
         $this->generateMigrations = $config['features']['generate_migrations'] ?? true;
         $this->generateModels = $config['features']['generate_models'] ?? true;
         $this->csFixerCommand = $config['cs_fixer_command'] ?? null;
+        $configDir = $config['schema_dir'] ?? database_path('realoquent');
+        $storageDir = $config['storage_dir'] ?? storage_path('app/realoquent');
+        RealoquentHelpers::validateDirectory($configDir);
+        RealoquentHelpers::validateDirectory($storageDir);
+        $this->configDir = $configDir;
+        $this->storageDir = $storageDir;
     }
 
     /**
      * @throws Exception
      * @throws \Throwable
      */
-    public function generateAndWriteSchema(): Schema
+    public function generateAndWriteSchema(bool $splitTables = false): Schema
     {
         $schema = $this->generateSchema();
-        $this->schemaManager->writeSchema($schema, $this->modelNamespace);
+        $this->schemaManager->writeSchema($schema, $splitTables);
         $this->schemaManager->makeSchemaSnapshot();
 
         return $schema;

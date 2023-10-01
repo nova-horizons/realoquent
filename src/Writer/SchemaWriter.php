@@ -13,7 +13,9 @@ class SchemaWriter
     public function __construct(
         protected readonly Schema $schema,
         protected readonly string $schemaPath,
+        protected readonly string $splitSchemaPath,
         protected readonly string $modelNamespace,
+        protected readonly bool $splitTables = false,
     ) {
     }
 
@@ -22,15 +24,50 @@ class SchemaWriter
      */
     public function writeSchema(): void
     {
-        $result = file_put_contents($this->schemaPath, $this->schemaToPhpString());
-        throw_unless($result, new \RuntimeException('The Realoquent schema ['.$this->schemaPath.'] could not be written.'));
+        if ($this->splitTables) {
+            $this->writeSplitSchema();
+
+            return;
+        }
+
+        $this->writeFile($this->schemaPath, $this->schemaToPhpString());
     }
 
     public function schemaToPhpString(): string
     {
         $schemaArray = $this->schema->toSchemaArray();
 
-        $schemaString = RealoquentHelpers::printArray($schemaArray);
+        $schemaString = $this->arrayToString($schemaArray);
+
+        return $this->arrayStringToPhpFile($schemaString);
+    }
+
+    /**
+     * @throws \Throwable
+     */
+    protected function writeSplitSchema(): void
+    {
+        RealoquentHelpers::validateDirectory($this->splitSchemaPath);
+
+        $schemaArray = $this->schema->toSchemaArray();
+
+        $tables = [];
+
+        foreach ($schemaArray as $tableName => $table) {
+            $tablePath = $this->splitSchemaPath.DIRECTORY_SEPARATOR.$tableName.'.php';
+            $tables[$tableName] = 'require .'.str_replace(base_path(), '', $tablePath);
+            $this->writeFile($tablePath, $this->arrayStringToPhpFile($this->arrayToString($table)));
+        }
+
+        $mainSchema = $this->arrayStringToPhpFile($this->arrayToString($tables));
+        $mainSchema = str_replace("'require ", "require '", $mainSchema);
+
+        $this->writeFile($this->schemaPath, $mainSchema);
+    }
+
+    protected function arrayToString(array $array): string
+    {
+        $string = RealoquentHelpers::printArray($array);
 
         $modelNamespace = preg_quote($this->modelNamespace);
         // var_export already escapes the backslashes, so we need to double-quote our slashes in the pattern
@@ -52,14 +89,28 @@ class SchemaWriter
             "/'{$castNamespacePattern}(.*?)',/" => "\\{$castNamespace}$1::class,",
         ];
 
-        $schemaString = preg_replace(array_keys($patterns), array_values($patterns), $schemaString);
+        $string = preg_replace(array_keys($patterns), array_values($patterns), $string);
 
+        return $string;
+    }
+
+    protected function arrayStringToPhpFile(string $string): string
+    {
         $uses = collect([ColumnType::class, IndexType::class, RelationshipType::class])
             ->map(function (string $class) {
                 return "use {$class};";
             })
             ->implode("\n");
 
-        return "<?php\n\n{$uses}\n\nreturn {$schemaString};\n";
+        return "<?php\n\n{$uses}\n\nreturn {$string};\n";
+    }
+
+    /**
+     * @throws \Throwable
+     */
+    protected function writeFile(string $path, string $contents): void
+    {
+        $result = file_put_contents($path, $contents);
+        throw_unless($result, new \RuntimeException('The Realoquent schema ['.$path.'] could not be written.'));
     }
 }

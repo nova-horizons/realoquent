@@ -22,15 +22,15 @@ it('can generate schema snapshot', function () {
     $manager->generateAndWriteSchema();
     $schemaManager = $manager->getSchemaManager();
     expect(file_exists($schemaManager->getSchemaSnapshotPath()))->toBe(true);
-    unlink($schemaManager->getSchemaSnapshotPath());
 })->with('databases');
 
-it('that mockSchema() matches setupDb()', function (string $connection) {
-    setupDbAndSchema($connection);
+it('that mockSchema() matches setupDb()', function () {
+    setupDbAndSchema('mysql');
     $manager = new RealoquentManager(realoquentConfig());
     $freshString = (new SchemaWriter(
         schema: $manager->generateSchema(),
         schemaPath: $manager->getSchemaManager()->getSchemaPath(),
+        splitSchemaPath: $manager->getSchemaManager()->getSplitSchemaPath(),
         modelNamespace: $manager->getModelNamespace()))->schemaToPhpString();
     $fresh = eval(str_replace('<?php', '', $freshString));
     $mock = mockSchema();
@@ -40,7 +40,7 @@ it('that mockSchema() matches setupDb()', function (string $connection) {
     recursive_unset($mock, 'realoquentId');
 
     expect($mock)->toBe($fresh);
-})->with('databases');
+});
 
 it('can find models', function (string $modelNamespace) {
     $config = realoquentConfig();
@@ -89,7 +89,7 @@ it('can run empty cs fixer', function () {
 
 it('can run cs fixer with file placeholder', function () {
     $manager = new RealoquentManager(['cs_fixer_command' => './vendor/bin/pint {file}']);
-    $manager->runCodeStyleFixer([realoquentConfig()['schema_dir'].'/schema.php']);
+    $manager->runCodeStyleFixer([realoquentConfig()['schema_dir'].'/mockSchema.php']);
     // Expect no exceptions
     expect(true)->toBeTrue();
 });

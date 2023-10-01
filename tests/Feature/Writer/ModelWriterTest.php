@@ -105,7 +105,7 @@ it('can generate code that passes phpstan', function () {
     setupDbAndSchema('sqlite');
     $rootDir = __DIR__.'/../../../';
 
-    $schema = Schema::fromSchemaArray(mockSchema());
+    $schema = Schema::fromSchemaArray(generatedSchema());
     $files = [];
     foreach ($schema->getTables() as $table) {
         $writer = newModelWriter($table);
@@ -125,11 +125,9 @@ it('can generate code that passes phpstan', function () {
         }
     }
 
-    // Cleanup
+    // Revert Models
     foreach ($files as $file) {
-        if (str_contains($file, 'BaseModels')) {
-            unlink($file);
-        } else {
+        if (! str_contains($file, 'BaseModels')) {
             exec('git checkout -- '.escapeshellarg($file));
         }
     }

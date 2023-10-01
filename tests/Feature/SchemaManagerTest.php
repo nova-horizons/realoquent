@@ -23,10 +23,27 @@ it('can create snapshot', function () {
     setupDbAndSchema('sqlite');
     $manager = new RealoquentManager(realoquentConfig());
     $schemaManager = $manager->getSchemaManager();
-    expect(file_exists($schemaManager->getSchemaSnapshotPath()))->toBe(false);
+    expect($schemaManager->getSchemaSnapshotPath())->not->toBeFile();
     $schemaManager->makeSchemaSnapshot();
-    expect(file_exists($schemaManager->getSchemaSnapshotPath()))->toBe(true);
-    unlink($schemaManager->getSchemaSnapshotPath());
+    expect($schemaManager->getSchemaSnapshotPath())->toBeFile();
+});
+
+it('can write schema', function () {
+    setupDbAndSchema('sqlite');
+    $manager = new RealoquentManager(realoquentConfig());
+    $schemaManager = $manager->getSchemaManager();
+    // Write is handled in setupDbAndSchema
+    expect($schemaManager->getSchemaPath())->toBeFile();
+});
+
+it('can write split schemas', function () {
+    setupDbAndSchema('sqlite');
+    $manager = new RealoquentManager(realoquentConfig());
+    $schemaManager = $manager->getSchemaManager();
+    expect($schemaManager->getSplitSchemaPath())->not->toBeDirectory();
+    $schemaManager->writeSchema($schemaManager->loadSchema(), splitTables: true);
+    expect($schemaManager->getSplitSchemaPath().'/users.php')->toBeFile();
+    expect($schemaManager->getSplitSchemaPath().'/team_list.php')->toBeFile();
 });
 
 it('can load schema snapshot', function () {
@@ -36,7 +53,6 @@ it('can load schema snapshot', function () {
     $schemaManager->makeSchemaSnapshot();
     $schema = $schemaManager->loadSchemaSnapshot();
     expect($schema->getTables())->toHaveKeys(['users', 'team_list']);
-    unlink($schemaManager->getSchemaSnapshotPath());
 });
 
 it('can load schema', function () {

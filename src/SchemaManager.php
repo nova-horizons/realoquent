@@ -10,21 +10,11 @@ use NovaHorizons\Realoquent\Writer\SchemaWriter;
 
 class SchemaManager
 {
-    protected string $configDir;
-
-    protected string $storageDir;
-
-    /**
-     * @param  array<string, mixed>  $config
-     */
-    public function __construct(array $config)
-    {
-        $configDir = $config['schema_dir'] ?? database_path('realoquent');
-        $storageDir = $config['storage_dir'] ?? storage_path('app/realoquent');
-        RealoquentHelpers::validateDirectory($configDir);
-        RealoquentHelpers::validateDirectory($storageDir);
-        $this->configDir = $configDir;
-        $this->storageDir = $storageDir;
+    public function __construct(
+        protected readonly string $configDir,
+        protected readonly string $storageDir,
+        protected readonly string $modelNamespace,
+    ) {
     }
 
     /**
@@ -47,6 +37,7 @@ class SchemaManager
 
         $schema->setOrphanModels($models);
 
+        /* TODO-Relationships
         // Update relationship Columns to use relationship types
         // Need to do this last so all the tables and columns are populated in Schema
         foreach ($schema->getTables() as $localTable) {
@@ -60,6 +51,7 @@ class SchemaManager
                 // $foreignColumn->setForeignRelationshipType($relation, $localColumn);
             }
         }
+        */
 
         return $schema;
     }
@@ -67,13 +59,9 @@ class SchemaManager
     /**
      * @throws \Throwable
      */
-    public function writeSchema(Schema $schema, string $modelNamespace): void
+    public function writeSchema(Schema $schema, bool $splitTables = false): void
     {
-        $writer = new SchemaWriter(
-            schema: $schema,
-            schemaPath: $this->getSchemaPath(),
-            modelNamespace: $modelNamespace
-        );
+        $writer = $this->getWriter(schema: $schema, splitTables: $splitTables);
         $writer->writeSchema();
     }
 
@@ -82,16 +70,23 @@ class SchemaManager
      */
     public function makeSchemaSnapshot(): void
     {
-        $schema = $this->getSchemaPath();
-        $snapshot = $this->getschemaSnapshotPath();
+        $snapshotPath = $this->getschemaSnapshotPath();
 
-        $result = copy($schema, $snapshot);
-        throw_unless($result, new \RuntimeException('The Realoquent schema snapshot ['.$snapshot.'] could not be written.'));
+        $writer = $this->getWriter(schema: $this->loadSchema(), splitTables: false);
+        $schemaString = $writer->schemaToPhpString();
+
+        $result = file_put_contents($snapshotPath, $schemaString);
+        throw_unless($result, new \RuntimeException('The Realoquent schema snapshot ['.$snapshotPath.'] could not be written.'));
     }
 
     public function getSchemaPath(): string
     {
         return $this->configDir.'/schema.php';
+    }
+
+    public function getSplitSchemaPath(): string
+    {
+        return $this->configDir.'/tables';
     }
 
     public function getSchemaSnapshotPath(): string
@@ -121,5 +116,16 @@ class SchemaManager
         $schemaArray = require $this->getSchemaPath();
 
         return Schema::fromSchemaArray($schemaArray);
+    }
+
+    protected function getWriter(Schema $schema, bool $splitTables): SchemaWriter
+    {
+        return new SchemaWriter(
+            schema: $schema,
+            schemaPath: $this->getSchemaPath(),
+            splitSchemaPath: $this->getSplitSchemaPath(),
+            modelNamespace: $this->modelNamespace,
+            splitTables: $splitTables,
+        );
     }
 }

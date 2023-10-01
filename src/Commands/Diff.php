@@ -82,7 +82,7 @@ class Diff extends Command
             $this->generateModels($changes, $newSchema, $manager);
         }
 
-        $manager->getSchemaManager()->writeSchema($newSchema, $manager->getModelNamespace());
+        $manager->getSchemaManager()->writeSchema($newSchema);
         $manager->getSchemaManager()->makeSchemaSnapshot();
 
         $this->info('Diff complete!');

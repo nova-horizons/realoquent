@@ -41,6 +41,7 @@ parameters:
         - '#Class NovaHorizons\\Realoquent\\DataObjects\\(.*?) has an uninitialized \@readonly property (.*?). Assign it in the constructor.#'
         - '#\@readonly property NovaHorizons\\Realoquent\\DataObjects\\(.*?) is assigned outside of the constructor.#'
         - '#Method NovaHorizons\\Realoquent\\RealoquentHelpers::printArray\(\) has parameter \$var with no value type specified in iterable type array.#'
+        - '#Method NovaHorizons\\Realoquent\\Writer\\SchemaWriter::arrayToString\(\) has parameter \$array with no value type specified in iterable type array.#'
         -
             message: '#Match arm comparison between (.*?) is always true#'
             path: src/Enums
