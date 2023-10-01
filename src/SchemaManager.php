@@ -37,6 +37,7 @@ class SchemaManager
 
         $schema->setOrphanModels($models);
 
+        /* TODO-Relationships
         // Update relationship Columns to use relationship types
         // Need to do this last so all the tables and columns are populated in Schema
         foreach ($schema->getTables() as $localTable) {
@@ -50,6 +51,7 @@ class SchemaManager
                 // $foreignColumn->setForeignRelationshipType($relation, $localColumn);
             }
         }
+        */
 
         return $schema;
     }
