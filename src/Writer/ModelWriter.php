@@ -115,12 +115,6 @@ class ModelWriter
             ->removeProperty('validation')
             ->removeProperty('validationGroups');
 
-        if ($this->modelInfo) {
-            foreach ($this->modelInfo->relations as $relation) {
-                $class->removeMethod($relation->relationName);
-            }
-        }
-
         $namespace->add($class);
 
         return "<?php\n\n".(new PsrPrinter())->printNamespace($namespace);
@@ -221,22 +215,6 @@ class ModelWriter
                         ->addComment('@return array{'.$columns.'}');
                 }
             }
-        }
-
-        foreach ($this->table->getRelations() as $relation) {
-            $fullReturnType = $relation->type->getReturnType();
-            $namespace->addUse($fullReturnType);
-            $returnType = class_basename($fullReturnType);
-
-            $relatedModel = $relation->relatedModel;
-            $namespace->addUse($relatedModel);
-            $relatedModel = class_basename($relatedModel);
-
-            $class->addMethod($relation->relationName)
-                ->setPublic()
-                ->setReturnType($fullReturnType)
-                ->setBody("return \$this->{$relation->type->getRelationshipFunction()}({$relatedModel}::class);")
-                ->setComment("@return {$returnType}<{$relatedModel}, self>");
         }
 
         $namespace->add($class);

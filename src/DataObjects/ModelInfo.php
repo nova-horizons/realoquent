@@ -2,17 +2,10 @@
 
 namespace NovaHorizons\Realoquent\DataObjects;
 
-use Illuminate\Database\Console\ShowModelCommand;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\Relation as EloquentRelation;
 use Illuminate\Support\Str;
 use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\PhpFile;
-use NovaHorizons\Realoquent\Enums\RelationshipType;
-use NovaHorizons\Realoquent\RealoquentHelpers;
-use ReflectionMethod;
-use SplFileObject;
 
 class ModelInfo
 {
@@ -45,9 +38,6 @@ class ModelInfo
 
     /** @var array<string, string[]> */
     public readonly array $validationGroups;
-
-    /** @var Relation[] */
-    public readonly array $relations;
 
     /**
      * @throws \Throwable
@@ -109,48 +99,6 @@ class ModelInfo
         } else {
             $this->extends = $extends;
         }
-
-        $this->relations = []; // TODO-Relationships $this->getRelations();
-    }
-
-    /**
-     * @return Relation[]
-     */
-    protected function getRelations(): array
-    {
-        $relationMethods = $this->getRelationMethodsForClass($this->name);
-        $relations = [];
-        foreach ($relationMethods as $relation) {
-
-            $type = RelationshipType::fromEloquentMethod($relation['type']);
-            if (! $type->isSupported()) {
-                continue;
-            }
-
-            $relationMethod = (new $this->name())->{$relation['name']}();
-            $localKey = $this->primaryKey;
-            $foreignKey = Str::snake(class_basename($this->name)).'_'.$this->primaryKey;
-            if ($relationMethod instanceof BelongsTo) {
-                $localKey = $relationMethod->getForeignKeyName();
-                $foreignKey = $relationMethod->getOwnerKeyName();
-            } else {
-                // ray($relationMethod);
-            }
-
-            $relations[$relation['name']] = new Relation(
-                type: RelationshipType::fromEloquentMethod($relation['type']),
-                relationName: $relation['name'],
-                localModel: $this->name,
-                relatedModel: $relation['related'],
-                localTableName: $this->tableName,
-                foreignTableName: (new $relation['related'])->getTable(),
-                localKey: $localKey,
-                foreignKey: $foreignKey,
-                realoquentId: RealoquentHelpers::newId(),
-            );
-        }
-
-        return $relations;
     }
 
     /**
@@ -165,53 +113,5 @@ class ModelInfo
         $reflection = new \ReflectionClass($class);
 
         return $reflection->isSubclassOf(Model::class) && ! $reflection->isAbstract();
-    }
-
-    /**
-     * @see ShowModelCommand::getRelations() source of this logic
-     *
-     * @param  class-string  $class
-     * @return array<int, array<string, string>>
-     */
-    private function getRelationMethodsForClass(string $class): array
-    {
-        $model = new $class();
-
-        return collect(get_class_methods($model))
-            ->map(fn ($method) => new ReflectionMethod($model, $method))
-            ->reject(
-                fn (ReflectionMethod $method) => $method->isStatic()
-                        || $method->isAbstract()
-                        // Realoquent changes this rule from source, we want all parent methods up to Model level
-                        || $method->getDeclaringClass()->getName() === Model::class
-            )
-            ->filter(function (ReflectionMethod $method) {
-                $file = new SplFileObject($method->getFileName());
-                $file->seek($method->getStartLine() - 1);
-                $code = '';
-                while ($file->key() < $method->getEndLine()) {
-                    $code .= trim($file->current());
-                    $file->next();
-                }
-
-                return collect(array_column(RelationshipType::cases(), 'value'))
-                    ->contains(fn ($relationMethod) => str_contains($code, '$this->'.$relationMethod.'('));
-            })
-            ->map(function (ReflectionMethod $method) use ($model) {
-                $relation = $method->invoke($model);
-
-                if (! $relation instanceof EloquentRelation) {
-                    return null;
-                }
-
-                return [
-                    'name' => $method->getName(),
-                    'type' => Str::afterLast(get_class($relation), '\\'),
-                    'related' => get_class($relation->getRelated()),
-                ];
-            })
-            ->filter()
-            ->values()
-            ->all();
     }
 }
