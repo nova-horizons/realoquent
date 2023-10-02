@@ -14,6 +14,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Stringable;
 use NovaHorizons\Realoquent\Enums\ColumnType;
+use NovaHorizons\Realoquent\Enums\RelationshipType;
 use NovaHorizons\Realoquent\RealoquentHelpers;
 use NovaHorizons\Realoquent\Traits\Comparable;
 use NovaHorizons\Realoquent\TypeDetector;
@@ -58,6 +59,8 @@ class Column
         public bool $guarded = true,
         /** @readonly */
         public ?string $cast = null,
+        /** @readonly */
+        public ?Relation $relation = null,
         /**
          * @var string[]
          *
@@ -113,7 +116,15 @@ class Column
     public function toSchemaArray(): array
     {
         $schema = [];
-        $schema['type'] = 'ColumnType::'.$this->type->value;
+        if (isset($this->relation)) {
+            $schema['type'] = 'RelationshipType::'.$this->relation->type->value;
+            $schema['relatedModel'] = $this->relation->relatedModel;
+            $schema['relationName'] = $this->relation->relationName;
+            $schema['localKey'] = $this->relation->localKey;
+            $schema['foreignKey'] = $this->relation->foreignKey;
+        } else {
+            $schema['type'] = 'ColumnType::'.$this->type->value;
+        }
 
         $this->autoIncrement && $schema['autoIncrement'] = $this->autoIncrement;
         $this->nullable && $schema['nullable'] = $this->nullable;
@@ -303,5 +314,21 @@ class Column
 
         return array_unique($rules);
 
+    }
+
+    public function setLocalRelationship(Relation $relation, Column $otherColumn): void
+    {
+        $this->type = $otherColumn->type;
+        isset($otherColumn->length) && $this->length = $otherColumn->length;
+        isset($otherColumn->precision) && $this->precision = $otherColumn->precision;
+        isset($otherColumn->scale) && $this->scale = $otherColumn->scale;
+        $this->unsigned = $otherColumn->unsigned;
+        $this->relation = $relation;
+    }
+
+    public function setForeignRelationshipType(Relation $relation, Column $otherColumn): void
+    {
+        $this->type = $otherColumn->type;
+        // TODO $this->relationshipType = $relation->type->getInverse();
     }
 }

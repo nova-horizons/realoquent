@@ -5,6 +5,7 @@ namespace NovaHorizons\Realoquent\Writer;
 use NovaHorizons\Realoquent\DataObjects\Schema;
 use NovaHorizons\Realoquent\Enums\ColumnType;
 use NovaHorizons\Realoquent\Enums\IndexType;
+use NovaHorizons\Realoquent\Enums\RelationshipType;
 use NovaHorizons\Realoquent\RealoquentHelpers;
 
 class SchemaWriter
@@ -82,6 +83,7 @@ class SchemaWriter
             // Convert string classnames to ::class
             "/'ColumnType::(.*?)',/" => 'ColumnType::$1,',
             "/'IndexType::(.*?)',/" => 'IndexType::$1,',
+            "/'RelationshipType::(.*?)',/" => 'RelationshipType::$1,',
             "/'Illuminate\\\\Database\\\\Eloquent\\\\Casts(.*?)',/" => '\\$1::class,',
             "/'{$modelNamespacePattern}(.*?)',/" => "\\{$modelNamespace}$1::class,",
             "/'{$castNamespacePattern}(.*?)',/" => "\\{$castNamespace}$1::class,",
@@ -94,7 +96,7 @@ class SchemaWriter
 
     protected function arrayStringToPhpFile(string $string): string
     {
-        $uses = collect([ColumnType::class, IndexType::class])
+        $uses = collect([ColumnType::class, IndexType::class, RelationshipType::class])
             ->map(function (string $class) {
                 return "use {$class};";
             })

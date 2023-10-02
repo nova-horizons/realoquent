@@ -37,6 +37,20 @@ class SchemaManager
 
         $schema->setOrphanModels($models);
 
+        // Update relationship Columns to use relationship types
+        // Need to do this last so all the tables and columns are populated in Schema
+        foreach ($schema->getTables() as $localTable) {
+            foreach ($localTable->getRelations() as $relation) {
+                if (! $relation->type->isSupported()) {
+                    continue;
+                }
+                $localColumn = $localTable->getColumns()[$relation->localKey];
+                $foreignColumn = $schema->getTables()[$relation->foreignTableName]->getColumns()[$relation->foreignKey];
+                $localColumn->setLocalRelationship($relation, $foreignColumn);
+                // $foreignColumn->setForeignRelationshipType($relation, $localColumn);
+            }
+        }
+
         return $schema;
     }
 

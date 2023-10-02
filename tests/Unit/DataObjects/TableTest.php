@@ -1,8 +1,12 @@
 <?php
 
+use NovaHorizons\Realoquent\DataObjects\Relation;
 use NovaHorizons\Realoquent\DataObjects\Schema;
 use NovaHorizons\Realoquent\Enums\ColumnType;
 use NovaHorizons\Realoquent\Enums\IndexType;
+use NovaHorizons\Realoquent\Enums\RelationshipType;
+use Tests\Models\Team;
+use Tests\Models\User;
 use Tests\TestCase\RealoquentTestClass;
 
 uses(RealoquentTestClass::class);
@@ -155,4 +159,36 @@ it('can detect unique columns', function () {
 
     expect($table->doesColumnHaveUniqueIndex('non_unique_id'))->toBe(false);
 
+});
+
+it('can handle relation', function () {
+    $schema = Schema::fromSchemaArray([
+        'users' => [
+            'model' => User::class,
+            'columns' => [
+                'id' => [
+                    'type' => ColumnType::bigIncrements,
+                ],
+                'team_id' => [
+                    'type' => RelationshipType::belongsTo,
+                    'relatedModel' => Team::class,
+                ],
+
+            ],
+        ],
+        'teams' => [
+            'model' => Team::class,
+            'columns' => [
+                'id' => [
+                    'type' => ColumnType::mediumIncrements,
+                ],
+            ],
+        ],
+    ]);
+
+    $usersTable = $schema->getTables()['users'];
+    $userTeamIdCol = $usersTable->getColumns()['team_id'];
+
+    expect($usersTable->getRelations()['team'])->toBeInstanceOf(Relation::class);
+    expect($userTeamIdCol->type)->toBe(ColumnType::mediumInteger);
 });
