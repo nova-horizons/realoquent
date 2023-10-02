@@ -4,7 +4,6 @@ namespace NovaHorizons\Realoquent\Traits;
 
 use NovaHorizons\Realoquent\DataObjects\Column;
 use NovaHorizons\Realoquent\DataObjects\Index;
-use NovaHorizons\Realoquent\DataObjects\Relation;
 use NovaHorizons\Realoquent\DataObjects\Table;
 
 trait Comparable
@@ -39,7 +38,7 @@ trait Comparable
             throw new \RuntimeException("Cannot compare {$this->name} & {$other->name} with different realoquentIds");
         }
 
-        /** @var array<string, string|array<string, Table|Column|Index|Relation|string>> $self */
+        /** @var array<string, string|array<string, Table|Column|Index|string>> $self */
         $self = (array) $this;
         $otherArray = (array) $other;
 
