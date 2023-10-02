@@ -1,7 +1,8 @@
 # Eloquent & Laravel
 ## Relationships
 
-⚠️ WORK IN PROGRESS 
+🚧 Relationship support is still in-progress
 
-Currently supported relationships:
-* `belongsTo` 
+See <https://github.com/nova-horizons/realoquent/pull/23>
+
+
