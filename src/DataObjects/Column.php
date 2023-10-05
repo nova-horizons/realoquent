@@ -212,6 +212,10 @@ class Column
     {
         $cast = $this->cast ?? $this->type->getCast();
 
+        if (str_starts_with($cast, 'decimal:')) {
+            $cast = 'decimal';
+        }
+
         $type = match ($cast) {
             'array' => 'array',
             AsArrayObject::class => ArrayObject::class,
@@ -233,8 +237,7 @@ class Column
             'integer' => 'int',
             'string' => 'string',
             'timestamp' => Carbon::class,
-            null => 'mixed',
-            default => throw new \RuntimeException('Unknown PHP Type for Cast: '.$cast),
+            default => 'mixed',
         };
 
         // For objects, expand types to include primitives

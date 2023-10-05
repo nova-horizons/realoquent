@@ -7,8 +7,10 @@ use Illuminate\Support\Collection;
 use NovaHorizons\Realoquent\Enums\ColumnType;
 
 dataset('column-and-casts', [
-    // ColumnType $type, ?string $cast, string $phpType
+    // ColumnType $type, ?string $schemaSpecifiedCast, string $phpType
     [ColumnType::integer, null, 'int'],
+    [ColumnType::unsignedDecimal, null, 'float'],
+    [ColumnType::unsignedDecimal, 'decimal:5', 'float'],
     [ColumnType::dateTime, null, Carbon::class],
     [ColumnType::dateTime, 'immutable_datetime', Carbon::class],
     [ColumnType::json, 'array', 'array'],
