@@ -19,6 +19,7 @@ it('returns correct phpdoc type', function (ColumnType $type, string $phpType) {
     [ColumnType::dateTime, Carbon::class],
     [ColumnType::timestamp, Carbon::class],
     [ColumnType::float, 'float'],
+    [ColumnType::unsignedDecimal, 'float'],
     [ColumnType::string, 'string'],
     [ColumnType::json, 'mixed'],
 ]);
@@ -35,17 +36,18 @@ it('returns correct nullable phpdoc type', function (ColumnType $type, string $p
     [ColumnType::integer, '?int'],
     [ColumnType::dateTime, '?'.Carbon::class],
     [ColumnType::timestamp, '?'.Carbon::class],
+    [ColumnType::unsignedDecimal, '?float'],
     [ColumnType::float, '?float'],
     [ColumnType::string, '?string'],
     [ColumnType::json, '?mixed'],
 ]);
 
-it('returns user-specified casts', function (ColumnType $type, ?string $cast, string $phpType) {
+it('returns user-specified casts', function (ColumnType $type, ?string $schemaSpecifiedCast, string $phpType) {
     expect((new Column(
         name: 'id',
         tableName: 'users',
         type: $type,
-        cast: $cast,
+        cast: $schemaSpecifiedCast,
     ))->getPhpType())->toBe($phpType);
 })->with('column-and-casts');
 

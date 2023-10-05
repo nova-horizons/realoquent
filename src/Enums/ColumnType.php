@@ -213,7 +213,7 @@ enum ColumnType: string
             self::tinyInteger => 'integer',
             self::tinyText => 'string',
             self::unsignedBigInteger => 'integer',
-            self::unsignedDecimal => 'decimal',
+            self::unsignedDecimal => 'float',
             self::unsignedDouble => 'float',
             self::unsignedFloat => 'float',
             self::unsignedInteger => 'integer',
