@@ -4,6 +4,7 @@ namespace NovaHorizons\Realoquent\DataObjects;
 
 use Doctrine\DBAL\Schema\Table as DoctrineTable;
 use NovaHorizons\Realoquent\Enums\IndexType;
+use NovaHorizons\Realoquent\Enums\RelationshipType;
 use NovaHorizons\Realoquent\RealoquentHelpers;
 use NovaHorizons\Realoquent\Traits\Comparable;
 
@@ -34,6 +35,9 @@ class Table
 
     /** @var array<string, Index> */
     protected array $indexes = [];
+
+    /** @var array<string, Relation> */
+    protected array $relations = [];
 
     public function __construct(string $name, string $realoquentId = null)
     {
@@ -83,6 +87,14 @@ class Table
     public function getIndexes(): array
     {
         return $this->indexes;
+    }
+
+    /**
+     * @return Relation[]
+     */
+    public function getRelations(): array
+    {
+        return $this->relations;
     }
 
     public function shouldHaveModel(): bool
@@ -217,6 +229,11 @@ class Table
             }
         }
 
+        // Relations
+        foreach ($modelInfo->relations as $relation) {
+            $this->relations[$relation->relationName] = $relation;
+        }
+
         // Validation
         if (! empty($modelInfo->validation)) {
             foreach ($modelInfo->validation as $field => $rules) {
@@ -292,6 +309,12 @@ class Table
         }
 
         foreach ($columns as $columnName => $column) {
+
+            if ($column['type'] instanceof RelationshipType) {
+                $table->relations[$columnName] = Relation::fromSchemaArray($table->name, $table->model, $columnName, $column);
+
+                continue;
+            }
 
             $columnObj = Column::fromSchemaArray($columnName, $column, $table->name);
             $table->addColumn($columnObj);
