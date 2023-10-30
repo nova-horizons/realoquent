@@ -16,7 +16,7 @@
         "pestphp/pest": "^2.24",
         "phpstan/phpstan": "^1.10",
         "nunomaduro/larastan": "^2.6",
-        "laravel/sail": "^1.25"
+        "laravel/sail": "^1.26"
     },
     "autoload": {
         "psr-4": {
