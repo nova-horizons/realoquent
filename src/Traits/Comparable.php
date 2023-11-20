@@ -38,7 +38,6 @@ trait Comparable
             throw new \RuntimeException("Cannot compare {$this->name} & {$other->name} with different realoquentIds");
         }
 
-        /** @var array<string, string|array<string, Table|Column|Index|string>> $self */
         $self = (array) $this;
         $otherArray = (array) $other;
 
