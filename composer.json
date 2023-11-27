@@ -13,7 +13,7 @@
     "require-dev": {
         "orchestra/testbench": "^8.15",
         "laravel/pint": "^1.13",
-        "pestphp/pest": "^2.24",
+        "pestphp/pest": "^2.25",
         "phpstan/phpstan": "^1.10",
         "nunomaduro/larastan": "^2.6",
         "laravel/sail": "^1.26"
