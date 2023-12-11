@@ -8,7 +8,7 @@
         "nette/php-generator": "^4.1.2",
         "doctrine/dbal": "^3",
         "illuminate/database": "^10",
-        "nikic/php-parser": "^4.17.1"
+        "nikic/php-parser": "^4.18.0"
     },
     "require-dev": {
         "orchestra/testbench": "^8.15",
