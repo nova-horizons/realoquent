@@ -35,7 +35,7 @@ class Table
     /** @var array<string, Index> */
     protected array $indexes = [];
 
-    public function __construct(string $name, string $realoquentId = null)
+    public function __construct(string $name, ?string $realoquentId = null)
     {
         $this->name = $name;
         $this->realoquentId = $realoquentId;

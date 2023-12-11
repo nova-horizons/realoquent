@@ -35,7 +35,7 @@ class RealoquentManager
     /**
      * @param  array<string, mixed>  $config
      */
-    public function __construct(array $config = null)
+    public function __construct(?array $config = null)
     {
         if (! $config) {
             throw new \RuntimeException('Realoquent config not provided. See Realoquent Setup docs on how to publish config file.');
