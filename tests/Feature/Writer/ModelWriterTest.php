@@ -120,7 +120,7 @@ it('can generate code that passes phpstan', function () {
             ->run('vendor/bin/phpstan analyse --configuration tests/phpstan-test.neon '.escapeshellarg(realpath($file)));
 
         if (! $result->successful()) {
-            dump($result->output());
+            dump($result->output() ?: $result->errorOutput());
             $allPassed = false;
         }
     }
