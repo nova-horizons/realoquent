@@ -50,16 +50,16 @@ class MigrationWriter
             foreach ($changes as $name => $change) {
                 $output .= match ($changeType) {
                     'table_new' => $this->getNewTableMigration($change),
-                    'column_new' => $this->getNewColumnMigration($change),
-                    'index_new' => $this->getNewIndexMigration($change),
                     'table_updated' => $this->getUpdatedTableMigration($name, $change),
-                    'column_updated' => $this->getUpdatedColumnMigration($name, $change),
-                    'index_updated' => $this->getUpdatedIndexMigration($name, $change),
                     'table_renamed' => $this->getRenameTableMigration($name, $change),
-                    'column_renamed' => $this->getRenameColumnMigration($name, $change),
-                    'index_renamed' => $this->getRenameIndexMigration($name, $change),
                     'table_removed' => $this->getRemoveTableMigration($change),
+                    'column_new' => $this->getNewColumnMigration($change),
+                    'column_updated' => $this->getUpdatedColumnMigration($name, $change),
+                    'column_renamed' => $this->getRenameColumnMigration($name, $change),
                     'column_removed' => $this->getRemoveColumnMigration($change),
+                    'index_new' => $this->getNewIndexMigration($change),
+                    'index_updated' => $this->getUpdatedIndexMigration($name, $change),
+                    'index_renamed' => $this->getRenameIndexMigration($name, $change),
                     'index_removed' => $this->getRemoveIndexMigration($change),
                     default => throw new \RuntimeException('Unknown change type: '.$changeType),
                 };
