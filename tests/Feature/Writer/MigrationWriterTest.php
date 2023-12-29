@@ -130,7 +130,7 @@ it('can migrate new table with index', function (string $connection) {
 
     expect(tableExists('admins'))->toBeTrue();
     expect(getIndex('admins', 'admins_username_unique')->isUnique())->toBeTrue();
-})->with('databases')->todo();
+})->with('databases');
 
 it('can migrate removed table', function (string $connection) {
     setupDbAndSchema($connection);
