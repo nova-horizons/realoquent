@@ -1,5 +1,5 @@
 # Eloquent & Laravel
-# Model Overview
+## Model Overview
 
 Realoquent can optionally generate and maintain Eloquent models for your tables. When you run the [realoquent:diff](../commands/diff.md) 
 or [realoquent:generate-models](../commands/generate-models.md) commands, Realoquent will generate or update your models

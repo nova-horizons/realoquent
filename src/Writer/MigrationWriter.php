@@ -153,9 +153,10 @@ class MigrationWriter
     {
         [$tableName, $columnName] = explode('.', $name);
 
-        return "Schema::table('{$tableName}', function(\Illuminate\Database\Schema\Blueprint \$table) {
-            \$table->renameColumn('{$changes['changes']['name']['old']}', '{$columnName}');
-        });";
+        return "Schema::table('{$tableName}', function(\Illuminate\Database\Schema\Blueprint \$table) {".PHP_EOL
+            ."    \$table->renameColumn('{$changes['changes']['name']['old']}', '{$columnName}');".PHP_EOL
+            .'});';
+
     }
 
     /**
@@ -230,9 +231,10 @@ class MigrationWriter
 
     public function indexMigrationLine(Index $index): string
     {
-        $str = '$table->'.$index->type->getMigrationFunction();
-        $str .= '(columns: '.RealoquentHelpers::printVar($index->indexColumns);
-        $str .= ', name: '.RealoquentHelpers::printVar($index->name).')';
+        $str = '$table->'.$index->type->getMigrationFunction().'(';
+        $str .= 'name: '.RealoquentHelpers::printVar($index->name).', ';
+        $str .= 'columns: '.RealoquentHelpers::printVar($index->indexColumns).', ';
+        $str .= ')';
 
         return $str;
     }
