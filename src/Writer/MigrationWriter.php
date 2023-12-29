@@ -78,6 +78,12 @@ class MigrationWriter
         foreach ($table->getColumns() as $column) {
             $migration .= '    '.$this->columnMigrationLine($column).';'.PHP_EOL;
         }
+        foreach ($table->getIndexes() as $index) {
+            if ($index->isSingleColumn) {
+                continue;
+            }
+            $migration .= '    '.$this->indexMigrationLine($index).';'.PHP_EOL;
+        }
         $migration .= '});';
 
         return $migration;
