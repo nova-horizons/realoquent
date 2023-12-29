@@ -88,6 +88,11 @@ class SchemaManager
         return file_exists($this->getschemaSnapshotPath());
     }
 
+    public function isUsingSplitSchema(): bool
+    {
+        return is_dir($this->getSplitSchemaPath());
+    }
+
     public function loadSchemaSnapshot(): Schema
     {
         $schemaArray = require $this->getSchemaSnapshotPath();

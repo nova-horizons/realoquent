@@ -34,7 +34,7 @@ class GenerateSchema extends Command
             }
         }
 
-        $schema = $manager->generateAndWriteSchema(splitTables: $this->hasOption('split-tables'));
+        $schema = $manager->generateAndWriteSchema(splitTables: $this->option('split-tables'));
 
         if ($schema->getOrphanModels()->count()) {
             $this->warn('The following models were found in code, but not in the database:');
@@ -49,7 +49,12 @@ class GenerateSchema extends Command
 
         $this->info('Realoquent Schema file generated successfully: '.$schemaManager->getSchemaPath());
 
-        $manager->runCodeStyleFixer([$schemaManager->getSchemaPath()]);
+        $files = [$schemaManager->getSchemaPath()];
+        if ($schemaManager->isUsingSplitSchema()) {
+            $files[] = $schemaManager->getSplitSchemaPath();
+        }
+
+        $manager->runCodeStyleFixer($files);
 
         return 0;
     }
