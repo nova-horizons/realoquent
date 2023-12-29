@@ -7,6 +7,7 @@ use Illuminate\Support\Str;
 use NovaHorizons\Realoquent\DataObjects\Schema;
 use NovaHorizons\Realoquent\DataObjects\SchemaChanges;
 use NovaHorizons\Realoquent\Exceptions\DuplicateIdException;
+use NovaHorizons\Realoquent\Exceptions\UserAbortedCommandException;
 use NovaHorizons\Realoquent\RealoquentHelpers;
 use NovaHorizons\Realoquent\RealoquentManager;
 use NovaHorizons\Realoquent\SchemaDiffer;
@@ -74,12 +75,18 @@ class Diff extends Command
             return 0;
         }
 
-        if ($manager->shouldGenerateMigrations()) {
-            $this->generateMigrations($manager, $changes);
-        }
+        try {
+            if ($manager->shouldGenerateMigrations()) {
+                $this->generateMigrations($manager, $changes);
+            }
 
-        if ($manager->shouldGenerateModels()) {
-            $this->generateModels($changes, $newSchema, $manager);
+            if ($manager->shouldGenerateModels()) {
+                $this->generateModels($changes, $newSchema, $manager);
+            }
+        } catch (UserAbortedCommandException $e) {
+            $this->info('Diff aborted.');
+
+            return 0;
         }
 
         $manager->getSchemaManager()->writeSchema(schema: $newSchema, splitTables: is_dir($schemaManager->getSplitSchemaPath()));
@@ -104,7 +111,14 @@ class Diff extends Command
         if (! $this->confirm('Generate migrations?', true)) {
             return;
         }
-        $name = $this->ask('Enter migration name (it will be slugified)', 'realoquent_migration');
+
+        $this->line($migration);
+
+        if (! $this->confirm('Review the above migration. Proceed? (You will have a chance to edit before running)', true)) {
+            throw new UserAbortedCommandException();
+        }
+
+        $name = $this->ask('Enter migration name (your text will be slugified)', 'schema_migration');
         $name = Str::slug($name, '_');
 
         $migration = $migrationWriter->createMigrationFile(
@@ -118,11 +132,12 @@ class Diff extends Command
             $this->newLine();
         } else {
             $manager->runCodeStyleFixer([$migration]);
-            $this->info('Migration file created: '.$migration);
+            $this->info(' Migration file created: '.$migration);
 
-            if ($this->confirm('Review the above migration. Run migrations?', true)) {
-                $this->call('migrate');
+            if (! $this->confirm('Review the above migration. Proceed to run migrations?', true)) {
+                throw new UserAbortedCommandException();
             }
+            $this->call('migrate');
         }
     }
 
