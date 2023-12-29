@@ -49,6 +49,10 @@ class Index
      */
     public static function fromSchemaArray(string $name, array $schema, string $tableName): self
     {
+        if (! isset($schema['indexColumns'])) {
+            throw new \InvalidArgumentException("Invalid schema: Index ({$tableName}.{$name}) must have indexColumns");
+        }
+
         return new self(
             name: $name,
             tableName: $tableName,
