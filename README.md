@@ -14,10 +14,10 @@
 In a Laravel application, making a database-related change can be a bit complicated... Create a migration, create a model, fill out fillable/guarded, fill out casts, write
 validation, add relationship methods... What if it could all be done automatically?
 
-Realoquent defines your database and model structure in a single PHP file. Make an update to this PHP schema file and run a command and everything will be generated for you:
+Realoquent defines your database and model structure in a single PHP file. Make an update to this PHP schema file and run a command and it will all be done for you:
 
 * Generate and run a migration
-* Generate or update the model class, and populate:
+* Generate or update the model class, populating:
     * Relationship methods
     * PHPDocs for model properties
     * `$fillable`
@@ -30,7 +30,7 @@ Realoquent defines your database and model structure in a single PHP file. Make 
 
 Realoquent is inspired by many of the functions of [Propel ORM](https://propelorm.org), like a single schema file as source of truth, and generated base model classes with
 user-editable model classes. Generated code is as strongly typed as possible, and uses
-type hints as a fallback (generated code passes PHPStan Level 9). This provides a better experience in your IDE and static analysis tools without requiring additional plugins
+type hints as a fallback (all generated code passes PHPStan Level 9). This provides a better experience in your IDE and static analysis tools without requiring additional plugins
 or packages.
 
 ## Table of Contents
@@ -122,28 +122,28 @@ For more details, see the documentation:
 Realoquent is designed to have a schema file as the source of truth. It lives with your project, and is not only for initial project
 scaffolding or setup. It allows for changes and code generation at any point without compromising your custom logic. This package focuses only
 on databases and models, leaving other aspects like controllers or forms up to your teams preference. Realoquent specializes in handling
-the routine, repetitive tasks such as migrations and model configurations, leaving the details of logic or preferred to you.
+the routine, repetitive tasks such as migrations and model configurations, leaving the details of logic or preferred controller/form patterns to you.
 
 ### Why use a PHP file to define the schema, instead of Model properties or annotations?
 
 Using a separate PHP file to define the schema, as opposed to Model properties or annotations, provides for several benefits:
 
-* It provides one PHP file provides a cohesive, scannable overview of your entire schema, making it easier to comprehend and manage.
-* Using a separate schema file to create standard Eloquent models ensures that Realoquent operates separately from your production system.
-  This separation allows you to have confidence in Laravel's standard framework code. You don't need to worry about Realoquent doing anything suspicious, and you can
-  remove Realoquent at any time at still keep your plain Eloquent models.
-* It allows for a separation between the database schema and the models. This means that you can have tables in your database that do not
-  necessarily have corresponding models in your code.
-* Using PHP instead of YAML/etc also allows you to reference constants, classes or even call functions to define your schema.
+* It provides a cohesive, scannable overview of your entire schema, making it easier to comprehend and manage.
+* It ensures that Realoquent operates separately from your production system. By generating standard Laravel code, you keep the confidence in  
+  Laravel's framework code. You don't need to worry about Realoquent doing anything suspicious. At any point you can remove Realoquent and all your code
+  will still work, since it generates plain Laravel migrations and plain Eloquent models.
 * This approach emphasizes the principle of separation of concerns in your project. By moving the schema to a configuration file,
   it ensures that your code files are reserved exclusively for your actual application logic. This improves the overall
   organization and readability of your codebase.
+* Using PHP instead of YAML/etc also allows you to reference constants, classes or even call functions to define your schema.
+* It allows for a separation between the database schema and the models. This means that you can have tables in your database that do not
+  necessarily have corresponding models in your code.
 
 ### Why generate a base model class?
 
-Generating a base model class is a helpful practice to organize the code better and promote cleaner models.
+Generating a base model class helps improve your code organization and promote cleaner models.
 The base model class contains the auto-generated code such as fillable, guarded, casts properties, validation, and PHPDocs
-for model properties. The main model file then stays small tidy, containing only your custom logic. This ensures that
+for model properties. The main model file then stays small & tidy, containing only your custom logic. This also ensures that
 auto-generated code and custom code are kept separate, reducing the chance of accidental changes and making future
 updates simpler and less error-prone.
 
@@ -189,9 +189,9 @@ To include in another project, add the following to your `composer.json` file, t
 
 ```json
 "repositories": [
-{
-"type": "path",
-"url": "/path/to/your/realoquent"
-}
+    {
+    "type": "path",
+    "url": "/path/to/your/realoquent"
+    }
 ]
 ```
