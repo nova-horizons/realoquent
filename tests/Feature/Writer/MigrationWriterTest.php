@@ -186,6 +186,30 @@ it('can migrate new column with length', function (string $connection) {
     expect(getColumn('users', 'city')->getLength())->toBe(105);
 })->with('databases-supporting-length');
 
+it('can migrate new columns with bool defaults', function (string $connection) {
+    setupDbAndSchema($connection);
+    expect(hasColumn('users', 'is_active'))->toBeFalse();
+
+    $snapshot = Schema::fromSchemaArray(generatedSchema());
+
+    $newArray = generatedSchema();
+    $newArray['users']['columns']['is_active'] = [
+        'type' => ColumnType::boolean,
+        'default' => true,
+    ];
+    $newArray['users']['columns']['is_super_admin'] = [
+        'type' => ColumnType::boolean,
+        'default' => false,
+    ];
+    $new = Schema::fromSchemaArray($newArray);
+
+    $migration = (new SchemaDiffer(currentSchema: $snapshot, newSchema: $new))->getSchemaChanges()->getMigrationFunction();
+    eval($migration);
+
+    expect(getColumn('users', 'is_active')->getDefault())->toBeTruthy();
+    expect(getColumn('users', 'is_super_admin')->getDefault())->toBeFalsy();
+})->with('databases');
+
 it('can migrate new column with precision/scale', function (string $connection) {
     setupDbAndSchema($connection);
     expect(fn () => getColumn('users', 'bill_rate'))->toThrow(ColumnDoesNotExist::class);

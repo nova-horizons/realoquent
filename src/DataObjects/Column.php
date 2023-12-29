@@ -49,7 +49,7 @@ class Column
         /** @readonly */
         public bool $nullable = false,
         /** @readonly */
-        public ?string $default = null,
+        public mixed $default = null,
         /** @readonly */
         public bool $autoIncrement = false,
         /** @readonly */
