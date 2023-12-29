@@ -95,6 +95,43 @@ it('can migrate updated table that needs no migration', function (string $connec
     expect($migration)->toBeEmpty();
 })->with('databases');
 
+it('can migrate new table with index', function (string $connection) {
+    setupDbAndSchema($connection);
+    expect(tableExists('admins'))->toBeFalse();
+    $snapshot = Schema::fromSchemaArray(generatedSchema());
+
+    $newArray = generatedSchema();
+    $newArray['admins'] = [
+        'model' => 'Tests\\Models\\Admins',
+        'columns' => [
+            'id' => [
+                'type' => ColumnType::bigIncrements,
+                'primary' => true,
+                'cast' => 'integer',
+                'guarded' => true,
+            ],
+            'username' => [
+                'type' => ColumnType::string,
+                'length' => 100,
+            ],
+        ],
+        'indexes' => [
+            'admins_username_unique' => [
+                'type' => IndexType::unique,
+                'indexColumns' => ['username'],
+            ],
+        ],
+    ];
+
+    $new = Schema::fromSchemaArray($newArray);
+
+    $migration = (new SchemaDiffer(currentSchema: $snapshot, newSchema: $new))->getSchemaChanges()->getMigrationFunction();
+    eval($migration);
+
+    expect(tableExists('admins'))->toBeTrue();
+    expect(getIndex('admins', 'admins_username_unique')->isUnique())->toBeTrue();
+})->with('databases')->todo();
+
 it('can migrate removed table', function (string $connection) {
     setupDbAndSchema($connection);
     expect(tableExists('users'))->toBeTrue();
@@ -169,6 +206,32 @@ it('can migrate new column with precision/scale', function (string $connection) 
     expect(getColumn('users', 'bill_rate')->getPrecision())->toBe(6);
     expect(getColumn('users', 'bill_rate')->getScale())->toBe(3);
 })->with('databases-supporting-length');
+
+it('can migrate new column with a new index', function (string $connection) {
+    setupDbAndSchema($connection);
+    expect(hasColumn('users', 'birthdate'))->toBeFalse();
+    expect(hasIndex('users', 'birthdate_index'))->toBeFalse();
+
+    $snapshot = Schema::fromSchemaArray(generatedSchema());
+
+    $newArray = generatedSchema();
+    $newArray['users']['columns']['birthdate'] = [
+        'type' => ColumnType::date,
+        'nullable' => true,
+        'fillable' => true,
+    ];
+    $newArray['users']['indexes']['birthdate_index'] = [
+        'type' => IndexType::index,
+        'indexColumns' => ['birthdate'],
+    ];
+    $new = Schema::fromSchemaArray($newArray);
+
+    $migration = (new SchemaDiffer(currentSchema: $snapshot, newSchema: $new))->getSchemaChanges()->getMigrationFunction();
+    eval($migration);
+
+    expect(getColumn('users', 'birthdate')->getName())->toBe('birthdate');
+    expect(getIndex('users', 'birthdate_index')->getName())->toBe('birthdate_index');
+})->with('databases');
 
 it('can migrate updated column', function (string $connection) {
     setupDbAndSchema($connection);
@@ -272,6 +335,31 @@ it('can migrate renamed column', function (string $connection) {
 
     expect(hasColumn('users', 'email'))->toBeFalse();
     expect(hasColumn('users', 'email_address'))->toBeTrue();
+})->with('databases');
+
+it('can migrate renamed column with a new index', function (string $connection) {
+    setupDbAndSchema($connection);
+    expect(hasColumn('users', 'email'))->toBeTrue();
+    expect(hasColumn('users', 'email_address'))->toBeFalse();
+    expect(hasIndex('users', 'users_email_address_unique'))->toBeFalse();
+
+    $snapshot = Schema::fromSchemaArray(generatedSchema());
+
+    $newArray = generatedSchema();
+    $newArray['users']['columns']['email_address'] = $newArray['users']['columns']['email'];
+    unset($newArray['users']['columns']['email']);
+    $newArray['users']['indexes']['users_email_address_unique'] = [
+        'type' => IndexType::unique,
+        'indexColumns' => ['email_address'],
+    ];
+    $new = Schema::fromSchemaArray($newArray);
+
+    $migration = (new SchemaDiffer(currentSchema: $snapshot, newSchema: $new))->getSchemaChanges()->getMigrationFunction();
+    eval($migration);
+
+    expect(hasColumn('users', 'email'))->toBeFalse();
+    expect(hasColumn('users', 'email_address'))->toBeTrue();
+    expect(getIndex('users', 'users_email_address_unique')->isUnique())->toBeTrue();
 })->with('databases');
 
 it('can migrate column with unsigned', function (string $connection) {
