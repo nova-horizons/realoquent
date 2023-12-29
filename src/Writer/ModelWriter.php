@@ -43,7 +43,9 @@ class ModelWriter
             throw new \InvalidArgumentException('The given table should not have a model: '.$table->name);
         }
 
-        if (($this->table->model ?? true) === true) {
+        $model = $this->table->model ?? true; // Assume if user didn't specify, that we should create a new model
+
+        if ($model === true) {
             $this->fullModel = RealoquentHelpers::buildModelName($modelNamespace, $this->table->name);
             $this->modelInfo = null;
         } else {
