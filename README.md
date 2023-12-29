@@ -11,7 +11,8 @@
     <a href="LICENSE.md"><img src="https://img.shields.io/badge/license-MIT-brightgreen.svg" alt="MIT Licensed"></a>
 </p>
 
-In a Laravel application, making a database-related change can be a bit complicated... Create a migration, create a model, fill out fillable/guarded, fill out casts, write validation, add relationship methods... What if it could all be done automatically?
+In a Laravel application, making a database-related change can be a bit complicated... Create a migration, create a model, fill out fillable/guarded, fill out casts, write
+validation, add relationship methods... What if it could all be done automatically?
 
 Realoquent defines your database and model structure in a single PHP file. Make an update to this PHP schema file and run a command and everything will be generated for you:
 
@@ -27,17 +28,19 @@ Realoquent defines your database and model structure in a single PHP file. Make 
 * Generate validation rules for your models
 * Generate groups of validation rules for different scenarios (create, edit, etc.)
 
-Realoquent is inspired by many of the functions of [Propel ORM](https://propelorm.org), like a single schema file as source of truth, and generated base model classes with user-editable model classes. Generated code is as strongly typed as possible, and uses
-type hints as a fallback (generated code passes PHPStan Level 9). This provides a better experience in your IDE and static analysis tools without requiring additional plugins or packages.
+Realoquent is inspired by many of the functions of [Propel ORM](https://propelorm.org), like a single schema file as source of truth, and generated base model classes with
+user-editable model classes. Generated code is as strongly typed as possible, and uses
+type hints as a fallback (generated code passes PHPStan Level 9). This provides a better experience in your IDE and static analysis tools without requiring additional plugins
+or packages.
 
 ## Table of Contents
+
 - [Example `schema.php`](#example-schemaphp)
 - [Setup](#setup)
 - [Usage](#usage)
 - [FAQ](#faq)
 - [Todo](#todo)
 - [Development Setup](#development-setup)
-
 
 ## Example `schema.php`
 
@@ -115,29 +118,37 @@ For more details, see the documentation:
 ## FAQ
 
 ### How does Realoquent compare to other Laravel schema/model generators?
-Realoquent is designed to have a schema file as the source of truth. It lives with your project, and is not only for initial project 
-scaffolding or setup. It allows for changes and code generation at any point without compromising your custom logic. The key focus is on databases 
-and models only. Today's Laravel ecosystem has a variety of patterns used in controllers and other parts. Realoquent specializes 
-in handling routine, repetitive tasks such as migrations and model configurations, leaving the details of logic to you.
+
+Realoquent is designed to have a schema file as the source of truth. It lives with your project, and is not only for initial project
+scaffolding or setup. It allows for changes and code generation at any point without compromising your custom logic. This package focuses only
+on databases and models, leaving other aspects like controllers or forms up to your teams preference. Realoquent specializes in handling
+the routine, repetitive tasks such as migrations and model configurations, leaving the details of logic or preferred to you.
 
 ### Why use a PHP file to define the schema, instead of Model properties or annotations?
-Using a PHP file to define the schema, as opposed to Model properties or annotations, allows for a separation 
-between the database schema and the models. This means that you can have tables in your database that do not 
-necessarily have corresponding models in your code. Also, having the schema in one PHP file provides a cohesive,
-scannable overview of your entire schema, making it easier to comprehend and manage. Using PHP instead of YAML/etc also allows you 
-to reference constants, classes or even call functions to define your schema. Furthermore, this approach
-emphasizes the principle of separation of concerns in your project. By moving the schema to a configuration file,
-it ensures that your code files are reserved exclusively for your actual application logic. This improves the overall
-organization and readability of your codebase.
+
+Using a separate PHP file to define the schema, as opposed to Model properties or annotations, provides for several benefits:
+
+* It provides one PHP file provides a cohesive, scannable overview of your entire schema, making it easier to comprehend and manage.
+* Using a separate schema file to create standard Eloquent models ensures that Realoquent operates separately from your production system.
+  This separation allows you to have confidence in Laravel's standard framework code. You don't need to worry about Realoquent doing anything suspicious, and you can
+  remove Realoquent at any time at still keep your plain Eloquent models.
+* It allows for a separation between the database schema and the models. This means that you can have tables in your database that do not
+  necessarily have corresponding models in your code.
+* Using PHP instead of YAML/etc also allows you to reference constants, classes or even call functions to define your schema.
+* This approach emphasizes the principle of separation of concerns in your project. By moving the schema to a configuration file,
+  it ensures that your code files are reserved exclusively for your actual application logic. This improves the overall
+  organization and readability of your codebase.
 
 ### Why generate a base model class?
-Generating a base model class is a helpful practice to organize the code better and promote cleaner models. 
+
+Generating a base model class is a helpful practice to organize the code better and promote cleaner models.
 The base model class contains the auto-generated code such as fillable, guarded, casts properties, validation, and PHPDocs
 for model properties. The main model file then stays small tidy, containing only your custom logic. This ensures that
 auto-generated code and custom code are kept separate, reducing the chance of accidental changes and making future
 updates simpler and less error-prone.
 
 ### Why does everything in schema.php have a realoquentId?
+
 Each item in schema.php having a realoquentId serves as a unique identifier. This unique identifier is used to
 track the schema changes over time. When you run the realoquent:diff command, it compares these IDs to identify
 which parts have been added, removed, or changed. Specifically this helps with detecting when a column/table/index
@@ -170,16 +181,16 @@ If you want to contribute changes to Realoquent:
 1. Clone this repo
 2. Run `composer install`
 3. Run `./vendor/bin/sail up -d` to start test databases
-4. Make your changes 
+4. Make your changes
 5. Run `composer quality` to run CS Fixer, Pest, and PHPStan
 
 To include in another project, add the following to your `composer.json` file, then follow normal setup:
 
 ```json
 "repositories": [
-    {
-        "type": "path",
-        "url": "/path/to/your/realoquent"
-    }
+{
+"type": "path",
+"url": "/path/to/your/realoquent"
+}
 ]
 ```
