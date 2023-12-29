@@ -166,13 +166,14 @@ Realoquent is still in progress. Here's some of the things that need to be done:
 - Generate other validation helper methods, like `validateAndCreate` or `validateAndFill`
 - Support for Expressions in column defaults `default(new Expression('(JSON_ARRAY())'))`
 - Support for `spatialIndex`
-- Support for route binding configuration
 - Support for `$column->hidden/visible`
 - Support for `$table->with/withCount/preventsLazyLoading`
 - Support for `$table->engine/collation/charset`
 - Support for `$column->collation/charset/useCurrent/useCurrentOnUpdate`
+- Support for route binding configuration
 - Generate `down` migrations
 - Generate other things (Model Factories, Nova Resources, Form Requests, other form builders?)
+- Detected any installed code-style tool and automatically set `cs_fixer_command`
 
 ## Development Setup
 
