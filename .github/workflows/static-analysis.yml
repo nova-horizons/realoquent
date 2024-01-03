@@ -9,19 +9,21 @@ on:
 
 jobs:
   test:
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: true
       matrix:
-        os: [ ubuntu-latest ]
-        php: [ 8.2, 8.1 ]
+        php: [ 8.3, 8.2, 8.1 ]
         laravel: [ 10.* ]
-        stability: [ prefer-stable ]
+        testbench: [ 8.* ]
+        dbal: [ 3.7.*, 3.6.* ]
         include:
           - laravel: 10.*
             testbench: 8.*
+#          - laravel: 11.*
+#            testbench: 9.*
 
-    name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - ${{ matrix.os }}
+    name: P${{ matrix.php }} - L${{ matrix.laravel }} - DBAL${{ matrix.dbal }}
 
     steps:
       - name: Checkout code
@@ -35,10 +37,7 @@ jobs:
           coverage: none
 
       - name: Install dependencies
-        run: |
-          composer remove --dev laravel/sail
-          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update
-          composer update --${{ matrix.stability }} --prefer-dist --no-interaction
+        run: composer update --with "illuminate/support:${{ matrix.laravel }}" --with "illuminate/database:${{ matrix.laravel }}" --with "doctrine/dbal:${{ matrix.dbal }}" --with "orchestra/testbench:${{ matrix.testbench }}" --no-interaction
 
       - name: Run static analysis
         uses: php-actions/phpstan@v3
