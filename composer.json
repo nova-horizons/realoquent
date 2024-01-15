@@ -11,7 +11,7 @@
         "nikic/php-parser": "^4.18.0"
     },
     "require-dev": {
-        "larastan/larastan": "^2.7",
+        "larastan/larastan": "^2.8",
         "laravel/pint": "^1.13",
         "laravel/sail": "^1.27",
         "orchestra/testbench": "^8.19",
