@@ -15,7 +15,7 @@
         "laravel/pint": "^1.13",
         "laravel/sail": "^1.27",
         "orchestra/testbench": "^8.21",
-        "pestphp/pest": "^2.33",
+        "pestphp/pest": "^2.34",
         "phpstan/phpstan": "^1.10"
     },
     "autoload": {
