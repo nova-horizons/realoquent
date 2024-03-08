@@ -10,9 +10,9 @@ updates:
     versioning-strategy: increase
     schedule:
       interval: "weekly"
-      day: "monday"
+      day: "thursday"
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
-      day: "monday"
+      day: "thursday"
