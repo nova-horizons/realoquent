@@ -2,7 +2,6 @@
 
 namespace NovaHorizons\Realoquent;
 
-use Doctrine\DBAL\Schema\Table as DoctrineTable;
 use Illuminate\Support\Collection;
 use NovaHorizons\Realoquent\DataObjects\Schema;
 use NovaHorizons\Realoquent\DataObjects\Table;
@@ -19,17 +18,17 @@ class SchemaManager
 
     /**
      * @param  Collection<string, string>  $models
-     * @param  DoctrineTable[]  $doctrineTables
+     * @param  array<int, string>  $dbTables
      */
-    public function rebuildSchema(Collection $models, array $doctrineTables): Schema
+    public function rebuildSchema(Collection $models, array $dbTables): Schema
     {
         $schema = new Schema();
 
-        foreach ($doctrineTables as $doctrineTable) {
-            $realTable = Table::fromDBAL($doctrineTable);
-            $model = $models[$doctrineTable->getName()] ?? null;
+        foreach ($dbTables as $dbTableName) {
+            $realTable = Table::fromDB($dbTableName);
+            $model = $models[$dbTableName] ?? null;
             if ($model) {
-                unset($models[$doctrineTable->getName()]);
+                unset($models[$dbTableName]);
                 $realTable->setAndParseModel($model);
             }
             $schema->addTable($realTable);

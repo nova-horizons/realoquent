@@ -19,7 +19,6 @@ class GenerateSchema extends Command
 
     /**
      * @throws \Throwable
-     * @throws \Doctrine\DBAL\Exception
      */
     public function handle(RealoquentManager $manager): int
     {

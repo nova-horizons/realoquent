@@ -2,7 +2,8 @@
 
 namespace NovaHorizons\Realoquent\DataObjects;
 
-use Doctrine\DBAL\Schema\Table as DoctrineTable;
+use Illuminate\Support\Facades\DB;
+use NovaHorizons\Realoquent\DatabaseAnalyzer;
 use NovaHorizons\Realoquent\Enums\IndexType;
 use NovaHorizons\Realoquent\RealoquentHelpers;
 use NovaHorizons\Realoquent\Traits\Comparable;
@@ -252,19 +253,21 @@ class Table
         }
     }
 
-    public static function fromDBAL(DoctrineTable $dbalTable): self
+    public static function fromDB(string $name): self
     {
         $table = new self(
-            name: $dbalTable->getName(),
+            name: $name,
             realoquentId: RealoquentHelpers::newId()
         );
 
-        foreach ($dbalTable->getColumns() as $column) {
-            $table->addColumn(Column::fromDBAL($column, $table->name));
+        $columns = DatabaseAnalyzer::getColumns($name);
+        foreach ($columns as $column) {
+            $table->addColumn(Column::fromDB($column, $table->name));
         }
 
-        foreach ($dbalTable->getIndexes() as $index) {
-            $table->addIndex(Index::fromDBAL($index, $table->name));
+        $indexes = DB::connection()->getSchemaBuilder()->getIndexes($name);
+        foreach ($indexes as $index) {
+            $table->addIndex(Index::fromDB($index, $table->name));
         }
 
         return $table;

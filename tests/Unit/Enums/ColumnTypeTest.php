@@ -9,15 +9,6 @@ use PHPStan\PhpDocParser\Parser\PhpDocParser;
 use PHPStan\PhpDocParser\Parser\TokenIterator;
 use PHPStan\PhpDocParser\Parser\TypeParser;
 
-test('dbal type mapping up to date', function () {
-    $reflect = new ReflectionClass(\Doctrine\DBAL\Types\Type::class);
-    $types = $reflect->getConstant('BUILTIN_TYPES_MAP');
-
-    foreach ($types as $typeClass) {
-        expect(ColumnType::fromDBAL(new $typeClass()))->toBeInstanceOf(ColumnType::class);
-    }
-});
-
 test('all types have default cast', function () {
     foreach (ColumnType::cases() as $typeClass) {
         $typeClass->getCast(); // Will throw exception if not defined
