@@ -70,6 +70,7 @@ dataset('main-column-types', function () {
      * @see vendor/laravel/framework/src/Illuminate/Database/Schema/Grammars/SQLiteGrammar.php
      */
     $dataset['sqlite--bigInteger'][2] = ColumnType::integer;
+    $dataset['sqlite--boolean'][2] = ColumnType::tinyInteger;
     $dataset['sqlite--char'][2] = ColumnType::string;
     $dataset['sqlite--double'][2] = ColumnType::float;
     $dataset['sqlite--json'][2] = ColumnType::text;

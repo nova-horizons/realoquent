@@ -2,34 +2,8 @@
 
 namespace NovaHorizons\Realoquent\Enums;
 
-use Doctrine\DBAL\Types\ArrayType;
-use Doctrine\DBAL\Types\AsciiStringType;
-use Doctrine\DBAL\Types\BigIntType;
-use Doctrine\DBAL\Types\BinaryType;
-use Doctrine\DBAL\Types\BlobType;
-use Doctrine\DBAL\Types\BooleanType;
-use Doctrine\DBAL\Types\DateImmutableType;
-use Doctrine\DBAL\Types\DateIntervalType;
-use Doctrine\DBAL\Types\DateTimeImmutableType;
-use Doctrine\DBAL\Types\DateTimeType;
-use Doctrine\DBAL\Types\DateTimeTzImmutableType;
-use Doctrine\DBAL\Types\DateTimeTzType;
-use Doctrine\DBAL\Types\DateType;
-use Doctrine\DBAL\Types\DecimalType;
-use Doctrine\DBAL\Types\FloatType;
-use Doctrine\DBAL\Types\GuidType;
-use Doctrine\DBAL\Types\IntegerType;
-use Doctrine\DBAL\Types\JsonType;
-use Doctrine\DBAL\Types\ObjectType;
-use Doctrine\DBAL\Types\SimpleArrayType;
-use Doctrine\DBAL\Types\SmallIntType;
-use Doctrine\DBAL\Types\StringType;
-use Doctrine\DBAL\Types\TextType;
-use Doctrine\DBAL\Types\TimeImmutableType;
-use Doctrine\DBAL\Types\TimeType;
 use Illuminate\Database\Schema\Builder;
 use Illuminate\Support\Facades\DB;
-use RuntimeException;
 
 /**
  * @see https://laravel.com/docs/10.x/migrations#available-column-types Documentation on available types
@@ -114,41 +88,6 @@ enum ColumnType: string
     case ulid = 'ulid'; // CHAR(26)
     case uuid = 'uuid';
     case year = 'year';
-
-    public static function fromDBAL(\Doctrine\DBAL\Types\Type $dbalType): self
-    {
-        /**
-         * @see \Doctrine\DBAL\Types\Type::BUILTIN_TYPES_MAP
-         */
-        return match (get_class($dbalType)) {
-            ArrayType::class => self::json,
-            AsciiStringType::class => self::string,
-            BigIntType::class => self::bigInteger,
-            BinaryType::class => self::binary,
-            BlobType::class => self::binary,
-            BooleanType::class => self::boolean,
-            DateType::class => self::date,
-            DateImmutableType::class => self::date,
-            DateIntervalType::class => self::string,
-            DateTimeType::class => self::dateTime,
-            DateTimeImmutableType::class => self::dateTime,
-            DateTimeTzType::class => self::dateTimeTz,
-            DateTimeTzImmutableType::class => self::dateTimeTz,
-            DecimalType::class => self::decimal,
-            FloatType::class => self::float,
-            GuidType::class => self::uuid,
-            IntegerType::class => self::integer,
-            JsonType::class => self::json,
-            ObjectType::class => self::longText,
-            SimpleArrayType::class => self::longText,
-            SmallIntType::class => self::smallInteger,
-            StringType::class => self::string,
-            TextType::class => self::text,
-            TimeType::class => self::time,
-            TimeImmutableType::class => self::time,
-            default => throw new RuntimeException('Unknown DBAL type: '.get_class($dbalType)),
-        };
-    }
 
     /**
      * Get appropriate Eloquent Cast for column

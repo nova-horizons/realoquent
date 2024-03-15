@@ -16,7 +16,6 @@ use Illuminate\Support\Stringable;
 use NovaHorizons\Realoquent\Enums\ColumnType;
 use NovaHorizons\Realoquent\RealoquentHelpers;
 use NovaHorizons\Realoquent\Traits\Comparable;
-use NovaHorizons\Realoquent\TypeDetector;
 
 class Column
 {
@@ -76,21 +75,22 @@ class Column
         $this->reconcileTypeAndProperties();
     }
 
-    public static function fromDBAL(\Doctrine\DBAL\Schema\Column $dbalColumn, string $tableName): self
+    /**
+     * @param  array<string, mixed>  $dbColumn
+     */
+    public static function fromDB(array $dbColumn, string $tableName): self
     {
-        $type = TypeDetector::fromDBAL($dbalColumn, $tableName);
-
         return new self(
-            name: $dbalColumn->getName(),
+            name: $dbColumn['name'],
             tableName: $tableName,
-            type: $type,
-            length: $dbalColumn->getLength(),
-            precision: $dbalColumn->getPrecision(),
-            scale: $dbalColumn->getScale(),
-            unsigned: $dbalColumn->getUnsigned(),
-            nullable: ! $dbalColumn->getNotnull(),
-            default: $dbalColumn->getDefault(),
-            autoIncrement: $dbalColumn->getAutoincrement(),
+            type: $dbColumn['realoquent_type'],
+            length: $dbColumn['length'],
+            precision: $dbColumn['precision'],
+            scale: $dbColumn['scale'],
+            unsigned: $dbColumn['unsigned'],
+            nullable: $dbColumn['nullable'],
+            default: $dbColumn['default'],
+            autoIncrement: $dbColumn['auto_increment'],
             realoquentId: RealoquentHelpers::newId(),
         );
     }
