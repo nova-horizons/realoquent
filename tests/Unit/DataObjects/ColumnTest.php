@@ -16,10 +16,11 @@ it('returns correct phpdoc type', function (ColumnType $type, string $phpType) {
 })->with([
     [ColumnType::bigInteger, 'int'],
     [ColumnType::integer, 'int'],
+    [ColumnType::unsignedInteger, 'int'],
     [ColumnType::dateTime, Carbon::class],
     [ColumnType::timestamp, Carbon::class],
     [ColumnType::float, 'float'],
-    [ColumnType::unsignedDecimal, 'float'],
+    [ColumnType::decimal, 'float'],
     [ColumnType::string, 'string'],
     [ColumnType::json, 'mixed'],
 ]);
@@ -34,9 +35,10 @@ it('returns correct nullable phpdoc type', function (ColumnType $type, string $p
 })->with([
     [ColumnType::bigInteger, '?int'],
     [ColumnType::integer, '?int'],
+    [ColumnType::unsignedInteger, '?int'],
     [ColumnType::dateTime, '?'.Carbon::class],
     [ColumnType::timestamp, '?'.Carbon::class],
-    [ColumnType::unsignedDecimal, '?float'],
+    [ColumnType::decimal, '?float'],
     [ColumnType::float, '?float'],
     [ColumnType::string, '?string'],
     [ColumnType::json, '?mixed'],
@@ -64,7 +66,6 @@ it('can generate validation', function (string $expectedValidation, Column $colu
     ['required|ulid', new Column('id', 'users', ColumnType::ulid)],
     ['required|uuid', new Column('id', 'users', ColumnType::uuid)],
     ['required|float', fn () => new Column('id', 'users', ColumnType::float)],
-    ['required|float|min:0', fn () => new Column('id', 'users', ColumnType::unsignedFloat)],
     ['required|date', new Column('id', 'users', ColumnType::date)],
     ['required|date', fn () => new Column('id', 'users', ColumnType::dateTime)],
     ['required|date', fn () => new Column('id', 'users', ColumnType::timestamp)],

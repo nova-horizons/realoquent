@@ -9,8 +9,8 @@ use NovaHorizons\Realoquent\Enums\ColumnType;
 dataset('column-and-casts', [
     // ColumnType $type, ?string $schemaSpecifiedCast, string $phpType
     [ColumnType::integer, null, 'int'],
-    [ColumnType::unsignedDecimal, null, 'float'],
-    [ColumnType::unsignedDecimal, 'decimal:5', 'float'],
+    [ColumnType::decimal, null, 'float'],
+    [ColumnType::decimal, 'decimal:5', 'float'],
     [ColumnType::dateTime, null, Carbon::class],
     [ColumnType::dateTime, 'immutable_datetime', Carbon::class],
     [ColumnType::json, 'array', 'array'],
@@ -72,7 +72,6 @@ dataset('main-column-types', function () {
     $dataset['sqlite--bigInteger'][2] = ColumnType::integer;
     $dataset['sqlite--boolean'][2] = ColumnType::tinyInteger;
     $dataset['sqlite--char'][2] = ColumnType::string;
-    $dataset['sqlite--double'][2] = ColumnType::float;
     $dataset['sqlite--json'][2] = ColumnType::text;
     $dataset['sqlite--jsonb'][2] = ColumnType::text;
     $dataset['sqlite--longText'][2] = ColumnType::text;
