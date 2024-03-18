@@ -6,7 +6,7 @@ use Tests\TestCase\RealoquentTestClass;
 uses(RealoquentTestClass::class);
 
 it('can handle configuration', function () {
-    setupDbAndSchema('sqlite');
+    setupDbAndSchema(RL_SQLITE);
     $manager = new RealoquentManager(realoquentConfig());
     $schemaManager = $manager->getSchemaManager();
 
@@ -20,7 +20,7 @@ it('can handle configuration', function () {
 });
 
 it('can create snapshot', function () {
-    setupDbAndSchema('sqlite');
+    setupDbAndSchema(RL_SQLITE);
     $manager = new RealoquentManager(realoquentConfig());
     $schemaManager = $manager->getSchemaManager();
     expect($schemaManager->getSchemaSnapshotPath())->not->toBeFile();
@@ -29,7 +29,7 @@ it('can create snapshot', function () {
 });
 
 it('can write schema', function () {
-    setupDbAndSchema('sqlite');
+    setupDbAndSchema(RL_SQLITE);
     $manager = new RealoquentManager(realoquentConfig());
     $schemaManager = $manager->getSchemaManager();
     // Write is handled in setupDbAndSchema
@@ -37,7 +37,7 @@ it('can write schema', function () {
 });
 
 it('can write split schemas', function () {
-    setupDbAndSchema('sqlite');
+    setupDbAndSchema(RL_SQLITE);
     $manager = new RealoquentManager(realoquentConfig());
     $schemaManager = $manager->getSchemaManager();
     expect($schemaManager->getSplitSchemaPath())->not->toBeDirectory();
@@ -47,7 +47,7 @@ it('can write split schemas', function () {
 });
 
 it('can load schema snapshot', function () {
-    setupDbAndSchema('sqlite');
+    setupDbAndSchema(RL_SQLITE);
     $manager = new RealoquentManager(realoquentConfig());
     $schemaManager = $manager->getSchemaManager();
     $schemaManager->makeSchemaSnapshot();
@@ -56,7 +56,7 @@ it('can load schema snapshot', function () {
 });
 
 it('can load schema', function () {
-    setupDbAndSchema('sqlite');
+    setupDbAndSchema(RL_SQLITE);
     $manager = new RealoquentManager(realoquentConfig());
     $schemaManager = $manager->getSchemaManager();
     $schema = $schemaManager->loadSchema();

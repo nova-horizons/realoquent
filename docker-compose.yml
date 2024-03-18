@@ -1,5 +1,5 @@
 services:
-    mysql:
+    mysql8:
         image: 'mysql/mysql-server:8.0'
         ports:
             - '${FORWARD_MYSQL_PORT:-33306}:3306'
@@ -23,7 +23,7 @@ services:
                 - '-p${DB_PASSWORD}'
             retries: 3
             timeout: 5s
-    pgsql:
+    pgsql14:
         image: 'postgres:14'
         platform: linux/amd64 #https://stackoverflow.com/questions/62807717/how-can-i-solve-postgresql-scram-authentication-problem
         ports:
@@ -50,7 +50,7 @@ services:
                 - '${DB_USERNAME}'
             retries: 3
             timeout: 5s
-    mariadb:
+    mariadb10:
         image: 'mariadb:10'
         ports:
             - '${FORWARD_MARIADB_PORT:-33308}:3306'

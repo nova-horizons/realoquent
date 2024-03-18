@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'rl_mysql' => [
+    'rl_mysql8' => [
         'driver' => 'mysql',
         'host' => env('DB_HOST', '127.0.0.1'),
         'port' => env('FORWARD_MYSQL_PORT', 33306),
@@ -15,7 +15,7 @@ return [
         'strict' => true,
         'engine' => null,
     ],
-    'rl_mariadb' => [
+    'rl_mariadb10' => [
         'driver' => 'mysql',
         'host' => env('DB_HOST', '127.0.0.1'),
         'port' => env('FORWARD_MARIADB_PORT', 33308),
@@ -29,7 +29,7 @@ return [
         'strict' => true,
         'engine' => null,
     ],
-    'rl_pgsql' => [
+    'rl_pgsql14' => [
         'driver' => 'pgsql',
         'host' => env('DB_HOST', '127.0.0.1'),
         'port' => env('FORWARD_PGSQL_PORT', 35432),

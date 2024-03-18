@@ -17,7 +17,7 @@ it('errors when no schema', function () {
 });
 
 it('writes schema', function () {
-    setupDbAndSchema('sqlite');
+    setupDbAndSchema(RL_SQLITE);
     $schema = (new RealoquentManager(realoquentConfig()))->getSchemaManager()->loadSchema();
     expect(isset($schema->getTables()['new_table']))->toBeFalse();
 

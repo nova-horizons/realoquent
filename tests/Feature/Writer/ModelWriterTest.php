@@ -102,7 +102,7 @@ it('preserves an existing base class', function () {
 });
 
 it('can generate code that passes phpstan', function () {
-    setupDbAndSchema('sqlite');
+    setupDbAndSchema(RL_SQLITE);
     $rootDir = __DIR__.'/../../../';
 
     $schema = Schema::fromSchemaArray(generatedSchema());

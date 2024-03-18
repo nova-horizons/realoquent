@@ -21,7 +21,7 @@ dataset('column-and-casts', [
 ]);
 
 dataset('main-column-types', function () {
-    // Create array like: 'sqlite--bigInteger' => ['sqlite', ColumnType::bigInteger, ColumnType::integer]
+    // Create array like: RL_SQLITE . '--bigInteger' => ['sqlite', ColumnType::bigInteger, ColumnType::integer]
     // Value is [connection, column type, expected column type]
     $types = [
         ColumnType::bigInteger,
@@ -51,7 +51,7 @@ dataset('main-column-types', function () {
     ];
 
     $dataset = [];
-    foreach (['sqlite', 'mysql', 'mariadb', 'pgsql'] as $db) {
+    foreach (RL_DATABASES as $db) {
         foreach ($types as $type) {
             $dataset[$db.'--'.$type->value] = [$db, $type, $type];
         }
@@ -69,21 +69,21 @@ dataset('main-column-types', function () {
      * @see https://www.sqlite.org/datatype3.html
      * @see vendor/laravel/framework/src/Illuminate/Database/Schema/Grammars/SQLiteGrammar.php
      */
-    $dataset['sqlite--bigInteger'][2] = ColumnType::integer;
-    $dataset['sqlite--boolean'][2] = ColumnType::tinyInteger;
-    $dataset['sqlite--char'][2] = ColumnType::string;
-    $dataset['sqlite--json'][2] = ColumnType::text;
-    $dataset['sqlite--jsonb'][2] = ColumnType::text;
-    $dataset['sqlite--longText'][2] = ColumnType::text;
-    $dataset['sqlite--mediumInteger'][2] = ColumnType::integer;
-    $dataset['sqlite--mediumText'][2] = ColumnType::text;
-    $dataset['sqlite--smallInteger'][2] = ColumnType::integer;
-    $dataset['sqlite--timestamp'][2] = ColumnType::dateTime;
-    $dataset['sqlite--tinyInteger'][2] = ColumnType::integer;
-    $dataset['sqlite--tinyText'][2] = ColumnType::text;
-    $dataset['sqlite--uuid'][2] = ColumnType::string;
-    $dataset['sqlite--ulid'][2] = ColumnType::string;
-    $dataset['sqlite--year'][2] = ColumnType::integer;
+    $dataset[RL_SQLITE.'--bigInteger'][2] = ColumnType::integer;
+    $dataset[RL_SQLITE.'--boolean'][2] = ColumnType::tinyInteger;
+    $dataset[RL_SQLITE.'--char'][2] = ColumnType::string;
+    $dataset[RL_SQLITE.'--json'][2] = ColumnType::text;
+    $dataset[RL_SQLITE.'--jsonb'][2] = ColumnType::text;
+    $dataset[RL_SQLITE.'--longText'][2] = ColumnType::text;
+    $dataset[RL_SQLITE.'--mediumInteger'][2] = ColumnType::integer;
+    $dataset[RL_SQLITE.'--mediumText'][2] = ColumnType::text;
+    $dataset[RL_SQLITE.'--smallInteger'][2] = ColumnType::integer;
+    $dataset[RL_SQLITE.'--timestamp'][2] = ColumnType::dateTime;
+    $dataset[RL_SQLITE.'--tinyInteger'][2] = ColumnType::integer;
+    $dataset[RL_SQLITE.'--tinyText'][2] = ColumnType::text;
+    $dataset[RL_SQLITE.'--uuid'][2] = ColumnType::string;
+    $dataset[RL_SQLITE.'--ulid'][2] = ColumnType::string;
+    $dataset[RL_SQLITE.'--year'][2] = ColumnType::integer;
 
     /**
      * MySQL
@@ -91,11 +91,11 @@ dataset('main-column-types', function () {
      * @see https://dev.mysql.com/doc/refman/8.0/en/data-types.html
      * @see vendor/laravel/framework/src/Illuminate/Database/Schema/Grammars/MySqlGrammar.php
      */
-    $dataset['mysql--boolean'][2] = ColumnType::tinyInteger;
-    $dataset['mysql--float'][2] = ColumnType::double;
-    $dataset['mysql--jsonb'][2] = ColumnType::json;
-    $dataset['mysql--uuid'][2] = ColumnType::char;
-    $dataset['mysql--ulid'][2] = ColumnType::char;
+    $dataset[RL_MYSQL_8.'--boolean'][2] = ColumnType::tinyInteger;
+    $dataset[RL_MYSQL_8.'--float'][2] = ColumnType::double;
+    $dataset[RL_MYSQL_8.'--jsonb'][2] = ColumnType::json;
+    $dataset[RL_MYSQL_8.'--uuid'][2] = ColumnType::char;
+    $dataset[RL_MYSQL_8.'--ulid'][2] = ColumnType::char;
 
     /**
      * MariaDB
@@ -103,12 +103,12 @@ dataset('main-column-types', function () {
      * @see https://mariadb.com/kb/en/data-types/
      * @see vendor/laravel/framework/src/Illuminate/Database/Schema/Grammars/MySqlGrammar.php
      */
-    $dataset['mariadb--boolean'][2] = ColumnType::tinyInteger;
-    $dataset['mariadb--float'][2] = ColumnType::double;
-    $dataset['mariadb--json'][2] = ColumnType::longText;
-    $dataset['mariadb--jsonb'][2] = ColumnType::longText;
-    $dataset['mariadb--uuid'][2] = ColumnType::char;
-    $dataset['mariadb--ulid'][2] = ColumnType::char;
+    $dataset[RL_MARIADB_10.'--boolean'][2] = ColumnType::tinyInteger;
+    $dataset[RL_MARIADB_10.'--float'][2] = ColumnType::double;
+    $dataset[RL_MARIADB_10.'--json'][2] = ColumnType::longText;
+    $dataset[RL_MARIADB_10.'--jsonb'][2] = ColumnType::longText;
+    $dataset[RL_MARIADB_10.'--uuid'][2] = ColumnType::char;
+    $dataset[RL_MARIADB_10.'--ulid'][2] = ColumnType::char;
 
     /**
      * Postgres
@@ -116,15 +116,15 @@ dataset('main-column-types', function () {
      * @see https://www.postgresql.org/docs/14/datatype.html
      * @see vendor/laravel/framework/src/Illuminate/Database/Schema/Grammars/PostgresGrammar.php
      */
-    $dataset['pgsql--dateTime'][2] = ColumnType::timestamp;
-    $dataset['pgsql--float'][2] = ColumnType::double;
-    $dataset['pgsql--longText'][2] = ColumnType::text;
-    $dataset['pgsql--mediumInteger'][2] = ColumnType::integer;
-    $dataset['pgsql--mediumText'][2] = ColumnType::text;
-    $dataset['pgsql--tinyInteger'][2] = ColumnType::smallInteger;
-    $dataset['pgsql--tinyText'][2] = ColumnType::string;
-    $dataset['pgsql--ulid'][2] = ColumnType::char;
-    $dataset['pgsql--year'][2] = ColumnType::integer;
+    $dataset[RL_PGSQL_14.'--dateTime'][2] = ColumnType::timestamp;
+    $dataset[RL_PGSQL_14.'--float'][2] = ColumnType::double;
+    $dataset[RL_PGSQL_14.'--longText'][2] = ColumnType::text;
+    $dataset[RL_PGSQL_14.'--mediumInteger'][2] = ColumnType::integer;
+    $dataset[RL_PGSQL_14.'--mediumText'][2] = ColumnType::text;
+    $dataset[RL_PGSQL_14.'--tinyInteger'][2] = ColumnType::smallInteger;
+    $dataset[RL_PGSQL_14.'--tinyText'][2] = ColumnType::string;
+    $dataset[RL_PGSQL_14.'--ulid'][2] = ColumnType::char;
+    $dataset[RL_PGSQL_14.'--year'][2] = ColumnType::integer;
 
     return $dataset;
 });
