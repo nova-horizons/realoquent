@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Database\Eloquent\Casts\AsStringable;
 use Illuminate\Support\Carbon;
 use NovaHorizons\Realoquent\DataObjects\Column;
 use NovaHorizons\Realoquent\Enums\ColumnType;
@@ -16,10 +17,11 @@ it('returns correct phpdoc type', function (ColumnType $type, string $phpType) {
 })->with([
     [ColumnType::bigInteger, 'int'],
     [ColumnType::integer, 'int'],
+    [ColumnType::unsignedInteger, 'int'],
     [ColumnType::dateTime, Carbon::class],
     [ColumnType::timestamp, Carbon::class],
     [ColumnType::float, 'float'],
-    [ColumnType::unsignedDecimal, 'float'],
+    [ColumnType::decimal, 'float'],
     [ColumnType::string, 'string'],
     [ColumnType::json, 'mixed'],
 ]);
@@ -34,9 +36,10 @@ it('returns correct nullable phpdoc type', function (ColumnType $type, string $p
 })->with([
     [ColumnType::bigInteger, '?int'],
     [ColumnType::integer, '?int'],
+    [ColumnType::unsignedInteger, '?int'],
     [ColumnType::dateTime, '?'.Carbon::class],
     [ColumnType::timestamp, '?'.Carbon::class],
-    [ColumnType::unsignedDecimal, '?float'],
+    [ColumnType::decimal, '?float'],
     [ColumnType::float, '?float'],
     [ColumnType::string, '?string'],
     [ColumnType::json, '?mixed'],
@@ -51,6 +54,16 @@ it('returns user-specified casts', function (ColumnType $type, ?string $schemaSp
     ))->getPhpType())->toBe($phpType);
 })->with('column-and-casts');
 
+it('handles user-specified casts with nullable', function () {
+    expect((new Column(
+        name: 'id',
+        tableName: 'users',
+        type: ColumnType::string,
+        nullable: true,
+        cast: AsStringable::class,
+    ))->getPhpType())->toBe('\Illuminate\Support\Stringable|string|null');
+});
+
 it('can generate validation', function (string $expectedValidation, Column $column) {
     expect(implode('|', $column->generateDefaultValidation()))->toBe($expectedValidation);
 })->with([
@@ -64,7 +77,6 @@ it('can generate validation', function (string $expectedValidation, Column $colu
     ['required|ulid', new Column('id', 'users', ColumnType::ulid)],
     ['required|uuid', new Column('id', 'users', ColumnType::uuid)],
     ['required|float', fn () => new Column('id', 'users', ColumnType::float)],
-    ['required|float|min:0', fn () => new Column('id', 'users', ColumnType::unsignedFloat)],
     ['required|date', new Column('id', 'users', ColumnType::date)],
     ['required|date', fn () => new Column('id', 'users', ColumnType::dateTime)],
     ['required|date', fn () => new Column('id', 'users', ColumnType::timestamp)],

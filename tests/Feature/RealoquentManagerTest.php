@@ -17,7 +17,7 @@ it('can generate schema', function (string $connection) {
 })->with('databases');
 
 it('can generate schema snapshot', function () {
-    setupDbAndSchema('sqlite');
+    setupDbAndSchema(RL_SQLITE);
     $manager = new RealoquentManager(realoquentConfig());
     $manager->generateAndWriteSchema();
     $schemaManager = $manager->getSchemaManager();
@@ -25,7 +25,7 @@ it('can generate schema snapshot', function () {
 })->with('databases');
 
 it('that mockSchema() matches setupDb()', function () {
-    setupDbAndSchema('mysql');
+    setupDbAndSchema(RL_MYSQL_8);
     $manager = new RealoquentManager(realoquentConfig());
     $freshString = (new SchemaWriter(
         schema: $manager->generateSchema(),
@@ -55,7 +55,7 @@ it('can find models', function (string $modelNamespace) {
 ]);
 
 it('can detect orphan models', function () {
-    setupDbAndSchema('sqlite');
+    setupDbAndSchema(RL_SQLITE);
     $manager = new RealoquentManager(realoquentConfig());
     $schema = $manager->generateSchema();
     expect($schema->getOrphanModels()->toArray())->toBe(['orphans' => '\Tests\Models\Orphan']);

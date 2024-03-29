@@ -16,7 +16,6 @@ use Illuminate\Support\Stringable;
 use NovaHorizons\Realoquent\Enums\ColumnType;
 use NovaHorizons\Realoquent\RealoquentHelpers;
 use NovaHorizons\Realoquent\Traits\Comparable;
-use NovaHorizons\Realoquent\TypeDetector;
 
 class Column
 {
@@ -76,21 +75,22 @@ class Column
         $this->reconcileTypeAndProperties();
     }
 
-    public static function fromDBAL(\Doctrine\DBAL\Schema\Column $dbalColumn, string $tableName): self
+    /**
+     * @param  array<string, mixed>  $dbColumn
+     */
+    public static function fromDB(array $dbColumn, string $tableName): self
     {
-        $type = TypeDetector::fromDBAL($dbalColumn, $tableName);
-
         return new self(
-            name: $dbalColumn->getName(),
+            name: $dbColumn['name'],
             tableName: $tableName,
-            type: $type,
-            length: $dbalColumn->getLength(),
-            precision: $dbalColumn->getPrecision(),
-            scale: $dbalColumn->getScale(),
-            unsigned: $dbalColumn->getUnsigned(),
-            nullable: ! $dbalColumn->getNotnull(),
-            default: $dbalColumn->getDefault(),
-            autoIncrement: $dbalColumn->getAutoincrement(),
+            type: $dbColumn['realoquent_type'],
+            length: $dbColumn['length'],
+            precision: $dbColumn['precision'],
+            scale: $dbColumn['scale'],
+            unsigned: $dbColumn['unsigned'],
+            nullable: $dbColumn['nullable'],
+            default: $dbColumn['default'],
+            autoIncrement: $dbColumn['auto_increment'],
             realoquentId: RealoquentHelpers::newId(),
         );
     }
@@ -173,7 +173,7 @@ class Column
      * Laravel has several shorthand types that can be used in migrations.
      * To minimize noise in schema.php, we can remove redundant properties based on the type
      *    ex. bigIncrements is unsigned & auto-incrementing; we don't need to separately list out those properties
-     * Also remove properties that DBAL returns even if they aren't valid for the column type
+     * Also remove properties that are returned even if they aren't valid for the column type
      */
     private function reconcileTypeAndProperties(): void
     {
@@ -186,11 +186,11 @@ class Column
             unset($this->length);
         }
 
-        if (! $this->type->supportsPrecision() || $this->precision === $this->type->getDefaultPrecision()) {
+        if (! $this->type->supportsPrecision()) {
             unset($this->precision);
         }
 
-        if (! $this->type->supportsScale() || $this->scale === $this->type->getDefaultScale()) {
+        if (! $this->type->supportsScale()) {
             unset($this->scale);
         }
 
@@ -294,7 +294,7 @@ class Column
 
         match ($this->type) {
             ColumnType::ipAddress => $rules[] = 'ip',
-            // ColumnType::macAddress => $rules[] = 'mac_address',
+            // TODO-macAddress ColumnType::macAddress => $rules[] = 'mac_address',
             ColumnType::ulid => $rules[] = 'ulid',
             ColumnType::uuid => $rules[] = 'uuid',
             default => null,

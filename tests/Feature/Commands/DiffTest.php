@@ -18,7 +18,7 @@ it('errors when no schema', function () {
 });
 
 it('errors when no schema snapshot', function () {
-    setupDbAndSchema('sqlite');
+    setupDbAndSchema(RL_SQLITE);
     $schema = (new RealoquentManager(realoquentConfig()))->getSchemaManager()->getSchemaSnapshotPath();
     if (file_exists($schema)) {
         unlink($schema);
@@ -29,7 +29,7 @@ it('errors when no schema snapshot', function () {
 });
 
 it('reports no changes', function () {
-    setupDbAndSchema('sqlite');
+    setupDbAndSchema(RL_SQLITE);
     $manager = new RealoquentManager(realoquentConfig());
     $manager->getSchemaManager()->makeSchemaSnapshot();
     $this->artisan(Diff::class)
@@ -38,7 +38,7 @@ it('reports no changes', function () {
 });
 
 it('bails on no', function () {
-    setupDbAndSchema('sqlite');
+    setupDbAndSchema(RL_SQLITE);
     $manager = new RealoquentManager(realoquentConfig());
     $manager->getSchemaManager()->makeSchemaSnapshot();
 

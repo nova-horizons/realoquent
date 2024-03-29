@@ -16,16 +16,20 @@ enum IndexType: string
     case index = 'index';
     case fullText = 'fullText';
     case primary = 'primary';
-    case spatialIndex = 'spatialIndex'; // TODO Untested
+    case spatialIndex = 'spatialIndex'; // TODO-Spatial Untested
     case unique = 'unique';
 
-    public static function fromDBAL(\Doctrine\DBAL\Schema\Index $dbalIndex): self
+    /**
+     * @param  array<string, mixed>  $dbIndex
+     */
+    public static function fromDB(array $dbIndex): self
     {
         return match (true) {
-            $dbalIndex->isPrimary() => self::primary,
-            $dbalIndex->isUnique() => self::unique,
-            $dbalIndex->hasFlag('fulltext') => self::fullText,
-            $dbalIndex->hasFlag('spatial') => self::spatialIndex,
+            $dbIndex['primary'] => self::primary,
+            $dbIndex['unique'] => self::unique,
+            $dbIndex['type'] === 'fulltext' => self::fullText,
+            $dbIndex['type'] === 'gin' => self::fullText,
+            $dbIndex['type'] === 'spatial' => self::spatialIndex, // TODO-Spatial Untested
             default => self::index,
         };
     }

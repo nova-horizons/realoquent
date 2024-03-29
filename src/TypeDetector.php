@@ -2,97 +2,136 @@
 
 namespace NovaHorizons\Realoquent;
 
-use Doctrine\DBAL\Schema\Column;
-use Doctrine\DBAL\Types\BooleanType;
-use Doctrine\DBAL\Types\DateTimeType;
-use Doctrine\DBAL\Types\DateType;
-use Doctrine\DBAL\Types\FloatType;
-use Doctrine\DBAL\Types\IntegerType;
-use Doctrine\DBAL\Types\JsonType;
-use Doctrine\DBAL\Types\StringType;
-use Doctrine\DBAL\Types\TextType;
-use Doctrine\DBAL\Types\Type;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use NovaHorizons\Realoquent\Enums\ColumnType;
+use RuntimeException;
 
 class TypeDetector
 {
     /**
-     * DBAL is fairly broad in how it resolves some of the types
-     * Ex: TIMESTAMP and DATETIME are both DateTimeType
-     *
-     * @var array<class-string<Type>>
+     * @param  array<string, mixed>  $dbColumn
      */
-    private static $controversialTypes = [
-        DateTimeType::class,
-        FloatType::class,
-        JsonType::class,
-        IntegerType::class,
-        DateType::class,
-        BooleanType::class,
-        StringType::class,
-        TextType::class,
-    ];
-
-    public static function fromDBAL(Column $dbalColumn, string $tableName): ColumnType
+    public static function fromDB(array $dbColumn): ColumnType
     {
-        if (! in_array(get_class($dbalColumn->getType()), self::$controversialTypes)) {
-            return ColumnType::fromDBAL($dbalColumn->getType());
-        }
+        $type = $dbColumn['type'];
 
-        return match (DB::connection()->getDriverName()) {
-            'mysql', 'mariadb' => self::fromMySQL($dbalColumn, $tableName),
-            'pgsql' => self::fromPostgreSQL($dbalColumn, $tableName),
-            default => ColumnType::fromDBAL($dbalColumn->getType()),
+        return match (true) {
+            DatabaseAnalyzer::isMysql() => self::fromMySQL($type),
+            DatabaseAnalyzer::isMariaDb() => self::fromMariaDb($type),
+            DatabaseAnalyzer::isPostgres() => self::fromPostgreSQL($type),
+            DatabaseAnalyzer::isSqlite() => self::fromSqlite($type),
+            default => throw new RuntimeException('Unsupported DB driver: '.DB::connection()->getDriverName()),
         };
     }
 
-    private static function fromMySQL(Column $dbalColumn, string $tableName): ColumnType
+    /**
+     * @param  array<string, mixed>  $dbColumn
+     * @return array{length: int|null, precision: int|null, scale: int|null} $info
+     */
+    public static function getInfo(array $dbColumn): array
     {
-        $info = DB::selectOne(
-            'SHOW COLUMNS FROM `'.$tableName.'` WHERE field = ?',
-            [$dbalColumn->getName()]
-        );
-        $type = $info->Type;
-        $type = Str::before($type, '(');
+        $matches = [];
+        $pattern = '/[a-z+]\((\d+)(?:,(\d+))?\)/i';
 
-        return match ($type) {
+        preg_match($pattern, $dbColumn['type'], $matches);
+
+        $precision = isset($matches[1]) ? intval($matches[1]) : null;
+        $scale = isset($matches[2]) ? intval($matches[2]) : null;
+        if ($precision && ! $scale) {
+            $length = $precision;
+            $precision = null;
+        } else {
+            $length = null;
+        }
+
+        return [
+            'length' => $length,
+            'precision' => $precision,
+            'scale' => $scale,
+        ];
+    }
+
+    private static function fromMySQL(string $type): ColumnType
+    {
+        $baseType = Str::before($type, '('); // varchar(255) -> varchar
+        $baseType = Str::before($baseType, ' '); // integer unsigned -> integer
+
+        return match ($baseType) {
+            'bigint' => ColumnType::bigInteger,
+            'blob' => ColumnType::binary,
             'char' => ColumnType::char,
+            'date' => ColumnType::date,
+            'datetime' => ColumnType::dateTime,
+            'decimal' => ColumnType::decimal,
             'double' => ColumnType::double,
+            'int' => ColumnType::integer,
+            'json' => ColumnType::json,
             'longtext' => ColumnType::longText,
             'mediumint' => ColumnType::mediumInteger,
             'mediumtext' => ColumnType::mediumText,
+            'smallint' => ColumnType::smallInteger,
+            'time' => ColumnType::time,
             'timestamp' => ColumnType::timestamp,
-            'tinytext' => ColumnType::tinyText,
             'tinyint' => ColumnType::tinyInteger,
+            'tinytext' => ColumnType::tinyText,
+            'varchar' => ColumnType::string,
             'year' => ColumnType::year,
-            default => ColumnType::fromDBAL($dbalColumn->getType()),
+            default => throw new RuntimeException('Unknown DB type: '.$type),
         };
     }
 
-    private static function fromPostgreSQL(Column $dbalColumn, string $tableName): ColumnType
+    private static function fromMariaDb(mixed $type): ColumnType
     {
-        $info = DB::selectOne(
-            'SELECT * FROM information_schema.columns WHERE table_name = ? AND column_name = ?',
-            [$tableName, $dbalColumn->getName()]
-        );
-        $type = $info->data_type;
+        if ($type === 'uuid') {
+            return ColumnType::uuid;
+        }
 
-        return match ($type) {
+        return self::fromMySQL($type);
+    }
+
+    private static function fromPostgreSQL(string $type): ColumnType
+    {
+        $baseType = Str::before($type, '(');
+
+        return match ($baseType) {
+            'bigint' => ColumnType::bigInteger,
+            'boolean' => ColumnType::boolean,
+            'bytea' => ColumnType::binary,
+            'character varying' => ColumnType::string,
             'character' => ColumnType::char,
+            'date' => ColumnType::date,
             'double precision' => ColumnType::double,
+            'integer' => ColumnType::integer,
+            'json' => ColumnType::json,
             'jsonb' => ColumnType::jsonb,
-            'timestamp without time zone' => ColumnType::timestamp,
-            default => ColumnType::fromDBAL($dbalColumn->getType()),
+            'numeric' => ColumnType::decimal,
+            'smallint' => ColumnType::smallInteger,
+            'text' => ColumnType::text,
+            'time' => ColumnType::time,
+            'timestamp' => ColumnType::timestamp,
+            'uuid' => ColumnType::uuid,
+            default => throw new RuntimeException('Unknown DB type: '.$type),
         };
     }
 
-    //    private static function fromSQLite(\Doctrine\DBAL\Schema\Column $dbalColumn, string $tableName): ColumnType
-    //    {
-    //        $info = DB::select('PRAGMA table_info(' . $tableName . ')');
-    //        $type = collect($info)->filter(fn($col) => $col->name === $dbalColumn->getName())->first();
-    //
-    //        return ColumnType::fromDBAL($dbalColumn->getType());
-    //    }
+    private static function fromSqlite(mixed $type): ColumnType
+    {
+        $baseType = Str::before($type, '(');
+
+        return match ($baseType) {
+            'blob' => ColumnType::binary,
+            'date' => ColumnType::date,
+            'datetime' => ColumnType::dateTime,
+            'double' => ColumnType::double,
+            'float' => ColumnType::float,
+            'integer' => ColumnType::integer,
+            'numeric' => ColumnType::decimal,
+            'text' => ColumnType::text,
+            'time' => ColumnType::time,
+            'tinyint' => ColumnType::tinyInteger,
+            'varchar' => ColumnType::string,
+            default => throw new RuntimeException('Unknown DB type: '.$type),
+        };
+    }
 }

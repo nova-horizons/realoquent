@@ -9,15 +9,6 @@ use PHPStan\PhpDocParser\Parser\PhpDocParser;
 use PHPStan\PhpDocParser\Parser\TokenIterator;
 use PHPStan\PhpDocParser\Parser\TypeParser;
 
-test('dbal type mapping up to date', function () {
-    $reflect = new ReflectionClass(\Doctrine\DBAL\Types\Type::class);
-    $types = $reflect->getConstant('BUILTIN_TYPES_MAP');
-
-    foreach ($types as $typeClass) {
-        expect(ColumnType::fromDBAL(new $typeClass()))->toBeInstanceOf(ColumnType::class);
-    }
-});
-
 test('all types have default cast', function () {
     foreach (ColumnType::cases() as $typeClass) {
         $typeClass->getCast(); // Will throw exception if not defined
@@ -46,7 +37,6 @@ test('all unsigned shorthand are categorized accurately', function () {
 });
 
 it('is up-to-date with Laravel functions', function () {
-
     $classInfo = (new BetterReflection())
         ->reflector()
         ->reflectClass(\Illuminate\Database\Schema\Blueprint::class);
@@ -74,8 +64,7 @@ it('is up-to-date with Laravel functions', function () {
             'addColumn',
             'addColumnDefinition',
             'computed',
-            'geometryCollection', // TODO Breaking pgsql tests
-            'macAddress', // TODO Breaking pgsql tests
+            'macAddress', // TODO-macAddress Breaking pgsql tests
         ]))
         ->sort()
         ->values()
@@ -85,4 +74,4 @@ it('is up-to-date with Laravel functions', function () {
 
     expect($methods)->toBe($types);
 
-});
+})->skip(isLaravel10(), 'Only for latest version of Laravel');

@@ -1,64 +1,83 @@
 <?php
 
-use Doctrine\DBAL\Schema\SchemaException;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use NovaHorizons\Realoquent\DatabaseAnalyzer;
 use NovaHorizons\Realoquent\RealoquentManager;
+use NovaHorizons\Realoquent\TypeDetector;
+use Tests\Exceptions\DbItemDoesNotExist;
 
-/**
- * @throws \Doctrine\DBAL\Exception
- */
-function getTable(string $table): Doctrine\DBAL\Schema\Table
-{
-    return DB::connection()
-        ->getDoctrineSchemaManager()
-        ->introspectTable($table);
-}
-
-/**
- * @throws \Doctrine\DBAL\Exception
- */
 function tableExists(string $table): bool
 {
-    return DB::connection()
-        ->getDoctrineSchemaManager()
-        ->tablesExist([$table]);
+    return in_array($table, DB::connection()->getSchemaBuilder()->getTableListing());
 }
 
 /**
- * @throws SchemaException
- * @throws \Doctrine\DBAL\Exception
+ * @return array<string, mixed>
+ *
+ * @throws DbItemDoesNotExist
  */
-function getColumn(string $table, string $column): Doctrine\DBAL\Schema\Column
+function getColumn(string $table, string $column): array
 {
-    return getTable($table)->getColumn($column);
+    $dbColumns = DatabaseAnalyzer::getColumns($table);
+    foreach ($dbColumns as $dbColumn) {
+        if ($dbColumn['name'] === $column) {
+            return $dbColumn;
+        }
+    }
+
+    throw new DbItemDoesNotExist("Column {$column} not found in table {$table}");
 }
 
 /**
- * @throws \Doctrine\DBAL\Exception
+ * @return array<string, int|null>
+ *
+ * @throws DbItemDoesNotExist
  */
+function getColumnInfo(string $table, string $column): array
+{
+    return TypeDetector::getInfo(getColumn($table, $column));
+}
+
 function hasColumn(string $table, string $column): bool
 {
-    return getTable($table)->hasColumn($column);
+    try {
+        getColumn($table, $column);
+
+        return true;
+    } catch (DbItemDoesNotExist) {
+        return false;
+    }
 }
 
 /**
- * @throws \Doctrine\DBAL\Exception
- * @throws SchemaException
+ * @return array<string, mixed>
+ *
+ * @throws DbItemDoesNotExist
  */
-function getIndex(string $table, string $index): Doctrine\DBAL\Schema\Index
+function getIndex(string $table, string $index): array
 {
-    return getTable($table)->getIndex($index);
+    $dbIndexes = DB::connection()->getSchemaBuilder()->getIndexes($table);
+    foreach ($dbIndexes as $dbIndex) {
+        if ($dbIndex['name'] === $index) {
+            return $dbIndex;
+        }
+    }
+
+    throw new DbItemDoesNotExist("Index {$index} not found in table {$table}");
 }
 
-/**
- * @throws \Doctrine\DBAL\Exception
- */
 function hasIndex(string $table, string $index): bool
 {
-    return getTable($table)->hasIndex($index);
+    try {
+        getIndex($table, $index);
+
+        return true;
+    } catch (DbItemDoesNotExist) {
+        return false;
+    }
 }
 
 function setupDb(string $connection): void
@@ -71,7 +90,7 @@ function setupDb(string $connection): void
 function setupDbAndSchema(string $connection): void
 {
     setupDb($connection);
-    if (DB::connection()->getDriverName() !== 'sqlite') {
+    if (! DatabaseAnalyzer::isSqlite()) {
         Schema::dropAllTables();
     } else {
         Schema::dropIfExists('users');

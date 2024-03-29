@@ -32,14 +32,17 @@ class Index
     ) {
     }
 
-    public static function fromDBAL(\Doctrine\DBAL\Schema\Index $dbalIndex, string $tableName): self
+    /**
+     * @param  array<string, mixed>  $dbIndex
+     */
+    public static function fromDB(array $dbIndex, string $tableName): self
     {
         return new self(
-            name: $dbalIndex->getName(),
+            name: $dbIndex['name'],
             tableName: $tableName,
-            type: IndexType::fromDBAL($dbalIndex),
-            indexColumns: $dbalIndex->getColumns(),
-            isSingleColumn: count($dbalIndex->getColumns()) === 1,
+            type: IndexType::fromDB($dbIndex),
+            indexColumns: $dbIndex['columns'],
+            isSingleColumn: count($dbIndex['columns']) === 1,
             realoquentId: RealoquentHelpers::newId()
         );
     }

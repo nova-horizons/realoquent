@@ -13,7 +13,7 @@ it('can run with force', function () {
 });
 
 it('can abort when asked', function () {
-    setupDbAndSchema('sqlite');
+    setupDbAndSchema(RL_SQLITE);
     $this->artisan(GenerateSchema::class)
         ->expectsConfirmation(' Do you want to overwrite it?', 'no')
         ->assertExitCode(1);

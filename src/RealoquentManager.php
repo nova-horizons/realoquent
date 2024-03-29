@@ -2,10 +2,8 @@
 
 namespace NovaHorizons\Realoquent;
 
-use Doctrine\DBAL\Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Process;
 use NovaHorizons\Realoquent\DataObjects\ModelInfo;
@@ -70,7 +68,6 @@ class RealoquentManager
     }
 
     /**
-     * @throws Exception
      * @throws \Throwable
      */
     public function generateAndWriteSchema(bool $splitTables = false): Schema
@@ -82,22 +79,11 @@ class RealoquentManager
         return $schema;
     }
 
-    /**
-     * @throws \Throwable
-     * @throws Exception
-     */
     public function generateSchema(): Schema
     {
-        $doctrineManager = DB::connection()->getDoctrineSchemaManager();
-
-        // https://www.doctrine-project.org/projects/doctrine-orm/en/2.7/cookbook/mysql-enums.html#solution-1-mapping-to-varchars
-        DB::connection()->getDoctrineConnection()->getDatabasePlatform()->registerDoctrineTypeMapping('enum', 'string');
-
-        $tables = $doctrineManager->listTables();
-
         return $this->schemaManager->rebuildSchema(
             models: $this->getModels(),
-            doctrineTables: $tables,
+            dbTables: DatabaseAnalyzer::getTables(),
         );
     }
 
