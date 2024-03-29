@@ -66,7 +66,7 @@ The available shorthand properties are `primary`, `unique`, `fullText`, and `ind
     'id' => [
         'type' => ColumnType::bigIncrements,
         'guarded' => true,
-        'primary' => true, // ✅ This can replace the index definition below
+        'primary' => true, // ✅ This replaces the index definition below
     ],
 ],
 'indexes' => [

@@ -132,12 +132,11 @@ Using a separate PHP file to define the schema, as opposed to Model properties o
 * It ensures that Realoquent operates separately from your production system. By generating standard Laravel code, you keep the confidence in  
   Laravel's framework code. You don't need to worry about Realoquent doing anything suspicious. At any point you can remove Realoquent and all your code
   will still work, since it generates plain Laravel migrations and plain Eloquent models.
-* This approach emphasizes the principle of separation of concerns in your project. By moving the schema to a configuration file,
-  it ensures that your code files are reserved exclusively for your actual application logic. This improves the overall
-  organization and readability of your codebase.
 * Using PHP instead of YAML/etc also allows you to reference constants, classes or even call functions to define your schema.
 * It allows for a separation between the database schema and the models. This means that you can have tables in your database that do not
-  necessarily have corresponding models in your code.
+  necessarily have corresponding models in your code. By moving the schema to a configuration file,
+  it ensures that your code files are reserved exclusively for your actual application logic. This improves the overall
+  organization and readability of your codebase.
 
 ### Why generate a base model class?
 
