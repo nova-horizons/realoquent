@@ -133,3 +133,28 @@ dataset('main-column-types', function () {
 
     return $dataset;
 });
+
+dataset('default-value-tests', function () {
+    // Create array like: RL_SQLITE . '--default' => ['sqlite', 'string', 'default', 'default']
+    // Value is [connection, column type, default, expectedDefault]
+
+    $tests = [
+        ['string', 'default', 'default'],
+        ['string', '', ''],
+        ['string', null, null],
+        ['string', 0, '0'],
+    ];
+
+    $dataset = [];
+    foreach (RL_DATABASES as $db) {
+        foreach ($tests as $test) {
+            $dataset[$db.'--'.$test[0].'--'.$test[1]] = [$db, $test[0], $test[1], $test[2]];
+        }
+    }
+
+    $dataset[RL_PGSQL_14.'--boolean-true'] = [RL_PGSQL_14, 'boolean', true, true];
+    $dataset[RL_PGSQL_14.'--boolean-false'] = [RL_PGSQL_14, 'boolean', false, false];
+    $dataset[RL_PGSQL_14.'--boolean-null'] = [RL_PGSQL_14, 'boolean', null, false];
+
+    return $dataset;
+});
