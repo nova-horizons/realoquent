@@ -112,7 +112,7 @@ dataset('main-column-types', function () {
     $dataset[RL_MARIADB_10.'--float'][2] = ColumnType::double;
     $dataset[RL_MARIADB_10.'--json'][2] = ColumnType::longText;
     $dataset[RL_MARIADB_10.'--jsonb'][2] = ColumnType::longText;
-    $dataset[RL_MARIADB_10.'--uuid'][2] = ColumnType::char; // TODO Latest MariaDB should support `uuid`
+    $dataset[RL_MARIADB_10.'--uuid'][2] = isLaravel10() ? ColumnType::char : ColumnType::uuid; // https://github.com/laravel/framework/commit/8648a4a8
     $dataset[RL_MARIADB_10.'--ulid'][2] = ColumnType::char;
 
     /**

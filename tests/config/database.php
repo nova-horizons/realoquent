@@ -16,7 +16,7 @@ return [
         'engine' => null,
     ],
     'rl_mariadb10' => [
-        'driver' => 'mysql',
+        'driver' => isLaravel10() ? 'mysql' : 'mariadb',
         'host' => env('DB_HOST', '127.0.0.1'),
         'port' => env('FORWARD_MARIADB_PORT', 33308),
         'database' => env('DB_DATABASE', 'testing'),

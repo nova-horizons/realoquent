@@ -83,6 +83,10 @@ class TypeDetector
 
     private static function fromMariaDb(mixed $type): ColumnType
     {
+        if ($type === 'uuid') {
+            return ColumnType::uuid;
+        }
+
         return self::fromMySQL($type);
     }
 

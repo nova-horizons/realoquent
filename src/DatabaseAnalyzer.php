@@ -47,7 +47,7 @@ class DatabaseAnalyzer
             $default = trim($default, "'");
         }
         if (self::isSqlite()) {
-            if (strlen($default) === 0 && $default === false) {
+            if (strlen($default) === 0 || $default === false) {
                 $default = null;
             }
         }
