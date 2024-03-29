@@ -16,10 +16,11 @@ class TypeDetector
     {
         $type = $dbColumn['type'];
 
-        return match (DB::connection()->getDriverName()) {
-            'mysql', 'mariadb' => self::fromMySQL($type),
-            'pgsql' => self::fromPostgreSQL($type),
-            'sqlite' => self::fromSqlite($type),
+        return match (true) {
+            DatabaseAnalyzer::isMysql() => self::fromMySQL($type),
+            DatabaseAnalyzer::isMariaDb() => self::fromMariaDb($type),
+            DatabaseAnalyzer::isPostgres() => self::fromPostgreSQL($type),
+            DatabaseAnalyzer::isSqlite() => self::fromSqlite($type),
             default => throw new RuntimeException('Unsupported DB driver: '.DB::connection()->getDriverName()),
         };
     }
@@ -78,6 +79,11 @@ class TypeDetector
             'year' => ColumnType::year,
             default => throw new RuntimeException('Unknown DB type: '.$type),
         };
+    }
+
+    private static function fromMariaDb(mixed $type): ColumnType
+    {
+        return self::fromMySQL($type);
     }
 
     private static function fromPostgreSQL(string $type): ColumnType

@@ -4,7 +4,6 @@ namespace NovaHorizons\Realoquent;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Process;
 use NovaHorizons\Realoquent\DataObjects\ModelInfo;
@@ -84,7 +83,7 @@ class RealoquentManager
     {
         return $this->schemaManager->rebuildSchema(
             models: $this->getModels(),
-            dbTables: DB::connection()->getSchemaBuilder()->getTableListing(),
+            dbTables: DatabaseAnalyzer::getTables(),
         );
     }
 

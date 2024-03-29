@@ -90,7 +90,7 @@ function setupDb(string $connection): void
 function setupDbAndSchema(string $connection): void
 {
     setupDb($connection);
-    if (DB::connection()->getDriverName() !== 'sqlite') {
+    if (! DatabaseAnalyzer::isSqlite()) {
         Schema::dropAllTables();
     } else {
         Schema::dropIfExists('users');

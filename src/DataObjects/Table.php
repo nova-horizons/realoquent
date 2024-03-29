@@ -2,7 +2,6 @@
 
 namespace NovaHorizons\Realoquent\DataObjects;
 
-use Illuminate\Support\Facades\DB;
 use NovaHorizons\Realoquent\DatabaseAnalyzer;
 use NovaHorizons\Realoquent\Enums\IndexType;
 use NovaHorizons\Realoquent\RealoquentHelpers;
@@ -265,7 +264,7 @@ class Table
             $table->addColumn(Column::fromDB($column, $table->name));
         }
 
-        $indexes = DB::connection()->getSchemaBuilder()->getIndexes($name);
+        $indexes = DatabaseAnalyzer::getIndexes($name);
         foreach ($indexes as $index) {
             $table->addIndex(Index::fromDB($index, $table->name));
         }
