@@ -6,8 +6,8 @@ Realoquent is tested against combinations of the following:
 * Laravel: 10.x, 11.x
 * OS: Ubuntu Latest
 * MySQL: 8.x
-* MariaDB: 10.x
-* PostgreSQL: 14.x
+* MariaDB: LTS (10.x), and Latest (11.x) 
+* PostgreSQL: 16.x
 * SQLite: 3.x
 
 ## Known Issues

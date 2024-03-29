@@ -109,12 +109,14 @@ dataset('main-column-types', function () {
      * @see https://mariadb.com/kb/en/data-types/
      * @see vendor/laravel/framework/src/Illuminate/Database/Schema/Grammars/MariaDbGrammar.php
      */
-    $dataset[RL_MARIADB_10.'--boolean'][2] = ColumnType::tinyInteger;
-    $dataset[RL_MARIADB_10.'--float'][2] = ColumnType::double;
-    $dataset[RL_MARIADB_10.'--json'][2] = ColumnType::longText;
-    $dataset[RL_MARIADB_10.'--jsonb'][2] = ColumnType::longText;
-    $dataset[RL_MARIADB_10.'--uuid'][2] = isLaravel10() ? ColumnType::char : ColumnType::uuid; // https://github.com/laravel/framework/commit/8648a4a8
-    $dataset[RL_MARIADB_10.'--ulid'][2] = ColumnType::char;
+    foreach ([RL_MARIADB_LATEST, RL_MARIADB_LTS] as $mariaDb) {
+        $dataset[$mariaDb.'--boolean'][2] = ColumnType::tinyInteger;
+        $dataset[$mariaDb.'--float'][2] = ColumnType::double;
+        $dataset[$mariaDb.'--json'][2] = ColumnType::longText;
+        $dataset[$mariaDb.'--jsonb'][2] = ColumnType::longText;
+        $dataset[$mariaDb.'--uuid'][2] = isLaravel10() ? ColumnType::char : ColumnType::uuid; // https://github.com/laravel/framework/commit/8648a4a8
+        $dataset[$mariaDb.'--ulid'][2] = ColumnType::char;
+    }
 
     /**
      * Postgres
@@ -122,15 +124,15 @@ dataset('main-column-types', function () {
      * @see https://www.postgresql.org/docs/14/datatype.html
      * @see vendor/laravel/framework/src/Illuminate/Database/Schema/Grammars/PostgresGrammar.php
      */
-    $dataset[RL_PGSQL_14.'--dateTime'][2] = ColumnType::timestamp;
-    $dataset[RL_PGSQL_14.'--float'][2] = ColumnType::double;
-    $dataset[RL_PGSQL_14.'--longText'][2] = ColumnType::text;
-    $dataset[RL_PGSQL_14.'--mediumInteger'][2] = ColumnType::integer;
-    $dataset[RL_PGSQL_14.'--mediumText'][2] = ColumnType::text;
-    $dataset[RL_PGSQL_14.'--tinyInteger'][2] = ColumnType::smallInteger;
-    $dataset[RL_PGSQL_14.'--tinyText'][2] = ColumnType::string;
-    $dataset[RL_PGSQL_14.'--ulid'][2] = ColumnType::char;
-    $dataset[RL_PGSQL_14.'--year'][2] = ColumnType::integer;
+    $dataset[RL_PGSQL_16.'--dateTime'][2] = ColumnType::timestamp;
+    $dataset[RL_PGSQL_16.'--float'][2] = ColumnType::double;
+    $dataset[RL_PGSQL_16.'--longText'][2] = ColumnType::text;
+    $dataset[RL_PGSQL_16.'--mediumInteger'][2] = ColumnType::integer;
+    $dataset[RL_PGSQL_16.'--mediumText'][2] = ColumnType::text;
+    $dataset[RL_PGSQL_16.'--tinyInteger'][2] = ColumnType::smallInteger;
+    $dataset[RL_PGSQL_16.'--tinyText'][2] = ColumnType::string;
+    $dataset[RL_PGSQL_16.'--ulid'][2] = ColumnType::char;
+    $dataset[RL_PGSQL_16.'--year'][2] = ColumnType::integer;
 
     return $dataset;
 });
@@ -153,9 +155,9 @@ dataset('default-value-tests', function () {
         }
     }
 
-    $dataset[RL_PGSQL_14.'--boolean-true'] = [RL_PGSQL_14, 'boolean', true, true];
-    $dataset[RL_PGSQL_14.'--boolean-false'] = [RL_PGSQL_14, 'boolean', false, false];
-    $dataset[RL_PGSQL_14.'--boolean-null'] = [RL_PGSQL_14, 'boolean', null, false];
+    $dataset[RL_PGSQL_16.'--boolean-true'] = [RL_PGSQL_16, 'boolean', true, true];
+    $dataset[RL_PGSQL_16.'--boolean-false'] = [RL_PGSQL_16, 'boolean', false, false];
+    $dataset[RL_PGSQL_16.'--boolean-null'] = [RL_PGSQL_16, 'boolean', null, false];
 
     return $dataset;
 });

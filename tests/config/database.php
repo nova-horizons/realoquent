@@ -15,10 +15,10 @@ return [
         'strict' => true,
         'engine' => null,
     ],
-    'rl_mariadb10' => [
+    'rl_mariadbLTS' => [
         'driver' => isLaravel10() ? 'mysql' : 'mariadb',
         'host' => env('DB_HOST', '127.0.0.1'),
-        'port' => env('FORWARD_MARIADB_PORT', 33308),
+        'port' => env('FORWARD_MARIADB_LTS_PORT', 33308),
         'database' => env('DB_DATABASE', 'testing'),
         'username' => env('DB_USERNAME', 'sail'),
         'password' => env('DB_PASSWORD', 'password'),
@@ -29,7 +29,21 @@ return [
         'strict' => true,
         'engine' => null,
     ],
-    'rl_pgsql14' => [
+    'rl_mariadbLatest' => [
+        'driver' => isLaravel10() ? 'mysql' : 'mariadb',
+        'host' => env('DB_HOST', '127.0.0.1'),
+        'port' => env('FORWARD_MARIADB_LATEST_PORT', 33308),
+        'database' => env('DB_DATABASE', 'testing'),
+        'username' => env('DB_USERNAME', 'sail'),
+        'password' => env('DB_PASSWORD', 'password'),
+        'unix_socket' => '',
+        'charset' => 'utf8mb4',
+        'collation' => 'utf8mb4_unicode_ci',
+        'prefix' => '',
+        'strict' => true,
+        'engine' => null,
+    ],
+    'rl_pgsql16' => [
         'driver' => 'pgsql',
         'host' => env('DB_HOST', '127.0.0.1'),
         'port' => env('FORWARD_PGSQL_PORT', 35432),
