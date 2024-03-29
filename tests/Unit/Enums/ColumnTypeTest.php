@@ -37,7 +37,6 @@ test('all unsigned shorthand are categorized accurately', function () {
 });
 
 it('is up-to-date with Laravel functions', function () {
-
     $classInfo = (new BetterReflection())
         ->reflector()
         ->reflectClass(\Illuminate\Database\Schema\Blueprint::class);
@@ -65,8 +64,7 @@ it('is up-to-date with Laravel functions', function () {
             'addColumn',
             'addColumnDefinition',
             'computed',
-            'geometryCollection', // TODO Breaking pgsql tests
-            'macAddress', // TODO Breaking pgsql tests
+            'macAddress', // TODO-macAddress Breaking pgsql tests
         ]))
         ->sort()
         ->values()
@@ -76,4 +74,4 @@ it('is up-to-date with Laravel functions', function () {
 
     expect($methods)->toBe($types);
 
-});
+})->skip(isLaravel10(), 'Only for latest version of Laravel');

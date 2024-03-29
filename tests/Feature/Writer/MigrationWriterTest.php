@@ -5,7 +5,6 @@ use NovaHorizons\Realoquent\Enums\ColumnType;
 use NovaHorizons\Realoquent\Enums\IndexType;
 use NovaHorizons\Realoquent\SchemaDiffer;
 use NovaHorizons\Realoquent\TypeDetector;
-use Tests\Exceptions\DbItemDoesNotExist;
 use Tests\TestCase\RealoquentTestClass;
 
 uses(RealoquentTestClass::class);
@@ -149,7 +148,7 @@ it('can migrate removed table', function (string $connection) {
 
 it('can migrate new column', function (string $connection) {
     setupDbAndSchema($connection);
-    expect(fn () => getColumn('users', 'birthdate'))->toThrow(DbItemDoesNotExist::class); // TODO-DBAL hasColumn?
+    expect(hasColumn('users', 'birthdate'))->toBeFalse();
 
     $snapshot = Schema::fromSchemaArray(generatedSchema());
 
@@ -169,7 +168,7 @@ it('can migrate new column', function (string $connection) {
 
 it('can migrate new column with length', function (string $connection) {
     setupDbAndSchema($connection);
-    expect(fn () => getColumn('users', 'city'))->toThrow(DbItemDoesNotExist::class);
+    expect(hasColumn('users', 'city'))->toBeFalse();
 
     $snapshot = Schema::fromSchemaArray(generatedSchema());
 
@@ -213,7 +212,7 @@ it('can migrate new columns with bool defaults', function (string $connection) {
 
 it('can migrate new column with precision/scale', function (string $connection) {
     setupDbAndSchema($connection);
-    expect(fn () => getColumn('users', 'bill_rate'))->toThrow(DbItemDoesNotExist::class);
+    expect(hasColumn('users', 'bill_rate'))->toBeFalse();
 
     $snapshot = Schema::fromSchemaArray(generatedSchema());
 
@@ -422,7 +421,7 @@ it('can migrate removed column', function (string $connection) {
 
 it('can migrate new index', function (string $connection) {
     setupDbAndSchema($connection);
-    expect(fn () => getIndex('users', 'user_email_index'))->toThrow(DbItemDoesNotExist::class);
+    expect(hasIndex('users', 'user_email_index'))->toBeFalse();
 
     $snapshot = Schema::fromSchemaArray(generatedSchema());
 
@@ -436,8 +435,33 @@ it('can migrate new index', function (string $connection) {
     $migration = (new SchemaDiffer(currentSchema: $snapshot, newSchema: $new))->getSchemaChanges()->getMigrationFunction();
     eval($migration);
 
-    expect(getIndex('users', 'user_email_index')['name'])->toBe('user_email_index');
+    $index = getIndex('users', 'user_email_index');
+
+    expect($index['name'])->toBe('user_email_index');
+    expect(IndexType::fromDB($index))->toBe(IndexType::index);
 })->with('databases');
+
+it('can migrate new fulltext index', function (string $connection) {
+    setupDbAndSchema($connection);
+    expect(hasIndex('users', 'user_email_index'))->toBeFalse();
+
+    $snapshot = Schema::fromSchemaArray(generatedSchema());
+
+    $newArray = generatedSchema();
+    $newArray['users']['indexes']['user_email_index'] = [
+        'type' => IndexType::fullText,
+        'indexColumns' => ['email'],
+    ];
+    $new = Schema::fromSchemaArray($newArray);
+
+    $migration = (new SchemaDiffer(currentSchema: $snapshot, newSchema: $new))->getSchemaChanges()->getMigrationFunction();
+    eval($migration);
+
+    $index = getIndex('users', 'user_email_index');
+
+    expect($index['name'])->toBe('user_email_index');
+    expect(IndexType::fromDB($index))->toBe(IndexType::fullText);
+})->with('databases-supporting-fulltext');
 
 it('can migrate renamed index', function (string $connection) {
     setupDbAndSchema($connection);

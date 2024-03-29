@@ -3,7 +3,6 @@
 namespace NovaHorizons\Realoquent\Enums;
 
 use Illuminate\Database\Schema\Builder;
-use Illuminate\Support\Facades\DB;
 
 /**
  * @see https://laravel.com/docs/10.x/migrations#available-column-types Documentation on available types
@@ -31,8 +30,7 @@ enum ColumnType: string
     case foreignIdFor = 'foreignIdFor'; // UNSIGNED BIGINT
     case foreignUlid = 'foreignUlid'; // CHAR(26)
     case foreignUuid = 'foreignUuid';
-    // TODO Breaking pgsql tests case geometryCollection = 'geometryCollection';
-    case geography = 'geography'; // TODO-DBAL New in 11.x
+    case geography = 'geography';
     case geometry = 'geometry';
     case id = 'id'; // UNSIGNED BIGINT AUTO_INCREMENT (same as bigIncrements)
     case increments = 'increments'; // UNSIGNED INTEGER AUTO_INCREMENT
@@ -42,7 +40,7 @@ enum ColumnType: string
     case json = 'json';
     case jsonb = 'jsonb';
     case longText = 'longText';
-    // TODO Breaking pgsql tests case macAddress = 'macAddress'; // VARCHAR(17)
+    // TODO-macAddress Breaking pgsql tests case macAddress = 'macAddress'; // VARCHAR(17)
     case mediumIncrements = 'mediumIncrements'; // UNSIGNED MEDIUMINT AUTO_INCREMENT
     case mediumInteger = 'mediumInteger';
     case mediumText = 'mediumText';
@@ -70,9 +68,6 @@ enum ColumnType: string
     case tinyInteger = 'tinyInteger';
     case tinyText = 'tinyText';
     case unsignedBigInteger = 'unsignedBigInteger';
-    //    case unsignedDecimal = 'unsignedDecimal'; TODO-DBAL Removed in 11.x?
-    //    case unsignedDouble = 'unsignedDouble'; TODO-DBAL Removed in 11.x?
-    //    case unsignedFloat = 'unsignedFloat'; TODO-DBAL Removed in 11.x?
     case unsignedInteger = 'unsignedInteger';
     case unsignedMediumInteger = 'unsignedMediumInteger';
     case unsignedSmallInteger = 'unsignedSmallInteger';
@@ -108,8 +103,7 @@ enum ColumnType: string
             self::foreignIdFor => null,
             self::foreignUlid => 'string',
             self::foreignUuid => 'string',
-            // TODO Breaking pgsql tests self::geometryCollection => null,
-            self::geography => null, // TODO-DBAL New in 11.x
+            self::geography => null,
             self::geometry => null,
             self::id => 'integer',
             self::increments => 'integer',
@@ -119,7 +113,7 @@ enum ColumnType: string
             self::json => null,
             self::jsonb => null,
             self::longText => 'string',
-            // TODO Breaking pgsql tests self::macAddress => 'string',
+            // TODO-macAddress Breaking pgsql tests self::macAddress => 'string',
             self::mediumIncrements => 'integer',
             self::mediumInteger => 'integer',
             self::mediumText => 'string',
@@ -165,7 +159,6 @@ enum ColumnType: string
             self::dateTime,
             self::dateTimeTz,
             self::decimal,
-            self::double,
             self::float,
             self::softDeletes,
             self::softDeletesDatetime,
@@ -174,9 +167,6 @@ enum ColumnType: string
             self::timestamp,
             self::timestampTz,
             self::timeTz,
-            // TODO-DBAL Removed in 11.x? self::unsignedDecimal,
-            // TODO-DBAL Removed in 11.x? self::unsignedDouble,
-            // TODO-DBAL Removed in 11.x? self::unsignedFloat,
         ]);
     }
 
@@ -184,11 +174,6 @@ enum ColumnType: string
     {
         return in_array($this, [
             self::decimal,
-            self::double,
-            self::float,
-            // TODO-DBAL Removed in 11.x? self::unsignedDecimal,
-            // TODO-DBAL Removed in 11.x? self::unsignedDouble,
-            // TODO-DBAL Removed in 11.x? self::unsignedFloat,
         ]);
     }
 
@@ -204,9 +189,6 @@ enum ColumnType: string
             self::smallIncrements,
             self::tinyIncrements,
             self::unsignedBigInteger,
-            // TODO-DBAL Removed in 11.x? self::unsignedDecimal,
-            // TODO-DBAL Removed in 11.x? self::unsignedDouble,
-            // TODO-DBAL Removed in 11.x? self::unsignedFloat,
             self::unsignedInteger,
             self::unsignedMediumInteger,
             self::unsignedSmallInteger,
@@ -241,55 +223,6 @@ enum ColumnType: string
         };
     }
 
-    public function getDefaultPrecision(): ?int
-    {
-        if (! $this->supportsPrecision()) {
-            return null;
-        }
-
-        $isPgsql = DB::connection()->getDriverName() === 'pgsql';
-        $isSqlite = DB::connection()->getDriverName() === 'sqlite';
-
-        return match ($this) {
-            self::dateTime => 10,
-            self::dateTimeTz => 10,
-            self::decimal => $isSqlite ? 10 : 8,
-            self::double => 10,
-            self::float => $isPgsql || $isSqlite ? 10 : 8,
-            self::softDeletesTz => 10,
-            self::softDeletes => 10,
-            self::softDeletesDatetime => 10,
-            self::timeTz => 10,
-            self::time => 10,
-            self::timestamp => 10,
-            self::timestampTz => 10,
-            // TODO-DBAL Removed in 11.x? self::unsignedDecimal => $isSqlite ? 10 : 8,
-            // TODO-DBAL Removed in 11.x? self::unsignedDouble => 10,
-            // TODO-DBAL Removed in 11.x? self::unsignedFloat => $isPgsql || $isSqlite ? 10 : 8,
-            default => throw new \RuntimeException('Default precision not implemented for type: '.$this->value),
-        };
-    }
-
-    public function getDefaultScale(): ?int
-    {
-        if (! $this->supportsScale()) {
-            return null;
-        }
-
-        $isPgsql = DB::connection()->getDriverName() === 'pgsql';
-        $isSqlite = DB::connection()->getDriverName() === 'sqlite';
-
-        return match ($this) {
-            self::decimal => $isSqlite ? 0 : 2,
-            self::double => 0,
-            self::float => $isPgsql || $isSqlite ? 0 : 2,
-            // TODO-DBAL Removed in 11.x? self::unsignedDecimal => $isSqlite ? 0 : 2,
-            // TODO-DBAL Removed in 11.x? self::unsignedDouble => 0,
-            // TODO-DBAL Removed in 11.x? self::unsignedFloat => $isPgsql || $isSqlite ? 0 : 2,
-            default => throw new \RuntimeException('Default scale not implemented for type: '.$this->value),
-        };
-    }
-
     /**
      * Laravel has several shorthand types that can be used in migrations.
      * To minimize noise in schema.php, we can detect when to use this shorthand types
@@ -311,9 +244,6 @@ enum ColumnType: string
         if ($unsigned) {
             return match ($type) {
                 self::bigInteger => self::unsignedBigInteger,
-                // TODO-DBAL Removed in 11.x? self::decimal => self::unsignedDecimal,
-                // TODO-DBAL Removed in 11.x? self::double => self::unsignedDouble,
-                // TODO-DBAL Removed in 11.x? self::float => self::unsignedFloat,
                 self::integer => self::unsignedInteger,
                 self::mediumInteger => self::unsignedMediumInteger,
                 self::smallInteger => self::unsignedSmallInteger,

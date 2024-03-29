@@ -173,7 +173,7 @@ class Column
      * Laravel has several shorthand types that can be used in migrations.
      * To minimize noise in schema.php, we can remove redundant properties based on the type
      *    ex. bigIncrements is unsigned & auto-incrementing; we don't need to separately list out those properties
-     * Also remove properties that DBAL returns even if they aren't valid for the column type
+     * Also remove properties that are returned even if they aren't valid for the column type
      */
     private function reconcileTypeAndProperties(): void
     {
@@ -186,11 +186,11 @@ class Column
             unset($this->length);
         }
 
-        if (! $this->type->supportsPrecision() || $this->precision === $this->type->getDefaultPrecision()) {
+        if (! $this->type->supportsPrecision()) {
             unset($this->precision);
         }
 
-        if (! $this->type->supportsScale() || $this->scale === $this->type->getDefaultScale()) {
+        if (! $this->type->supportsScale()) {
             unset($this->scale);
         }
 
@@ -294,7 +294,7 @@ class Column
 
         match ($this->type) {
             ColumnType::ipAddress => $rules[] = 'ip',
-            // ColumnType::macAddress => $rules[] = 'mac_address',
+            // TODO-macAddress ColumnType::macAddress => $rules[] = 'mac_address',
             ColumnType::ulid => $rules[] = 'ulid',
             ColumnType::uuid => $rules[] = 'uuid',
             default => null,

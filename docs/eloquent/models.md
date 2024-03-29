@@ -48,7 +48,7 @@ return [
 
 ### Initial Project Setup
 During the initial setup when you run `realoquent:generate-schema`, Realoquent will use two sources to build the initial schema:
-1. Doctrine DBAL to get your full database schema
+1. Laravel's Schema functions to get your full database schema
 2. Your existing Eloquent models
 
 Realoquent will use your existing models to build the schema with things like fillable/guarded/casts and relationships. It will

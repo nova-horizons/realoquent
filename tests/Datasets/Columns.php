@@ -84,6 +84,11 @@ dataset('main-column-types', function () {
     $dataset[RL_SQLITE.'--uuid'][2] = ColumnType::string;
     $dataset[RL_SQLITE.'--ulid'][2] = ColumnType::string;
     $dataset[RL_SQLITE.'--year'][2] = ColumnType::integer;
+    if (isLaravel10()) {
+        // 11.x and 10.x have different mappings for float and double
+        // https://github.com/laravel/framework/commit/4c1aa683ee1e003c731d6f9d1240b3b143e92382
+        $dataset[RL_SQLITE.'--double'][2] = ColumnType::float;
+    }
 
     /**
      * MySQL
@@ -101,13 +106,13 @@ dataset('main-column-types', function () {
      * MariaDB
      *
      * @see https://mariadb.com/kb/en/data-types/
-     * @see vendor/laravel/framework/src/Illuminate/Database/Schema/Grammars/MySqlGrammar.php
+     * @see vendor/laravel/framework/src/Illuminate/Database/Schema/Grammars/MariaDbGrammar.php
      */
     $dataset[RL_MARIADB_10.'--boolean'][2] = ColumnType::tinyInteger;
     $dataset[RL_MARIADB_10.'--float'][2] = ColumnType::double;
     $dataset[RL_MARIADB_10.'--json'][2] = ColumnType::longText;
     $dataset[RL_MARIADB_10.'--jsonb'][2] = ColumnType::longText;
-    $dataset[RL_MARIADB_10.'--uuid'][2] = ColumnType::char;
+    $dataset[RL_MARIADB_10.'--uuid'][2] = ColumnType::char; // TODO Latest MariaDB should support `uuid`
     $dataset[RL_MARIADB_10.'--ulid'][2] = ColumnType::char;
 
     /**

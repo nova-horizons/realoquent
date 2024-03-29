@@ -19,3 +19,13 @@ test('mappings are as expected', function (string $connection, ColumnType $type,
     expect($detectedType->value)->toBe($expectedType->value);
 
 })->with('main-column-types');
+
+//test('debug playground', function () {
+//    setupDb(RL_MARIADB_10);
+//    Schema::dropIfExists('temp_col');
+//    Schema::create('temp_col', function (Blueprint $table) {
+//        $table->uuid('temp');
+//    });
+//    $col = getColumn('temp_col', 'temp');
+//    dump($dbColumns);
+//});

@@ -20,6 +20,12 @@ dataset('databases-supporting-length', [
     RL_PGSQL_14,
 ]);
 
+dataset('databases-supporting-fulltext', [
+    RL_MYSQL_8,
+    RL_MARIADB_10,
+    RL_PGSQL_14,
+]);
+
 dataset('databases-supporting-unsigned', [
     RL_MYSQL_8,
     RL_MARIADB_10,

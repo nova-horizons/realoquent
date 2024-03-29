@@ -23,3 +23,8 @@ function generatedSchema(): array
 {
     return require __DIR__.'/config/schema.php';
 }
+
+function isLaravel10(): bool
+{
+    return version_compare(\Illuminate\Foundation\Application::VERSION, '11.0', '<');
+}
