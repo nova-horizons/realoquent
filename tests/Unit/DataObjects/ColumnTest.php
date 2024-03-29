@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Database\Eloquent\Casts\AsStringable;
 use Illuminate\Support\Carbon;
 use NovaHorizons\Realoquent\DataObjects\Column;
 use NovaHorizons\Realoquent\Enums\ColumnType;
@@ -52,6 +53,16 @@ it('returns user-specified casts', function (ColumnType $type, ?string $schemaSp
         cast: $schemaSpecifiedCast,
     ))->getPhpType())->toBe($phpType);
 })->with('column-and-casts');
+
+it('handles user-specified casts with nullable', function () {
+    expect((new Column(
+        name: 'id',
+        tableName: 'users',
+        type: ColumnType::string,
+        nullable: true,
+        cast: AsStringable::class,
+    ))->getPhpType())->toBe('\Illuminate\Support\Stringable|string|null');
+});
 
 it('can generate validation', function (string $expectedValidation, Column $column) {
     expect(implode('|', $column->generateDefaultValidation()))->toBe($expectedValidation);
