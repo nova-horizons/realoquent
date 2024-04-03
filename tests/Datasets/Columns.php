@@ -41,6 +41,7 @@ dataset('main-column-types', function () {
         ColumnType::mediumText,
         ColumnType::smallInteger,
         ColumnType::string,
+        ColumnType::text,
         ColumnType::time,
         ColumnType::timestamp,
         ColumnType::tinyInteger,

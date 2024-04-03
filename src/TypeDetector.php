@@ -71,6 +71,7 @@ class TypeDetector
             'mediumint' => ColumnType::mediumInteger,
             'mediumtext' => ColumnType::mediumText,
             'smallint' => ColumnType::smallInteger,
+            'text' => ColumnType::text,
             'time' => ColumnType::time,
             'timestamp' => ColumnType::timestamp,
             'tinyint' => ColumnType::tinyInteger,
