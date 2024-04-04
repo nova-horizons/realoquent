@@ -15,7 +15,7 @@
         "laravel/sail": "^1.29",
         "orchestra/testbench": "^8.22|^9.0",
         "pestphp/pest": "^2.34.4",
-        "phpstan/phpstan": "^1.10.62",
+        "phpstan/phpstan": "^1.10.66",
         "doctrine/dbal": "^3.8"
     },
     "autoload": {
