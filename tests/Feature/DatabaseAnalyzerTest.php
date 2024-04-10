@@ -16,3 +16,14 @@ it('reverse engineers all default values correctly', function (string $connectio
     Schema::drop('temp_col');
     expect($col['default'])->toBe($expectedDefault);
 })->with('default-value-tests');
+
+it('handles nullable defaults correctly', function (string $connection) {
+    setupDbAndSchema($connection);
+    Schema::dropIfExists('temp_col');
+    Schema::create('temp_col', function (Blueprint $table) {
+        $table->string('temp')->nullable();
+    });
+    $col = getColumn('temp_col', 'temp');
+    Schema::drop('temp_col');
+    expect($col['default'])->toBeNull();
+})->with('databases');
