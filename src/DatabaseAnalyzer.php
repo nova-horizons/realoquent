@@ -27,7 +27,7 @@ class DatabaseAnalyzer
             $dbColumn = array_merge($dbColumn, TypeDetector::getInfo($dbColumn));
             $dbColumn['realoquent_type'] = TypeDetector::fromDB($dbColumn);
             $dbColumn['unsigned'] = str_contains($dbColumn['type'], 'unsigned');
-            $dbColumn['default'] = self::parseDefault($dbColumn['default'], $dbColumn['realoquent_type']);
+            $dbColumn['default'] = self::parseDefault($dbColumn['default'], $dbColumn['nullable'], $dbColumn['realoquent_type']);
         }
 
         return $dbColumns;
@@ -41,7 +41,7 @@ class DatabaseAnalyzer
         return DB::connection()->getSchemaBuilder()->getIndexes($tableName);
     }
 
-    protected static function parseDefault(mixed $default, ColumnType $realoquentType): mixed
+    protected static function parseDefault(mixed $default, bool $isNullable, ColumnType $realoquentType): mixed
     {
         if (str_starts_with($default, "'") && str_ends_with($default, "'")) {
             $default = trim($default, "'");
@@ -61,6 +61,10 @@ class DatabaseAnalyzer
             if (str_starts_with($default, "'") && str_ends_with($default, "'")) {
                 $default = trim($default, "'");
             }
+        }
+
+        if ($isNullable && $default === 'NULL') {
+            $default = null;
         }
 
         return $default;
