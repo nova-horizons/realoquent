@@ -21,10 +21,9 @@ it('errors when schema modified', function () {
     $manager = new RealoquentManager(realoquentConfig());
     $manager->getSchemaManager()->makeSchemaSnapshot();
 
-    $schemaPath = $manager->getSchemaManager()->getSchemaPath();
-    $schema = file_get_contents($schemaPath);
-    $newSchema = str_replace("'users'", "'users2'", $schema);
-    file_put_contents($schemaPath, $newSchema);
+    modifySchema($manager, function (string $schema): string {
+        return str_replace("'users'", "'users2'", $schema);
+    });
 
     $this->artisan(GenerateModels::class)
         ->expectsOutputToContain('Schema has been modified')
@@ -36,14 +35,7 @@ it('errors when duplicate ids', function () {
     $manager = new RealoquentManager(realoquentConfig());
     $manager->getSchemaManager()->makeSchemaSnapshot();
 
-    $schemaPath = $manager->getSchemaManager()->getSchemaPath();
-    $schema = file_get_contents($schemaPath);
-    // Replace IDs with the same
-    $pattern = "/'realoquentId'\s*=>\s*'(.*)?',/";
-    $replacement = "'realoquentId' => '00000000-0000-0000-0000-000000000000',";
-
-    $newSchema = preg_replace($pattern, $replacement, $schema);
-    file_put_contents($schemaPath, $newSchema);
+    causeDuplicateIds($manager);
 
     $this->artisan(GenerateModels::class)
         ->expectsOutputToContain('Schema has been modified')
