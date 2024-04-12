@@ -35,6 +35,10 @@
         "cs-fix": "./vendor/bin/pint",
         "phpstan": "./vendor/bin/phpstan --memory-limit=1G analyze",
         "test": "./vendor/bin/pest",
+        "analyze": [
+            "@cs-fix",
+            "@phpstan"
+        ],
         "quality": [
             "@cs-fix",
             "@test",

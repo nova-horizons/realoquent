@@ -10,7 +10,6 @@ use NovaHorizons\Realoquent\Exceptions\DuplicateIdException;
 use NovaHorizons\Realoquent\Exceptions\UserAbortedCommandException;
 use NovaHorizons\Realoquent\RealoquentHelpers;
 use NovaHorizons\Realoquent\RealoquentManager;
-use NovaHorizons\Realoquent\SchemaDiffer;
 use NovaHorizons\Realoquent\Writer\MigrationWriter;
 use NovaHorizons\Realoquent\Writer\ModelWriter;
 use Throwable;
@@ -47,13 +46,9 @@ class Diff extends Command
         }
 
         $newSchema = $schemaManager->loadSchema();
-        $currentSchema = $schemaManager->loadSchemaSnapshot();
 
         try {
-            $changes = (new SchemaDiffer(
-                currentSchema: $currentSchema,
-                newSchema: $newSchema,
-            ))->getSchemaChanges();
+            $changes = $schemaManager->diffSchemaAndGetChanges();
         } catch (DuplicateIdException $e) {
             $this->newLine();
             $this->error($e->getMessage());
