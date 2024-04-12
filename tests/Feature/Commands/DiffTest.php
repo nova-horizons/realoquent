@@ -54,3 +54,22 @@ it('bails on no', function () {
         ->expectsOutputToContain('Diff aborted')
         ->assertExitCode(0);
 });
+
+it('errors when duplicate ids', function () {
+    setupDbAndSchema(RL_SQLITE);
+    $manager = new RealoquentManager(realoquentConfig());
+    $manager->getSchemaManager()->makeSchemaSnapshot();
+
+    $schemaPath = $manager->getSchemaManager()->getSchemaPath();
+    $schema = file_get_contents($schemaPath);
+    // Replace IDs with the same
+    $pattern = "/'realoquentId'\s*=>\s*'(.*)?',/";
+    $replacement = "'realoquentId' => '00000000-0000-0000-0000-000000000000',";
+
+    $newSchema = preg_replace($pattern, $replacement, $schema);
+    file_put_contents($schemaPath, $newSchema);
+
+    $this->artisan(Diff::class)
+        ->expectsOutputToContain('Duplicate realoquentId found')
+        ->assertExitCode(1);
+});

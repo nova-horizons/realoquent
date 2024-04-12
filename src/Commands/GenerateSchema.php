@@ -40,7 +40,7 @@ class GenerateSchema extends Command
             foreach ($schema->getOrphanModels() as $possibleTableName => $orphanModel) {
                 $this->line(' - '.$orphanModel.' (expected table '.$possibleTableName.')');
             }
-            $this->line('If these *do* match a table in the database, review your schema.php file');
+            $this->line('If these *do match* a table in the database, review your schema.php file:');
             $this->line("Add a property to the appropriate table like: 'model' => ".$schema->getOrphanModels()->first().'::class,');
             $this->line('Then run `php artisan realoquent:diff` to regenerate your models with the correct table name set.');
             $this->newLine();

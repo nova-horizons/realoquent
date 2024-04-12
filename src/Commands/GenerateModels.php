@@ -3,6 +3,7 @@
 namespace NovaHorizons\Realoquent\Commands;
 
 use Illuminate\Console\Command;
+use NovaHorizons\Realoquent\Exceptions\DuplicateIdException;
 use NovaHorizons\Realoquent\RealoquentManager;
 use NovaHorizons\Realoquent\Writer\ModelWriter;
 
@@ -33,7 +34,20 @@ class GenerateModels extends Command
             return 1;
         }
 
-        $this->comment('If you made changes to schema.php, you should run realoquent:diff instead');
+        try {
+            $changes = $schemaManager->diffSchemaAndGetChanges();
+            $hasSchemaBeenModified = $changes->hasChanges();
+        } catch (DuplicateIdException $e) {
+            $hasSchemaBeenModified = true;
+        }
+
+        if ($hasSchemaBeenModified && ! $this->option('force')) {
+            $this->warn('Schema has been modified since last snapshot.');
+            $this->warn('If you made changes to schema.php, you should run realoquent:diff instead');
+            $this->warn('If you really want to continue, re-run with --force option');
+
+            return 1;
+        }
 
         if (! $this->option('force') && ! $this->confirm('Are you sure you want to generate new Eloquent models and base models?', true)) {
             return 0;

@@ -5,6 +5,7 @@ namespace NovaHorizons\Realoquent;
 use Illuminate\Support\Collection;
 use NovaHorizons\Realoquent\DataObjects\Schema;
 use NovaHorizons\Realoquent\DataObjects\Table;
+use NovaHorizons\Realoquent\Exceptions\DuplicateIdException;
 use NovaHorizons\Realoquent\Writer\SchemaWriter;
 
 class SchemaManager
@@ -60,6 +61,20 @@ class SchemaManager
 
         $result = file_put_contents($snapshotPath, $schemaString);
         throw_unless($result, new \RuntimeException('The Realoquent schema snapshot ['.$snapshotPath.'] could not be written.'));
+    }
+
+    /**
+     * @throws DuplicateIdException
+     */
+    public function diffSchemaAndGetChanges(): DataObjects\SchemaChanges
+    {
+        $newSchema = $this->loadSchema();
+        $currentSchema = $this->loadSchemaSnapshot();
+
+        return (new SchemaDiffer(
+            currentSchema: $currentSchema,
+            newSchema: $newSchema,
+        ))->getSchemaChanges();
     }
 
     public function getSchemaPath(): string
