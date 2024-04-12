@@ -10,7 +10,7 @@ class GenerateSchema extends Command
     /**
      * @var string
      */
-    protected $signature = 'realoquent:generate-schema {--force} {--s|split-tables}';
+    protected $signature = 'realoquent:generate-schema {--force} {--s|single-file}';
 
     /**
      * @var string
@@ -33,7 +33,7 @@ class GenerateSchema extends Command
             }
         }
 
-        $schema = $manager->generateAndWriteSchema(splitTables: $this->option('split-tables'));
+        $schema = $manager->generateAndWriteSchema(splitTables: ! $this->option('single-file'));
 
         if ($schema->getOrphanModels()->count()) {
             $this->warn('The following models were found in code, but not in the database:');
