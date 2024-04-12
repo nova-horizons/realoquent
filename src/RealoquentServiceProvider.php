@@ -7,6 +7,7 @@ use Illuminate\Support\ServiceProvider;
 use NovaHorizons\Realoquent\Commands\Diff;
 use NovaHorizons\Realoquent\Commands\GenerateModels;
 use NovaHorizons\Realoquent\Commands\GenerateSchema;
+use NovaHorizons\Realoquent\Commands\GenerateSnapshot;
 use NovaHorizons\Realoquent\Commands\NewTable;
 
 class RealoquentServiceProvider extends ServiceProvider implements DeferrableProvider
@@ -26,9 +27,10 @@ class RealoquentServiceProvider extends ServiceProvider implements DeferrablePro
 
         if ($this->app->runningInConsole()) {
             $this->commands([
+                Diff::class,
                 GenerateModels::class,
                 GenerateSchema::class,
-                Diff::class,
+                GenerateSnapshot::class,
                 NewTable::class,
             ]);
         }
