@@ -1,13 +1,14 @@
 <?php
 
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Str;
 use NovaHorizons\Realoquent\Enums\ColumnType;
-use PHPStan\BetterReflection\BetterReflection;
 use PHPStan\PhpDocParser\Lexer\Lexer;
 use PHPStan\PhpDocParser\Parser\ConstExprParser;
 use PHPStan\PhpDocParser\Parser\PhpDocParser;
 use PHPStan\PhpDocParser\Parser\TokenIterator;
 use PHPStan\PhpDocParser\Parser\TypeParser;
+use Roave\BetterReflection\BetterReflection;
 
 test('all types have default cast', function () {
     foreach (ColumnType::cases() as $typeClass) {
@@ -39,11 +40,11 @@ test('all unsigned shorthand are categorized accurately', function () {
 it('is up-to-date with Laravel functions', function () {
     $classInfo = (new BetterReflection())
         ->reflector()
-        ->reflectClass(\Illuminate\Database\Schema\Blueprint::class);
+        ->reflectClass(Blueprint::class);
 
     // Get methods in Blueprint that have a return type of ColumnDefinition
     $methods = collect($classInfo->getMethods())->filter(function ($method) {
-        /** @var \PHPStan\BetterReflection\Reflection\ReflectionMethod $method */
+        /** @var \Roave\BetterReflection\Reflection\ReflectionMethod $method */
         $constExprParser = new ConstExprParser();
         $phpDocParser = new PhpDocParser(new TypeParser($constExprParser), $constExprParser);
         $tokens = new TokenIterator((new Lexer())->tokenize($method->getDocComment()));
