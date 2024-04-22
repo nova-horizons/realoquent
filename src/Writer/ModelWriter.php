@@ -173,7 +173,7 @@ class ModelWriter
             }
         }
         $class->addProperty('incrementing', $this->table->incrementing ?? false)->setPublic()->addComment('@var bool');
-        $class->addProperty('fillable', $this->table->getFillableColumns())->setProtected()->addComment('@var array<int, string>');
+        $class->addProperty('fillable', $this->table->getFillableColumns())->setProtected()->addComment('@var list<string>');
         $class->addProperty('guarded', $this->table->getGuardedColumns())->setProtected()->addComment('@var array<int, string>');
         $class->addProperty('casts', $this->table->getCastColumns())->setProtected()->addComment('@var array<string, string>');
 
