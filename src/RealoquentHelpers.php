@@ -27,7 +27,7 @@ class RealoquentHelpers
 
     public static function buildModelName(string $modelNamespace, string $tableName): string
     {
-        return $modelNamespace.ucfirst(Str::studly($tableName));
+        return $modelNamespace.ucfirst(Str::studly(Str::singular($tableName)));
     }
 
     public static function newId(): string
