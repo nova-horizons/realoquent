@@ -131,6 +131,39 @@ it('can migrate new table with index', function (string $connection) {
     expect(getIndex('admins', 'admins_username_unique')['unique'])->toBeTrue();
 })->with('databases');
 
+it('can migrate new table with unique', function (string $connection) {
+    setupDbAndSchema($connection);
+    expect(tableExists('admins'))->toBeFalse();
+    $snapshot = Schema::fromSchemaArray(generatedSchema());
+
+    $newArray = generatedSchema();
+    $newArray['admins'] = [
+        'model' => 'Tests\\Models\\Admins',
+        'columns' => [
+            'id' => [
+                'type' => ColumnType::bigIncrements,
+                'primary' => true,
+                'cast' => 'integer',
+                'guarded' => true,
+            ],
+            'uuid' => [
+                'type' => ColumnType::uuid,
+                'unique' => true,
+                'guarded' => true,
+            ],
+        ],
+    ];
+
+    $new = Schema::fromSchemaArray($newArray);
+
+    $migration = (new SchemaDiffer(currentSchema: $snapshot, newSchema: $new))->getSchemaChanges()->getMigrationFunction();
+    eval($migration);
+
+    expect(tableExists('admins'))->toBeTrue();
+    expect(tableExists('users'))->toBeTrue();
+    expect(getIndex('admins', 'admins_uuid_unique')['unique'])->toBeTrue();
+})->with('databases');
+
 it('can migrate removed table', function (string $connection) {
     setupDbAndSchema($connection);
     expect(tableExists('users'))->toBeTrue();

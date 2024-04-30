@@ -10,6 +10,7 @@ use NovaHorizons\Realoquent\DataObjects\Column;
 use NovaHorizons\Realoquent\DataObjects\Index;
 use NovaHorizons\Realoquent\DataObjects\SchemaChanges;
 use NovaHorizons\Realoquent\DataObjects\Table;
+use NovaHorizons\Realoquent\Enums\IndexType;
 use NovaHorizons\Realoquent\RealoquentHelpers;
 
 class MigrationWriter
@@ -79,7 +80,7 @@ class MigrationWriter
             $migration .= '    '.$this->columnMigrationLine($column).';'.PHP_EOL;
         }
         foreach ($table->getIndexes() as $index) {
-            if ($index->isSingleColumn) {
+            if ($index->type == IndexType::primary) {
                 continue;
             }
             $migration .= '    '.$this->indexMigrationLine($index).';'.PHP_EOL;
