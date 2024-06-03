@@ -18,7 +18,7 @@ class SchemaManager
     }
 
     /**
-     * @param  Collection<string, string>  $models
+     * @param  Collection<string, non-falsy-string>  $models
      * @param  array<int, string>  $dbTables
      */
     public function rebuildSchema(Collection $models, array $dbTables): Schema

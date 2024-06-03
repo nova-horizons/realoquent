@@ -88,7 +88,7 @@ class RealoquentManager
     }
 
     /**
-     * @return Collection<string, string>
+     * @return Collection<string, non-falsy-string>
      */
     public function getModels(): Collection
     {

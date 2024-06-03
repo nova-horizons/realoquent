@@ -9,7 +9,7 @@ class Schema
     /** @var Table[] */
     protected array $tables = [];
 
-    /** @var Collection<string, string> */
+    /** @var Collection<string, non-falsy-string> */
     protected Collection $orphanModels;
 
     public function __construct()
@@ -59,7 +59,7 @@ class Schema
     }
 
     /**
-     * @param  Collection<string, string>  $models
+     * @param  Collection<string, non-falsy-string>  $models
      */
     public function setOrphanModels(Collection $models): void
     {
@@ -67,7 +67,7 @@ class Schema
     }
 
     /**
-     * @return Collection<string, string>
+     * @return Collection<string, non-falsy-string>
      */
     public function getOrphanModels(): Collection
     {
