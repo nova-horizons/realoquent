@@ -19,6 +19,5 @@
         <env name="FORWARD_PGSQL_PORT" value="35432"/>
         <env name="FORWARD_MARIADB_LTS_PORT" value="33308"/>
         <env name="FORWARD_MARIADB_LATEST_PORT" value="33309"/>
-        <env name="DB_CONNECTION" value="sqlite"/>
     </php>
 </phpunit>

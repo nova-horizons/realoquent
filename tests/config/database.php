@@ -32,7 +32,7 @@ return [
     'rl_mariadbLatest' => [
         'driver' => isLaravel10() ? 'mysql' : 'mariadb',
         'host' => env('DB_HOST', '127.0.0.1'),
-        'port' => env('FORWARD_MARIADB_LATEST_PORT', 33308),
+        'port' => env('FORWARD_MARIADB_LATEST_PORT', 33309),
         'database' => env('DB_DATABASE', 'testing'),
         'username' => env('DB_USERNAME', 'sail'),
         'password' => env('DB_PASSWORD', 'password'),

@@ -45,7 +45,7 @@ jobs:
       - name: Start Docker Databases
         run: |
           cp .env.example .env
-          ./vendor/bin/sail up -d
+          ./vendor/bin/sail up -d --quiet-pull
           sleep 12
 
       - name: Run tests
