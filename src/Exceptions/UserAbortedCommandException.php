@@ -2,6 +2,4 @@
 
 namespace NovaHorizons\Realoquent\Exceptions;
 
-class UserAbortedCommandException extends \RuntimeException
-{
-}
+class UserAbortedCommandException extends \RuntimeException {}

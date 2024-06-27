@@ -11,8 +11,7 @@ class SchemaChanges
     public function __construct(
         /** @var array<string, array<string, mixed>> */
         public readonly array $changes
-    ) {
-    }
+    ) {}
 
     public function prettyPrint(): string
     {

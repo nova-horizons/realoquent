@@ -14,8 +14,7 @@ class SchemaManager
         protected readonly string $configDir,
         protected readonly string $storageDir,
         protected readonly string $modelNamespace,
-    ) {
-    }
+    ) {}
 
     /**
      * @param  Collection<string, non-falsy-string>  $models

@@ -15,8 +15,7 @@ class SchemaWriter
         protected readonly string $splitSchemaPath,
         protected readonly string $modelNamespace,
         protected readonly bool $splitTables = false,
-    ) {
-    }
+    ) {}
 
     /**
      * @throws \Throwable

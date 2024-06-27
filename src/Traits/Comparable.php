@@ -47,7 +47,7 @@ trait Comparable
             if (in_array($key, $this->ignoreCols)) {
                 continue;
             }
-            if (is_array($val) && array_diff($val, $otherArray[$key])) {
+            if (is_array($val) && array_diff($val, $otherArray[$key])) { // @phpstan-ignore-line argument.type
                 $diffs[$thisItem.'_updated'][$name]['state'] = $this;
                 $diffs[$thisItem.'_updated'][$name]['changes'][$key] = [
                     'old' => $otherArray[$key],

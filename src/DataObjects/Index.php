@@ -29,8 +29,7 @@ class Index
         public bool $isSingleColumn = false,
         /** @readonly */
         public ?string $realoquentId = null,
-    ) {
-    }
+    ) {}
 
     /**
      * @param  array<string, mixed>  $dbIndex

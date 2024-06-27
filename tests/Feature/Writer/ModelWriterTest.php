@@ -135,6 +135,4 @@ it('can generate code that passes phpstan', function () {
     expect($allPassed)->toBeTrue();
 });
 
-it('preserves an existing base class on a base class', function () {
-
-})->todo(); // TODO
+it('preserves an existing base class on a base class', function () {})->todo(); // TODO

@@ -2,6 +2,4 @@
 
 namespace Tests\Exceptions;
 
-class DbItemDoesNotExist extends \InvalidArgumentException
-{
-}
+class DbItemDoesNotExist extends \InvalidArgumentException {}

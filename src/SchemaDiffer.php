@@ -19,8 +19,7 @@ class SchemaDiffer
     public function __construct(
         protected readonly Schema $currentSchema,
         protected readonly Schema $newSchema,
-    ) {
-    }
+    ) {}
 
     /**
      * @throws DuplicateIdException
