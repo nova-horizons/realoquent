@@ -42,7 +42,7 @@ class SchemaChanges
 
     public function getMigrationFunction(): string
     {
-        $writer = new MigrationWriter();
+        $writer = new MigrationWriter;
 
         return $writer->buildFunctionBody($this);
     }

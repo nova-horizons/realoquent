@@ -38,16 +38,16 @@ test('all unsigned shorthand are categorized accurately', function () {
 });
 
 it('is up-to-date with Laravel functions', function () {
-    $classInfo = (new BetterReflection())
+    $classInfo = (new BetterReflection)
         ->reflector()
         ->reflectClass(Blueprint::class);
 
     // Get methods in Blueprint that have a return type of ColumnDefinition
     $methods = collect($classInfo->getMethods())->filter(function ($method) {
         /** @var \Roave\BetterReflection\Reflection\ReflectionMethod $method */
-        $constExprParser = new ConstExprParser();
+        $constExprParser = new ConstExprParser;
         $phpDocParser = new PhpDocParser(new TypeParser($constExprParser), $constExprParser);
-        $tokens = new TokenIterator((new Lexer())->tokenize($method->getDocComment()));
+        $tokens = new TokenIterator((new Lexer)->tokenize($method->getDocComment()));
         $phpDocNode = $phpDocParser->parse($tokens);
         foreach ($phpDocNode->children as $child) {
             if (property_exists($child, 'name') && $child->name === '@return') {

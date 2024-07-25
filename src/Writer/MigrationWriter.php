@@ -32,7 +32,7 @@ class MigrationWriter
         $class->addMethod('up')->setBody($migrationBody)->setReturnType('void');
         $class->addMethod('down')->setBody('//')->setReturnType('void');
 
-        $classString = (new PsrPrinter())->printClass($class);
+        $classString = (new PsrPrinter)->printClass($class);
         $classString = "<?php\n\nuse ".Schema::class.";\n\nreturn new class {$classString};";
 
         $file = $migrationDir.'/'.date('Y_m_d_His').'_'.$migrationName.'.php';

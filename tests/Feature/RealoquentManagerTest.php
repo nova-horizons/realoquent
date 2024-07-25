@@ -62,7 +62,7 @@ it('can detect orphan models', function () {
 });
 
 it('errors on missing config', function () {
-    new RealoquentManager();
+    new RealoquentManager;
 })->throws(\RuntimeException::class);
 
 it('can handle missing config options', function () {
