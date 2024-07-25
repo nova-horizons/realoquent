@@ -47,7 +47,7 @@ it('is up-to-date with Laravel functions', function () {
         /** @var \Roave\BetterReflection\Reflection\ReflectionMethod $method */
         $constExprParser = new ConstExprParser;
         $phpDocParser = new PhpDocParser(new TypeParser($constExprParser), $constExprParser);
-        if (!$method->getDocComment()) {
+        if (! $method->getDocComment()) {
             return false;
         }
         $tokens = new TokenIterator((new Lexer)->tokenize($method->getDocComment()));
