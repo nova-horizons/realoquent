@@ -240,6 +240,11 @@ class Column
             default => 'mixed',
         };
 
+        // If user is specifying a class as the cast, we should use that as the type
+        if ($type === 'mixed' && class_exists($cast)) {
+            $type = '\\'.$cast;
+        }
+
         // For objects, expand types to include primitives
         // This allows for setting the property with primitive without causing static analysis errors
         $type = match ($type) {

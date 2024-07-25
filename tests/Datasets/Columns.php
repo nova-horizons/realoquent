@@ -18,6 +18,7 @@ dataset('column-and-casts', [
     [ColumnType::string, AsStringable::class, '\Illuminate\Support\Stringable|string'],
     [ColumnType::json, AsArrayObject::class, '\Illuminate\Database\Eloquent\Casts\ArrayObject|array'],
     [ColumnType::json, 'encrypted:collection', Collection::class],
+    [ColumnType::string, \Tests\Models\UserTypeEnum::class, '\Tests\Models\UserTypeEnum'],
 ]);
 
 dataset('main-column-types', function () {
