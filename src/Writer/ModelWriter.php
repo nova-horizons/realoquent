@@ -119,7 +119,7 @@ class ModelWriter
 
         $namespace->add($class);
 
-        return "<?php\n\n".(new PsrPrinter())->printNamespace($namespace);
+        return "<?php\n\n".(new PsrPrinter)->printNamespace($namespace);
     }
 
     protected function buildBaseModel(): string
@@ -221,6 +221,6 @@ class ModelWriter
 
         $namespace->add($class);
 
-        return "<?php\n\n".(new PsrPrinter())->printNamespace($namespace);
+        return "<?php\n\n".(new PsrPrinter)->printNamespace($namespace);
     }
 }

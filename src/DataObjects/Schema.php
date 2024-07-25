@@ -22,7 +22,7 @@ class Schema
      */
     public static function fromSchemaArray(array $schemaArray): self
     {
-        $schema = new self();
+        $schema = new self;
         foreach ($schemaArray as $tableName => $tableArray) {
             $table = Table::fromSchemaArray($tableName, $tableArray);
             $schema->addTable($table);

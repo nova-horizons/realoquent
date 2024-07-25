@@ -22,7 +22,7 @@ class SchemaManager
      */
     public function rebuildSchema(Collection $models, array $dbTables): Schema
     {
-        $schema = new Schema();
+        $schema = new Schema;
 
         foreach ($dbTables as $dbTableName) {
             $realTable = Table::fromDB($dbTableName);

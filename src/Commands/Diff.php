@@ -97,7 +97,7 @@ class Diff extends Command
      */
     protected function generateMigrations(RealoquentManager $manager, SchemaChanges $changes): void
     {
-        $migrationWriter = new MigrationWriter();
+        $migrationWriter = new MigrationWriter;
         $migration = $migrationWriter->buildFunctionBody($changes);
         if (empty($migration)) {
             return;
@@ -110,7 +110,7 @@ class Diff extends Command
         $this->line($migration);
 
         if (! $this->confirm('Review the above migration. Proceed? (You will have a chance to edit before running)', true)) {
-            throw new UserAbortedCommandException();
+            throw new UserAbortedCommandException;
         }
 
         $name = $this->ask('Enter migration name (your text will be slugified)', 'schema_migration');
@@ -130,7 +130,7 @@ class Diff extends Command
             $this->info(' Migration file created: '.$migration);
 
             if (! $this->confirm('Review the above migration. Proceed to run migrations?', true)) {
-                throw new UserAbortedCommandException();
+                throw new UserAbortedCommandException;
             }
             $this->call('migrate');
         }
