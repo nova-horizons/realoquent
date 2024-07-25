@@ -59,7 +59,9 @@
         "lint": [
             "@php vendor/bin/pint",
             "@php vendor/bin/phpstan analyse"
-        ]
+        ],
+        "laravel:10": "composer update --with \"illuminate/support:10.*\" --with \"illuminate/database:10.*\" --with \"orchestra/testbench:8.*\" --no-interaction",
+        "laravel:11": "composer update --with \"illuminate/support:11.*\" --with \"illuminate/database:11.*\" --with \"orchestra/testbench:9.*\" --no-interaction"
     },
     "config": {
         "allow-plugins": {

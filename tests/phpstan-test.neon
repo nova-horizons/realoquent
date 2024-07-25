@@ -10,9 +10,7 @@ parameters:
     paths:
         - Models
 
-    # Report when previously ignored errors are no longer present and can be removed from ignores
-    #   Will require more discipline from team to maintain clean baseline
-    reportUnmatchedIgnoredErrors: true
+    reportUnmatchedIgnoredErrors: false
 
     # For Level 6+: Require `int[]`-style typehints vs `array` https://phpstan.org/config-reference#vague-typehints
     checkMissingIterableValueType: true
@@ -32,6 +30,11 @@ parameters:
     # https://phpstan.org/config-reference#universal-object-crates
     universalObjectCratesClasses:
         - Illuminate\Database\Eloquent\Model
+
+    ignoreErrors:
+        -
+            # Ignoring this for Laravel 10.x
+            message: "#PHPDoc tag @use contains generic type .*?HasFactory.*? but trait .*?HasFactory is not generic#"
 
 rules:
     - Spatie\Ray\PHPStan\RemainingRayCallRule

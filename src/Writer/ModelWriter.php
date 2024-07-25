@@ -100,6 +100,12 @@ class ModelWriter
             foreach ($this->modelInfo->uses as $useName => $use) {
                 $namespace->addUse($use, $useName);
             }
+            foreach ($this->modelInfo->traits as $trait) {
+                $newTrait = $class->removeTrait($trait->getName())->addTrait($trait->getName());
+                if ($trait->getComment()) {
+                    $newTrait->addComment($trait->getComment());
+                }
+            }
         } else {
             $class = new ClassType($this->model);
         }

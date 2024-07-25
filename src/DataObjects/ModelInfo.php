@@ -39,6 +39,9 @@ class ModelInfo
     /** @var array<string, string[]> */
     public readonly array $validationGroups;
 
+    /** @var \Nette\PhpGenerator\TraitUse[] */
+    public readonly array $traits;
+
     /**
      * @throws \Throwable
      */
@@ -79,6 +82,8 @@ class ModelInfo
         throw_unless($class, new \RuntimeException('Failed to find class '.$this->name.' in file '.$reflector->getFileName()));
 
         $this->uses = $file->getNamespaces()[$this->namespace]->getUses();
+
+        $this->traits = $class->getTraits();
 
         if ($reflector->hasProperty('validation')) {
             $this->validation = $reflector->getProperty('validation')->getValue($model);
