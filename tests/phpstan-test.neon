@@ -32,6 +32,8 @@ parameters:
         - Illuminate\Database\Eloquent\Model
 
     ignoreErrors:
+        - '#Class Tests\\Models.*? has PHPDoc tag @property for property .*? with no value type specified in iterable type.*?#'
+        - '#PHPDoc tag @property for property Tests\\Models.*? contains generic class Illuminate\\Database\\Eloquent\\Casts\\ArrayObject but does not specify its types: TKey, TItem#'
         -
             # Ignoring this for Laravel 10.x
             message: "#PHPDoc tag @use contains generic type .*?HasFactory.*? but trait .*?HasFactory is not generic#"
