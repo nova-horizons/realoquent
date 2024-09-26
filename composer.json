@@ -15,7 +15,7 @@
         "laravel/sail": "^1.32",
         "orchestra/testbench": "^8.22|^9.0",
         "pestphp/pest": "^2.35.1",
-        "phpstan/phpstan": "^1.12.3",
+        "phpstan/phpstan": "^1.12.4",
         "doctrine/dbal": "^3.8",
         "roave/better-reflection": "^6.25"
     },
