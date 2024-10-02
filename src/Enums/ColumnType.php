@@ -40,7 +40,7 @@ enum ColumnType: string
     case json = 'json';
     case jsonb = 'jsonb';
     case longText = 'longText';
-    // TODO-macAddress Breaking pgsql tests case macAddress = 'macAddress'; // VARCHAR(17)
+    // case macAddress = 'macAddress'; // VARCHAR(17) // TODO-macAddress Breaking pgsql tests
     case mediumIncrements = 'mediumIncrements'; // UNSIGNED MEDIUMINT AUTO_INCREMENT
     case mediumInteger = 'mediumInteger';
     case mediumText = 'mediumText';
@@ -76,6 +76,7 @@ enum ColumnType: string
     // case uuidMorphs = 'uuidMorphs';
     case ulid = 'ulid'; // CHAR(26)
     case uuid = 'uuid';
+    // case vector = 'vector'; // TODO-vector Not implemented yet
     case year = 'year';
 
     /**

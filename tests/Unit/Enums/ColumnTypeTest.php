@@ -69,6 +69,7 @@ it('is up-to-date with Laravel functions', function () {
             'addColumnDefinition',
             'computed',
             'macAddress', // TODO-macAddress Breaking pgsql tests
+            'vector', // TODO-vector Not implemented yet
         ]))
         ->sort()
         ->values()
