@@ -169,6 +169,7 @@ Realoquent is still in progress. Here's some of the things that need to be done:
 - Support for `$table->with/withCount/preventsLazyLoading`
 - Support for `$table->engine/collation/charset`
 - Support for `$column->collation/charset/useCurrent/useCurrentOnUpdate`
+- Support for `vector` and `macAddress` types
 - Support for route binding configuration
 - Generate `down` migrations
 - Generate other things (Model Factories, Nova Resources, Form Requests, other form builders?)
