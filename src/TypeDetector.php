@@ -93,7 +93,11 @@ class TypeDetector
 
     private static function fromPostgreSQL(string $type): ColumnType
     {
-        $baseType = Str::before($type, '(');
+        if (str_ends_with($type, ')')) {
+            $baseType = Str::before($type, '(');
+        } else {
+            $baseType = $type;
+        }
 
         return match ($baseType) {
             'bigint' => ColumnType::bigInteger,
@@ -109,8 +113,9 @@ class TypeDetector
             'numeric' => ColumnType::decimal,
             'smallint' => ColumnType::smallInteger,
             'text' => ColumnType::text,
-            'time' => ColumnType::time,
-            'timestamp' => ColumnType::timestamp,
+            'time(0) without time zone' => ColumnType::time,
+            'timestamp(0) without time zone' => ColumnType::timestamp,
+            'timestamp(0) with time zone' => ColumnType::timestampTz,
             'uuid' => ColumnType::uuid,
             default => throw new RuntimeException('Unknown DB type: '.$type),
         };
