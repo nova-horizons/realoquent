@@ -45,6 +45,7 @@ dataset('main-column-types', function () {
         ColumnType::text,
         ColumnType::time,
         ColumnType::timestamp,
+        ColumnType::timestampTz,
         ColumnType::tinyInteger,
         ColumnType::tinyText,
         ColumnType::uuid,
@@ -81,6 +82,7 @@ dataset('main-column-types', function () {
     $dataset[RL_SQLITE.'--mediumText'][2] = ColumnType::text;
     $dataset[RL_SQLITE.'--smallInteger'][2] = ColumnType::integer;
     $dataset[RL_SQLITE.'--timestamp'][2] = ColumnType::dateTime;
+    $dataset[RL_SQLITE.'--timestampTz'][2] = ColumnType::dateTime;
     $dataset[RL_SQLITE.'--tinyInteger'][2] = ColumnType::integer;
     $dataset[RL_SQLITE.'--tinyText'][2] = ColumnType::text;
     $dataset[RL_SQLITE.'--uuid'][2] = ColumnType::string;
@@ -101,6 +103,7 @@ dataset('main-column-types', function () {
     $dataset[RL_MYSQL_8.'--boolean'][2] = ColumnType::tinyInteger;
     $dataset[RL_MYSQL_8.'--float'][2] = ColumnType::double;
     $dataset[RL_MYSQL_8.'--jsonb'][2] = ColumnType::json;
+    $dataset[RL_MYSQL_8.'--timestampTz'][2] = ColumnType::timestamp;
     $dataset[RL_MYSQL_8.'--uuid'][2] = ColumnType::char;
     $dataset[RL_MYSQL_8.'--ulid'][2] = ColumnType::char;
 
@@ -115,6 +118,7 @@ dataset('main-column-types', function () {
         $dataset[$mariaDb.'--float'][2] = ColumnType::double;
         $dataset[$mariaDb.'--json'][2] = ColumnType::longText;
         $dataset[$mariaDb.'--jsonb'][2] = ColumnType::longText;
+        $dataset[$mariaDb.'--timestampTz'][2] = ColumnType::timestamp;
         $dataset[$mariaDb.'--uuid'][2] = isLaravel10() ? ColumnType::char : ColumnType::uuid; // https://github.com/laravel/framework/commit/8648a4a8
         $dataset[$mariaDb.'--ulid'][2] = ColumnType::char;
     }

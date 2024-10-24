@@ -21,11 +21,11 @@ test('mappings are as expected', function (string $connection, ColumnType $type,
 })->with('main-column-types');
 
 //test('debug playground', function () {
-//    setupDb(RL_MARIADB_10);
+//    setupDb(RL_PGSQL_16);
 //    Schema::dropIfExists('temp_col');
 //    Schema::create('temp_col', function (Blueprint $table) {
-//        $table->uuid('temp');
+//        $table->timestampTz('temp');
 //    });
 //    $col = getColumn('temp_col', 'temp');
-//    dump($dbColumns);
+//    dump($col);
 //});
