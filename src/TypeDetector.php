@@ -114,8 +114,11 @@ class TypeDetector
             'smallint' => ColumnType::smallInteger,
             'text' => ColumnType::text,
             'time(0) without time zone' => ColumnType::time,
+            'time without time zone' => ColumnType::time,
             'timestamp(0) without time zone' => ColumnType::timestamp,
+            'timestamp without time zone' => ColumnType::timestamp,
             'timestamp(0) with time zone' => ColumnType::timestampTz,
+            'timestamp with time zone' => ColumnType::timestampTz,
             'uuid' => ColumnType::uuid,
             default => throw new RuntimeException('Unknown DB type: '.$type),
         };
