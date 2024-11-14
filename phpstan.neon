@@ -14,9 +14,6 @@ parameters:
     #   Will require more discipline from team to maintain clean baseline
     reportUnmatchedIgnoredErrors: false
 
-    # For Level 6+: Require `int[]`-style typehints vs `array` https://phpstan.org/config-reference#vague-typehints
-    checkMissingIterableValueType: true
-
     # Larastan Config https://github.com/nunomaduro/larastan/blob/master/docs/rules.md
     checkModelProperties: true
     checkOctaneCompatibility: true
