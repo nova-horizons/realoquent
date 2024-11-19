@@ -37,6 +37,3 @@ parameters:
         -
             # Ignoring this for Laravel 10.x
             message: "#PHPDoc tag @use contains generic type .*?HasFactory.*? but trait .*?HasFactory is not generic#"
-
-rules:
-    - Spatie\Ray\PHPStan\RemainingRayCallRule
