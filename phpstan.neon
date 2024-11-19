@@ -14,9 +14,6 @@ parameters:
     #   Will require more discipline from team to maintain clean baseline
     reportUnmatchedIgnoredErrors: false
 
-    # For Level 6+: Require `int[]`-style typehints vs `array` https://phpstan.org/config-reference#vague-typehints
-    checkMissingIterableValueType: true
-
     # Larastan Config https://github.com/nunomaduro/larastan/blob/master/docs/rules.md
     checkModelProperties: true
     checkOctaneCompatibility: true
@@ -53,6 +50,3 @@ parameters:
             message: "#^PHPDoc tag @use contains generic type Illuminate\\\\Database\\\\Eloquent\\\\Factories\\\\HasFactory\\<Tests\\\\Models\\\\UserFactory\\> but trait Illuminate\\\\Database\\\\Eloquent\\\\Factories\\\\HasFactory is not generic\\.$#"
             count: 1
             path: tests/Models/User.php
-
-rules:
-    - Spatie\Ray\PHPStan\RemainingRayCallRule

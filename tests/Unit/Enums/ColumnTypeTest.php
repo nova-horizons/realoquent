@@ -8,6 +8,7 @@ use PHPStan\PhpDocParser\Parser\ConstExprParser;
 use PHPStan\PhpDocParser\Parser\PhpDocParser;
 use PHPStan\PhpDocParser\Parser\TokenIterator;
 use PHPStan\PhpDocParser\Parser\TypeParser;
+use PHPStan\PhpDocParser\ParserConfig;
 use Roave\BetterReflection\BetterReflection;
 
 test('all types have default cast', function () {
@@ -45,12 +46,13 @@ it('is up-to-date with Laravel functions', function () {
     // Get methods in Blueprint that have a return type of ColumnDefinition
     $methods = collect($classInfo->getMethods())->filter(function ($method) {
         /** @var \Roave\BetterReflection\Reflection\ReflectionMethod $method */
-        $constExprParser = new ConstExprParser;
-        $phpDocParser = new PhpDocParser(new TypeParser($constExprParser), $constExprParser);
+        $parserConfig = new ParserConfig([]);
+        $constExprParser = new ConstExprParser($parserConfig);
+        $phpDocParser = new PhpDocParser($parserConfig, new TypeParser($parserConfig, $constExprParser), $constExprParser);
         if (! $method->getDocComment()) {
             return false;
         }
-        $tokens = new TokenIterator((new Lexer)->tokenize($method->getDocComment()));
+        $tokens = new TokenIterator((new Lexer($parserConfig))->tokenize($method->getDocComment()));
         $phpDocNode = $phpDocParser->parse($tokens);
         foreach ($phpDocNode->children as $child) {
             if (property_exists($child, 'name') && $child->name === '@return') {
@@ -68,6 +70,7 @@ it('is up-to-date with Laravel functions', function () {
             'addColumn',
             'addColumnDefinition',
             'computed',
+            'rawColumn',
             'macAddress', // TODO-macAddress Breaking pgsql tests
             'vector', // TODO-vector Not implemented yet
         ]))
