@@ -60,11 +60,11 @@ dataset('main-column-types', function () {
         }
     }
 
-    //////////////////////////
-    ///
-    /// Adjust for Sqlite's lack of support for some column types
-    /// Change the expected type to the closest match
-    ///
+    // ////////////////////////
+    // /
+    // / Adjust for Sqlite's lack of support for some column types
+    // / Change the expected type to the closest match
+    // /
 
     /**
      * Sqlite
