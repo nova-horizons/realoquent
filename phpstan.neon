@@ -11,8 +11,7 @@ parameters:
         - tests
 
     # Report when previously ignored errors are no longer present and can be removed from ignores
-    #   Will require more discipline from team to maintain clean baseline
-    reportUnmatchedIgnoredErrors: false
+    reportUnmatchedIgnoredErrors: true
 
     # Larastan Config https://github.com/nunomaduro/larastan/blob/master/docs/rules.md
     checkModelProperties: true
@@ -29,11 +28,6 @@ parameters:
             - 'RuntimeException'
             - 'Error'
 
-    # Objects used as universal holders of data, prevents undefined property errors
-    # https://phpstan.org/config-reference#universal-object-crates
-    universalObjectCratesClasses:
-        - Illuminate\Database\Eloquent\Model
-
     ignoreErrors:
         - '#Class NovaHorizons\\Realoquent\\DataObjects\\(.*?) has an uninitialized \@readonly property (.*?). Assign it in the constructor.#'
         - '#\@readonly property NovaHorizons\\Realoquent\\DataObjects\\(.*?) is assigned outside of the constructor.#'
@@ -43,10 +37,6 @@ parameters:
             message: '#Match arm comparison between (.*?) is always true#'
             path: src/Enums
         -
-            message: '#Undefined variable: \$this#'
-            path: tests/Feature/
-        -
-            # Ignoring this for Laravel 10.x
-            message: "#^PHPDoc tag @use contains generic type Illuminate\\\\Database\\\\Eloquent\\\\Factories\\\\HasFactory\\<Tests\\\\Models\\\\UserFactory\\> but trait Illuminate\\\\Database\\\\Eloquent\\\\Factories\\\\HasFactory is not generic\\.$#"
-            count: 1
-            path: tests/Models/User.php
+            # Ignore env calls in test config files
+            identifier: larastan.noEnvCallsOutsideOfConfig
+            path: tests/config/

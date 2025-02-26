@@ -38,6 +38,6 @@ jobs:
       - name: Run static analysis
         uses: php-actions/phpstan@v3
         with:
-          version: 1.12
+          version: 2.1
           php_version: ${{ matrix.php }}
           memory_limit: 1G
