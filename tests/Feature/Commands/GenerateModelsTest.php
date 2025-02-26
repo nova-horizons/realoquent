@@ -4,6 +4,8 @@ use NovaHorizons\Realoquent\Commands\GenerateModels;
 use NovaHorizons\Realoquent\RealoquentManager;
 use Tests\TestCase\RealoquentTestClass;
 
+use function Pest\Laravel\artisan;
+
 uses(RealoquentTestClass::class);
 
 it('errors when no schema', function () {
@@ -11,7 +13,7 @@ it('errors when no schema', function () {
     if (file_exists($schema)) {
         unlink($schema);
     }
-    $this->artisan('realoquent:generate-models --force')
+    artisan('realoquent:generate-models --force')
         ->expectsOutputToContain('Schema file does not exist')
         ->assertExitCode(1);
 });
@@ -25,7 +27,7 @@ it('errors when schema modified', function () {
         return str_replace("'users'", "'users2'", $schema);
     });
 
-    $this->artisan(GenerateModels::class)
+    artisan(GenerateModels::class)
         ->expectsOutputToContain('Schema has been modified')
         ->assertExitCode(1);
 });
@@ -37,7 +39,7 @@ it('errors when duplicate ids', function () {
 
     causeDuplicateIds($manager);
 
-    $this->artisan(GenerateModels::class)
+    artisan(GenerateModels::class)
         ->expectsOutputToContain('Schema has been modified')
         ->assertExitCode(1);
 });

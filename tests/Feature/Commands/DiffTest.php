@@ -5,6 +5,8 @@ use NovaHorizons\Realoquent\DataObjects\Schema;
 use NovaHorizons\Realoquent\RealoquentManager;
 use Tests\TestCase\RealoquentTestClass;
 
+use function Pest\Laravel\artisan;
+
 uses(RealoquentTestClass::class);
 
 it('errors when no schema', function () {
@@ -12,7 +14,7 @@ it('errors when no schema', function () {
     if (file_exists($schema)) {
         unlink($schema);
     }
-    $this->artisan(Diff::class)
+    artisan(Diff::class)
         ->expectsOutputToContain('Schema file does not exist')
         ->assertExitCode(1);
 });
@@ -23,7 +25,7 @@ it('errors when no schema snapshot', function () {
     if (file_exists($schema)) {
         unlink($schema);
     }
-    $this->artisan(Diff::class)
+    artisan(Diff::class)
         ->expectsOutputToContain('Schema snapshot file does not exist')
         ->assertExitCode(1);
 });
@@ -32,7 +34,7 @@ it('reports no changes', function () {
     setupDbAndSchema(RL_SQLITE);
     $manager = new RealoquentManager(realoquentConfig());
     $manager->getSchemaManager()->makeSchemaSnapshot();
-    $this->artisan(Diff::class)
+    artisan(Diff::class)
         ->expectsOutputToContain('No changes')
         ->assertExitCode(0);
 });
@@ -47,7 +49,7 @@ it('bails on no', function () {
     $new = Schema::fromSchemaArray($newArray);
     $manager->getSchemaManager()->writeSchema($new);
 
-    $this->artisan(Diff::class)
+    artisan(Diff::class)
         ->expectsConfirmation('Review the changes above. Proceed?', 'yes')
         ->expectsConfirmation('Generate migrations?', 'yes')
         ->expectsConfirmation('Review the above migration. Proceed? (You will have a chance to edit before running)', 'no')
@@ -62,7 +64,7 @@ it('errors when duplicate ids', function () {
 
     causeDuplicateIds($manager);
 
-    $this->artisan(Diff::class)
+    artisan(Diff::class)
         ->expectsOutputToContain('Duplicate realoquentId found')
         ->assertExitCode(1);
 });

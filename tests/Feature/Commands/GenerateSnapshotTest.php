@@ -4,6 +4,8 @@ use NovaHorizons\Realoquent\Commands\GenerateSnapshot;
 use NovaHorizons\Realoquent\RealoquentManager;
 use Tests\TestCase\RealoquentTestClass;
 
+use function Pest\Laravel\artisan;
+
 uses(RealoquentTestClass::class);
 
 it('errors when no schema', function () {
@@ -11,7 +13,7 @@ it('errors when no schema', function () {
     if (file_exists($schema)) {
         unlink($schema);
     }
-    $this->artisan('realoquent:generate-snapshot')
+    artisan('realoquent:generate-snapshot')
         ->expectsOutputToContain('Schema file does not exist')
         ->assertExitCode(1);
 });
@@ -23,7 +25,7 @@ it('errors when schema snapshot exists', function () {
 
     expect($schemaManager->schemaSnapshotExists())->toBeTrue();
 
-    $this->artisan(GenerateSnapshot::class)
+    artisan(GenerateSnapshot::class)
         ->expectsOutputToContain('Schema Snapshot already exists')
         ->assertExitCode(1);
 });
@@ -35,7 +37,7 @@ it('succeeds with only-if-missing', function () {
 
     expect($schemaManager->schemaSnapshotExists())->toBeTrue();
 
-    $this->artisan(GenerateSnapshot::class, ['--only-if-missing' => true])
+    artisan(GenerateSnapshot::class, ['--only-if-missing' => true])
         ->expectsOutputToContain('Schema Snapshot already exists')
         ->assertExitCode(0);
 });
@@ -49,7 +51,7 @@ it('errors when schema modified', function () {
         return str_replace("'users'", "'users2'", $schema);
     });
 
-    $this->artisan(GenerateSnapshot::class)
+    artisan(GenerateSnapshot::class)
         ->expectsOutputToContain('Schema has been modified')
         ->assertExitCode(1);
 });
@@ -60,7 +62,7 @@ it('generates snapshot', function () {
 
     expect($schemaManager->schemaSnapshotExists())->toBeFalse();
 
-    $this->artisan(GenerateSnapshot::class)
+    artisan(GenerateSnapshot::class)
         ->expectsOutputToContain('Snapshot generated successfully')
         ->assertExitCode(0);
 
@@ -79,7 +81,7 @@ it('generates snapshot with force', function () {
         return str_replace("'users'", "'usersNewName'", $schema);
     });
 
-    $this->artisan(GenerateSnapshot::class, ['--force' => true])
+    artisan(GenerateSnapshot::class, ['--force' => true])
         ->expectsOutputToContain('Snapshot generated successfully')
         ->assertExitCode(0);
 
@@ -96,7 +98,7 @@ it('errors when duplicate ids', function () {
 
     causeDuplicateIds($manager);
 
-    $this->artisan(GenerateSnapshot::class)
+    artisan(GenerateSnapshot::class)
         ->expectsOutputToContain('Schema has been modified')
         ->assertExitCode(1);
 });

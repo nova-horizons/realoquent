@@ -82,4 +82,4 @@ it('is up-to-date with Laravel functions', function () {
 
     expect($methods)->toBe($types);
 
-})->skip(isLaravel10(), 'Only for latest version of Laravel');
+});

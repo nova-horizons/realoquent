@@ -1,6 +1,5 @@
 includes:
     - ../vendor/larastan/larastan/extension.neon
-    - phar://phpstan.phar/conf/bleedingEdge.neon
 
 #### This is for Pest tests
 
@@ -10,10 +9,7 @@ parameters:
     paths:
         - Models
 
-    reportUnmatchedIgnoredErrors: false
-
-    # For Level 6+: Require `int[]`-style typehints vs `array` https://phpstan.org/config-reference#vague-typehints
-    checkMissingIterableValueType: true
+    reportUnmatchedIgnoredErrors: true
 
     # Larastan Config https://github.com/nunomaduro/larastan/blob/master/docs/rules.md
     checkModelProperties: true
@@ -26,14 +22,6 @@ parameters:
             missingCheckedExceptionInThrows: true
             tooWideThrowType: true
 
-    # Objects used as universal holders of data, prevents undefined property errors
-    # https://phpstan.org/config-reference#universal-object-crates
-    universalObjectCratesClasses:
-        - Illuminate\Database\Eloquent\Model
-
     ignoreErrors:
         - '#Class Tests\\Models.*? has PHPDoc tag @property for property .*? with no value type specified in iterable type.*?#'
         - '#PHPDoc tag @property for property Tests\\Models.*? contains generic class Illuminate\\Database\\Eloquent\\Casts\\ArrayObject but does not specify its types: TKey, TItem#'
-        -
-            # Ignoring this for Laravel 10.x
-            message: "#PHPDoc tag @use contains generic type .*?HasFactory.*? but trait .*?HasFactory is not generic#"
