@@ -6,18 +6,18 @@
         "php": "~8.2|~8.3",
         "illuminate/database": "^11.0",
         "illuminate/support": "^11.0",
-        "nette/php-generator": "^4.1.6",
-        "nikic/php-parser": "^4.18|^5.0.2"
+        "nette/php-generator": "^4.1.7",
+        "nikic/php-parser": "^4.18|^5.4.0"
     },
     "require-dev": {
-        "larastan/larastan": "^2.9.11",
-        "laravel/pint": "^1.18",
-        "laravel/sail": "^1.37",
+        "larastan/larastan": "^2.9.14",
+        "laravel/pint": "^1.21",
+        "laravel/sail": "^1.41",
         "orchestra/testbench": "^9.0",
-        "pestphp/pest": "^2.35.1",
-        "phpstan/phpstan": "^1.12.8",
+        "pestphp/pest": "^2.36.0",
+        "phpstan/phpstan": "^1.12.19",
         "doctrine/dbal": "^3.8",
-        "roave/better-reflection": "^6.25"
+        "roave/better-reflection": "^6.57"
     },
     "autoload": {
         "psr-4": {
