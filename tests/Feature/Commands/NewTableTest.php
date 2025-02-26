@@ -4,6 +4,8 @@ use NovaHorizons\Realoquent\DataObjects\Table;
 use NovaHorizons\Realoquent\RealoquentManager;
 use Tests\TestCase\RealoquentTestClass;
 
+use function Pest\Laravel\artisan;
+
 uses(RealoquentTestClass::class);
 
 it('errors when no schema', function () {
@@ -11,7 +13,7 @@ it('errors when no schema', function () {
     if (file_exists($schema)) {
         unlink($schema);
     }
-    $this->artisan('realoquent:new-table new_table')
+    artisan('realoquent:new-table new_table')
         ->expectsOutputToContain('Schema file does not exist')
         ->assertExitCode(1);
 });
@@ -21,7 +23,7 @@ it('writes schema', function () {
     $schema = (new RealoquentManager(realoquentConfig()))->getSchemaManager()->loadSchema();
     expect(isset($schema->getTables()['new_table']))->toBeFalse();
 
-    $this->artisan('realoquent:new-table new_table')
+    artisan('realoquent:new-table new_table')
         ->assertExitCode(0);
 
     $schema = (new RealoquentManager(realoquentConfig()))->getSchemaManager()->loadSchema();
