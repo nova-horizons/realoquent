@@ -79,6 +79,9 @@ class RealoquentManager
         return $schema;
     }
 
+    /**
+     * @throws \ReflectionException
+     */
     public function generateSchema(): Schema
     {
         return $this->schemaManager->rebuildSchema(

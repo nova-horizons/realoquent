@@ -11,7 +11,12 @@ use Tests\Exceptions\DbItemDoesNotExist;
 
 function tableExists(string $table): bool
 {
-    return in_array($table, DB::connection()->getSchemaBuilder()->getTableListing());
+    try {
+        return in_array($table, DatabaseAnalyzer::getTables());
+    } catch (\Throwable $e) {
+        // Rethrow the exception to fail the test with the original error message
+        throw new \RuntimeException("Failed to check if table '{$table}' exists: ".$e->getMessage(), 0, $e);
+    }
 }
 
 /**
@@ -113,6 +118,11 @@ function setupDbAndSchema(string $connection): void
         $table->json('metadata');
     });
     $manager = new RealoquentManager(realoquentConfig());
-    $schema = $manager->generateSchema();
+    try {
+        $schema = $manager->generateSchema();
+    } catch (\Throwable $e) {
+        // Rethrow the exception to fail the test with the original error message
+        throw new \RuntimeException('Failed to generateSchema: '.$e->getMessage(), 0, $e);
+    }
     $manager->getSchemaManager()->writeSchema($schema);
 }

@@ -4,17 +4,16 @@
     "license": "MIT",
     "require": {
         "php": "~8.2|~8.3|~8.4",
-        "illuminate/database": "^11.0",
-        "illuminate/support": "^11.0",
+        "illuminate/database": "^11.0|^12.0",
+        "illuminate/support": "^11.0|^12.0",
         "nette/php-generator": "^4.1.7",
-        "nikic/php-parser": "^4.18|^5.4.0"
+        "nikic/php-parser": "^5.4.0"
     },
     "require-dev": {
-        "doctrine/dbal": "^3.8",
         "larastan/larastan": "^3.1.0",
         "laravel/pint": "^1.21",
         "laravel/sail": "^1.41",
-        "orchestra/testbench": "^9.0",
+        "orchestra/testbench": "^9.0|^10.0",
         "pestphp/pest": "^3.7.4",
         "pestphp/pest-plugin-laravel": "^3.1",
         "phpstan/phpstan": "^2.1.6",
@@ -61,7 +60,14 @@
             "@php vendor/bin/pint",
             "@php vendor/bin/phpstan analyse"
         ],
-        "laravel:11": "composer update --with \"illuminate/support:11.*\" --with \"illuminate/database:11.*\" --with \"orchestra/testbench:9.*\" --no-interaction"
+        "laravel:11": "composer update --with \"illuminate/support:11.*\" --with \"illuminate/database:11.*\" --with \"orchestra/testbench:9.*\" --no-interaction",
+        "laravel:12": "composer update --with \"illuminate/support:12.*\" --with \"illuminate/database:12.*\" --with \"orchestra/testbench:10.*\" --no-interaction",
+        "fulltest": [
+            "@laravel:11",
+            "@quality",
+            "@laravel:12",
+            "@quality"
+        ]
     },
     "config": {
         "allow-plugins": {

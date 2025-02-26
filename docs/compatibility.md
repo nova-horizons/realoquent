@@ -3,7 +3,7 @@
 Realoquent is tested against combinations of the following:
 
 * PHP: 8.2, 8.3, 8.4
-* Laravel: 11.x
+* Laravel: 11.x, 12.x
 * OS: Ubuntu Latest
 * MySQL: 8.x
 * MariaDB: LTS (10.x), and Latest (11.x) 

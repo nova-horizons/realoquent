@@ -11,7 +11,7 @@ parameters:
         - tests
 
     # Report when previously ignored errors are no longer present and can be removed from ignores
-    reportUnmatchedIgnoredErrors: true
+    reportUnmatchedIgnoredErrors: false
 
     # Larastan Config https://github.com/nunomaduro/larastan/blob/master/docs/rules.md
     checkModelProperties: true
