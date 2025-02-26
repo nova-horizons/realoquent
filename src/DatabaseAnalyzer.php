@@ -10,10 +10,20 @@ class DatabaseAnalyzer
 {
     /**
      * @return array<int, string>
+     *
+     * @throws \ReflectionException
      */
     public static function getTables(): array
     {
-        return DB::connection()->getSchemaBuilder()->getTableListing();
+        $schemaBuilder = DB::connection()->getSchemaBuilder();
+
+        // Laravel 12 requires the schemaQualified parameter
+        if ((new \ReflectionMethod($schemaBuilder, 'getTableListing'))->getNumberOfParameters() > 0) {
+            return $schemaBuilder->getTableListing(schema: null, schemaQualified: false); // @phpstan-ignore argument.unknown,argument.unknown
+        }
+
+        // Laravel 11 and below
+        return $schemaBuilder->getTableListing();
     }
 
     /**
