@@ -30,6 +30,7 @@ parameters:
 
     ignoreErrors:
         - '#Class NovaHorizons\\Realoquent\\DataObjects\\(.*?) has an uninitialized \@readonly property (.*?). Assign it in the constructor.#'
+        - '#Cannot unset @readonly NovaHorizons\\Realoquent\\DataObjects\\Column::(.*?) property.#'
         - '#\@readonly property NovaHorizons\\Realoquent\\DataObjects\\(.*?) is assigned outside of the constructor.#'
         - '#Method NovaHorizons\\Realoquent\\RealoquentHelpers::printArray\(\) has parameter \$var with no value type specified in iterable type array.#'
         - '#Method NovaHorizons\\Realoquent\\Writer\\SchemaWriter::arrayToString\(\) has parameter \$array with no value type specified in iterable type array.#'
