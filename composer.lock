@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7f23cfb10145a277222832181ee809b7",
+    "content-hash": "0c7d55b8b9985c12ecc3a5b8c9f303e6",
     "packages": [
         {
             "name": "brick/math",
@@ -8089,16 +8089,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "2.1.11",
+            "version": "2.1.27",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "8ca5f79a8f63c49b2359065832a654e1ec70ac30"
+                "reference": "25da374959afa391992792691093550b3098ef1e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/8ca5f79a8f63c49b2359065832a654e1ec70ac30",
-                "reference": "8ca5f79a8f63c49b2359065832a654e1ec70ac30",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/25da374959afa391992792691093550b3098ef1e",
+                "reference": "25da374959afa391992792691093550b3098ef1e",
                 "shasum": ""
             },
             "require": {
@@ -8143,7 +8143,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-03-24T13:45:00+00:00"
+            "time": "2025-09-17T09:55:13+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -9955,12 +9955,12 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {},
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
         "php": "~8.2|~8.3|~8.4"
     },
-    "platform-dev": [],
-    "plugin-api-version": "2.3.0"
+    "platform-dev": {},
+    "plugin-api-version": "2.6.0"
 }
