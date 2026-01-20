@@ -1,5 +1,5 @@
 <h1 align="center">
-    ⚠️ This is pre-beta.<br/>
+    ⚠️ This is pre-beta and no longer maintained.<br/>
     Realoquent: Laravel Schema and Model Generator<br>Less Magic, More Generated Code
 </h1>
 
