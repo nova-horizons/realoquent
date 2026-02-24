@@ -15,7 +15,7 @@
         "laravel/sail": "^1.41",
         "orchestra/testbench": "^9.0|^10.0",
         "pestphp/pest": "^3.8.1",
-        "pestphp/pest-plugin-laravel": "^3.1",
+        "pestphp/pest-plugin-laravel": "^3.2",
         "phpstan/phpstan": "^2.1.7",
         "roave/better-reflection": "^6.57"
     },
